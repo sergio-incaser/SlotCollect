@@ -1,5 +1,6 @@
 package es.incaser.apps.slotcollect;
 
+import android.content.SharedPreferences;
 import android.database.SQLException;
 
 import java.sql.Connection;
@@ -15,14 +16,14 @@ import net.sourceforge.jtds.jdbc.Driver;
  */
 public class SQLConnection {
     private static SQLConnection instance = null;
-/*
     private static final String URL = "jdbc:jtds:sqlserver://localhost:1433/SASD;";
     private static final String USER = "sa";
     private static final String PASS = "D";
-*/
+
     private static Connection connection = null;
 
     private SQLConnection(){}
+
 
     public static SQLConnection getInstance(){
         if (instance == null)
