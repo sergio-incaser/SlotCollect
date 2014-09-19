@@ -1,6 +1,7 @@
 package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -55,6 +56,11 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+//            Intent intent = new Intent(this, SettingsFragment.class);
+//            startActivity(intent);
+            getFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, new SettingsFragment())
+                    .commit();
             return true;
         }
         return super.onOptionsItemSelected(item);
