@@ -11,5 +11,9 @@
     <string name="pref_sql_port">Puerto</string>
     <string name="pref_sql_user">Usuario</string>
     <string name="pref_sql_password">Contraseña</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_sql_sbname">Base de datos</string>
+    <string name="pref_sql_database">Base de datos</string>
+    <string name="action_sql_import">Importar</string>
 
 </resources>

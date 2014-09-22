@@ -2,6 +2,7 @@ package es.incaser.apps.slotcollect;
 
 import android.content.SharedPreferences;
 import android.database.SQLException;
+import android.preference.PreferenceManager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,9 +17,11 @@ import net.sourceforge.jtds.jdbc.Driver;
  */
 public class SQLConnection {
     private static SQLConnection instance = null;
-    private static final String URL = "jdbc:jtds:sqlserver://localhost:1433/SASD;";
-    private static final String USER = "sa";
-    private static final String PASS = "D";
+    public static String host;
+    public static String port;
+    public static String user;
+    public static String password;
+    public static String database;
 
     private static Connection connection = null;
 
@@ -31,22 +34,46 @@ public class SQLConnection {
         return instance;
     }
 
+    public Connection getConnection(String host, String port, String user, String password, String database){
+        try {
+            if (this.host != host || this.user != user || this.password != password) {
+                this.host = host;
+                this.port = port;
+                this.user = user;
+                this.password = password;
+                this.database = database;
+                if ((connection != null) && !connection.isClosed()) {
+                    connection.close();
+                }
+            }
+            if(connection == null || connection.isClosed())
+                connection = connectSQL();
+            return connection;
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Connection getConnection(){
         if(connection == null)
             connection = connectSQL();
         return connection;
     }
 
+
     private Connection connectSQL(){
         Connection conn = null;
         (new Driver()).getClass();
         try {
-            conn = DriverManager.getConnection(URL,USER,PASS);
+            String uri = "jdbc:jtds:sqlserver://" + host + ":"+ port +"/"+ database +";";
+            conn = DriverManager.getConnection(uri,user,password);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
         return conn;
     }
+
 
     
 }
