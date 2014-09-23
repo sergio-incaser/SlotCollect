@@ -20,6 +20,10 @@
             android:name=".Settings"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name=".EstablecimientosLogic"
+            android:label="@string/title_activity_establecimientos_logic" >
+        </activity>
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

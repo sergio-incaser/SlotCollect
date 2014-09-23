@@ -1,6 +1,7 @@
 package es.incaser.apps.slotcollect;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.preference.PreferenceManager;
 
@@ -74,6 +75,21 @@ public class SQLConnection {
         return conn;
     }
 
+    public ResultSet getEstablecimientos(){
+        if(connection == null)
+            connection = connectSQL();
+        String sql = "Select INC_CodigoEstablecimiento as id, * From INC_Establecimientos";
+        Statement statement = null;
+        ResultSet rs = null;
+        try {
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            rs = statement.executeQuery(sql);
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+    }
 
     
 }

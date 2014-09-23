@@ -37,9 +37,9 @@ import java.util.Random;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 6;
+	private static final int DATABASE_VER = 10;
     private static Connection conSQL;
-    private static SQLiteDatabase db;
+    public static SQLiteDatabase db;
     private static Context ctx;
     private static String[][] QUERY_LIST = {
             //Tablas a importar
@@ -61,41 +61,56 @@ public class DbAdapter extends SQLiteOpenHelper{
 		ctx = context;
 	}
 
+    private class GetDBConnection extends AsyncTask<Integer, Void, String>{
+        @Override
+        protected String doInBackground(Integer... params) {
+            conSQL = SQLConnection.getInstance().getConnection();
+            Statement statement = null;
+            try {
+                statement = conSQL.createStatement();
+            } catch (java.sql.SQLException e) {
+                e.printStackTrace();
+            }
+
+            ResultSet rs;
+            ResultSetMetaData rsmd;
+            String colname;
+            String coltype;
+            String columnsSql = "";
+            String createSql = "";
+
+            for (String[] query : QUERY_LIST) {
+                columnsSql = "";
+                try {
+                    rs = statement.executeQuery(query[1]);
+                    rsmd = rs.getMetaData();
+                    for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                        colname = rsmd.getColumnName(i);
+                        coltype = rsmd.getColumnTypeName(i);
+                        columnsSql += ", '" + colname + "' " + coltype;
+                    }
+                    createSql = "CREATE TABLE " + query[0] + " ('id' INTEGER PRIMARY KEY AUTOINCREMENT" + columnsSql + ");";
+                    db.execSQL(createSql);
+                } catch (java.sql.SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            return "OK";
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            Toast.makeText(ctx,result, Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+
     @Override
 	public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub
         //SQLConnection conInstance = SQLConnection.getInstance();
-        conSQL = SQLConnection.getInstance().getConnection();
-        Statement statement = null;
-        try {
-            statement = conSQL.createStatement();
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-
-        ResultSet rs;
-        ResultSetMetaData rsmd;
-        String colname;
-        String coltype;
-        String columnsSql = "";
-        String createSql = "";
-
-        for (String[] query : QUERY_LIST) {
-            columnsSql = "";
-            try {
-                rs = statement.executeQuery(query[1]);
-                rsmd = rs.getMetaData();
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    colname = rsmd.getColumnName(i);
-                    coltype = rsmd.getColumnTypeName(i);
-                    columnsSql += ", '" + colname + "' " + coltype;
-                }
-                createSql = "CREATE TABLE " + query[0] + " ('id' INTEGER PRIMARY KEY AUTOINCREMENT" + columnsSql + ");";
-                db.execSQL(createSql);
-            } catch (java.sql.SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        new GetDBConnection().execute(1);
     }
 
 	@Override
@@ -203,5 +218,24 @@ public class DbAdapter extends SQLiteOpenHelper{
         }
 
         return 0;
+    }
+    public static Cursor getCursorBuscador(String textSearch, String tableSearch, String order){
+        textSearch = textSearch.replace("'", "''");
+        String[] fields = new String[]{"*" ,"id  AS _id", "RazonSocial AS item"};
+        String where = "";
+        String[] selectionArgs = new String[]{};
+        String orderBy ="id";
+        String table = tableSearch.toString();
+
+        if (order.length() > 0)	orderBy = order;
+
+        if (textSearch.length()>0){
+            selectionArgs = new String[]{"%" + textSearch +"%"};
+            if (where.length()>0) {
+                where +=" AND ";
+            }
+            where += "name LIKE ?";
+        }
+        return db.query(table, fields, where, selectionArgs, "", "", orderBy);
     }
 }
