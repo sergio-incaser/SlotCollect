@@ -4,7 +4,7 @@
     <string name="app_name">Slot Collect</string>
     <string name="title_activity_main">Recaudaciones</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Configuración</string>
     <string name="title_activity_my">MyActivity</string>
     <string name="pref_sql_host">Servidor</string>
     <string name="pref_sql_host_summ">Dirección del servidor</string>
@@ -17,5 +17,6 @@
     <string name="action_sql_import">Importar</string>
     <string name="title_activity_establecimientos_logic">Establecimientos Logic</string>
     <string name="action_filtrar">Filtrar</string>
+    <string name="action_sync_data">Sincronizar</string>
 
 </resources>

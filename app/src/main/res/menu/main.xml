@@ -5,9 +5,14 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never" />
-    <item android:id="@+id/action_sql_import"
-        android:title="@string/action_sql_import"
+
+    <item android:id="@+id/action_filtrar_estableciemtos"
+        android:title="@string/action_filtrar"
         android:orderInCategory="110"
         android:showAsAction="never" />
 
+    <item android:id="@+id/action_sync_data"
+        android:title="@string/action_sync_data"
+        android:orderInCategory="110"
+        android:showAsAction="never" />
 </menu>

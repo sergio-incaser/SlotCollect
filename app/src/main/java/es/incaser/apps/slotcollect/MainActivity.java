@@ -91,12 +91,19 @@ public class MainActivity extends ListActivity{
             startActivity(intent);
             return true;
         }
-        if (id == R.id.action_sql_import) {
+        if (id == R.id.action_filtrar_estableciemtos) {
             //new ImportSqlData().execute(1);
             Intent intent = new Intent(this, EstablecimientosLogic.class);
             startActivity(intent);
             return true;
         }
+        if (id == R.id.action_sync_data) {
+            //new ImportSqlData().execute(1);
+            SyncData syncData = new SyncData(this);
+            syncData.SincronizarDatos();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
     private void getDataSql(){
