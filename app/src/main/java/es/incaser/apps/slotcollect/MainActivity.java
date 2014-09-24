@@ -29,7 +29,7 @@ import java.sql.Statement;
 public class MainActivity extends ListActivity{
     private static Cursor cur = null;
     private static EstablecimientosAdapter estabAdapter;
-    DbAdapter adapterDB = new DbAdapter(this);
+    DbAdapter dbAdapter;
 
 
     @Override
@@ -37,9 +37,8 @@ public class MainActivity extends ListActivity{
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
         ReadPreferences(this);
-
-        adapterDB.openDB();
-        Cursor curtmp = DbAdapter.db.rawQuery("Select * from sqlite_master WHERE name = ?",new String[]{"Establecimientos"});
+        dbAdapter = new DbAdapter(this);
+        Cursor curtmp = dbAdapter.getCursor("Select * from sqlite_master WHERE name = 'Establecimientos'");
         if (curtmp.getCount() > 0 ) {
             getDataSql();
             estabAdapter = new EstablecimientosAdapter(this);
@@ -58,20 +57,20 @@ public class MainActivity extends ListActivity{
         SQLConnection.database = pref.getString("pref_sql_database","");
     }
 
-    private class ImportSqlData extends AsyncTask<Integer, Void, String>{
-        @Override
-        protected String doInBackground(Integer... params) {
-            adapterDB.openDB();
-            adapterDB.importRecords();
-            return "Datos importados";
-        }
-        @Override
-        protected void onPostExecute(String result){
-            Toast.makeText(getApplicationContext(),result, Toast.LENGTH_SHORT).show();
-            getDataSql();
-            setListAdapter(estabAdapter);
-        }
-    }
+//    private class ImportSqlData extends AsyncTask<Integer, Void, String>{
+//        @Override
+//        protected String doInBackground(Integer... params) {
+//            adapterDB.openDB();
+//            adapterDB.importRecords();
+//            return "Datos importados";
+//        }
+//        @Override
+//        protected void onPostExecute(String result){
+//            Toast.makeText(getApplicationContext(),result, Toast.LENGTH_SHORT).show();
+//            getDataSql();
+//            setListAdapter(estabAdapter);
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,7 +106,7 @@ public class MainActivity extends ListActivity{
         return super.onOptionsItemSelected(item);
     }
     private void getDataSql(){
-        cur = DbAdapter.getCursorBuscador("","Establecimientos","");
+        cur = dbAdapter.getCursorBuscador("","Establecimientos","");
     }
 
     public static class EstablecimientosAdapter extends BaseAdapter {

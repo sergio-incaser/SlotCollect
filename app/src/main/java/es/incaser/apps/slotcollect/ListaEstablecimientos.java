@@ -18,7 +18,7 @@ import es.incaser.apps.slotcollect.R;
  * Created by sergio on 23/09/14.
  */
 public class ListaEstablecimientos extends ListActivity {
-    private static Cursor cur = null;
+    private static Cursor cursorEstablecimientos = null;
     private static EstablecimientosAdapter estabAdapter;
 
     @Override
@@ -34,7 +34,7 @@ public class ListaEstablecimientos extends ListActivity {
     }
 
     private void getDataSql(){
-        cur = DbAdapter.getCursorBuscador("","Establecimientos","");
+        cursorEstablecimientos = new DbAdapter(this).getCursorBuscador("","Establecimientos","");
     }
 
     public static class EstablecimientosAdapter extends BaseAdapter{
@@ -45,19 +45,19 @@ public class ListaEstablecimientos extends ListActivity {
 
         @Override
         public int getCount() {
-            return cur.getCount();
+            return cursorEstablecimientos.getCount();
         }
 
         @Override
         public Object getItem(int i) {
-            cur.moveToPosition(i);
-            return cur;
+            cursorEstablecimientos.moveToPosition(i);
+            return cursorEstablecimientos;
         }
 
         @Override
         public long getItemId(int i) {
-            cur.moveToPosition(i);
-            return cur.getInt(i);
+            cursorEstablecimientos.moveToPosition(i);
+            return cursorEstablecimientos.getInt(i);
         }
 
         @Override
@@ -70,7 +70,7 @@ public class ListaEstablecimientos extends ListActivity {
             } else {
                 myView = convertView;
             }
-            cur.moveToPosition(position);
+            cursorEstablecimientos.moveToPosition(position);
 
             TextView txtCodigoEstablecimiento = (TextView) myView.findViewById(R.id.codigoEstablecimiento);
             TextView txtEstablecimiento = (TextView) myView.findViewById(R.id.Establecimiento);

@@ -26,8 +26,10 @@ public class SQLConnection {
 
     private static Connection connection = null;
 
-    private SQLConnection(){}
-
+    public SQLConnection(){
+        if(connection == null)
+            connection = connectSQL();
+    }
 
     public static SQLConnection getInstance(){
         if (instance == null)
@@ -91,5 +93,14 @@ public class SQLConnection {
         return rs;
     }
 
-    
+    public ResultSet getResultset(String query){
+        ResultSet rs = null;
+        try {
+            Statement statement = connection.createStatement();
+            rs = statement.executeQuery(query);
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
+    }
 }

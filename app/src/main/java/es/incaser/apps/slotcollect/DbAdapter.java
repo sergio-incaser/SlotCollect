@@ -39,9 +39,9 @@ public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
 	private static final int DATABASE_VER = 10;
     private static Connection conSQL;
-    public static SQLiteDatabase db;
+    private SQLiteDatabase db;
     private static Context ctx;
-    private static String[][] QUERY_LIST = {
+    public static String[][] QUERY_LIST = {
             //Tablas a importar
             {"Establecimientos","SELECT DISTINCT \n" +
                     "                     IdDelegacion, CodigoCanal, INC_CodigoEstablecimiento, RazonSocial, INC_CodigoRecaudador, INC_ZonaRecaudacion, Domicilio, CodigoPostal, Municipio, Telefono, Telefono2, \n" +
@@ -54,24 +54,26 @@ public class DbAdapter extends SQLiteOpenHelper{
             //Fin Tablas a importar
             {"Recaudaciones","SELECT TOP 1 * FROM INC_RecaudacionesPDA"},
     };
-    private static int tablesToImport = 4; // Modificar en caso de añadir mas tablas
+    public static int tablesToImport = 4; // Modificar en caso de añadir mas tablas
+    public static int tablesToExport = 4; // Exportar tablas mayores a este indice
+    private SQLConnection sqlConnection;
 
 	public DbAdapter(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VER);
 		ctx = context;
+        openDB();
 	}
+
+    @Override
+    protected void finalize() throws Throwable {
+        closeDB();
+        super.finalize();
+    }
 
     private class GetDBConnection extends AsyncTask<Integer, Void, String>{
         @Override
         protected String doInBackground(Integer... params) {
-            conSQL = SQLConnection.getInstance().getConnection();
-            Statement statement = null;
-            try {
-                statement = conSQL.createStatement();
-            } catch (java.sql.SQLException e) {
-                e.printStackTrace();
-            }
-
+            sqlConnection = SQLConnection.getInstance();
             ResultSet rs;
             ResultSetMetaData rsmd;
             String colname;
@@ -82,7 +84,8 @@ public class DbAdapter extends SQLiteOpenHelper{
             for (String[] query : QUERY_LIST) {
                 columnsSql = "";
                 try {
-                    rs = statement.executeQuery(query[1]);
+//                    rs = statement.executeQuery(query[1]);
+                    rs = sqlConnection.getResultset(query[1]);
                     rsmd = rs.getMetaData();
                     for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                         colname = rsmd.getColumnName(i);
@@ -139,87 +142,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 		}
 	}
 
-
-    public int importRecords() {
-        conSQL = SQLConnection.getInstance().getConnection();
-        Statement statement = null;
-        ResultSet rs;
-        try {
-            statement = conSQL.createStatement();
-            for (int i = 0; i < tablesToImport; i++){
-                rs = statement.executeQuery(String.valueOf(QUERY_LIST[i][1]));
-                copyRecords(rs, QUERY_LIST[i][0]);
-//                while (rs.next()){
-//                    copyRecords(rs, QUERY_LIST[i][0]);
-//                }
-            }
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-
-
-
-        return 0;
-    }
-
-
-    public static int copyRecords(ResultSet source, String target) {
-        ResultSetMetaData RSmd;
-        ContentValues values = new ContentValues();
-        ArrayList<String> columnList = new ArrayList();
-        try {
-            RSmd = source.getMetaData();
-            String[] args = new String[]{target};
-            //Cursor cur = db.rawQuery("SELECT * FROM Establecimientos",new String[]{});
-            Cursor cur = db.rawQuery("SELECT * FROM " + target + " LIMIT 1 ", null);
-            String[] localColumns = cur.getColumnNames();
-            for (int i = 1; i <= RSmd.getColumnCount(); i++) {
-                if (Arrays.asList(localColumns).contains(RSmd.getColumnName(i))) {
-                    columnList.add(RSmd.getColumnName(i));
-                }
-            }
-            while(source.next()){
-                for (String col : columnList) {
-                //for (int i = 1; i <= RSmd.getColumnCount(); i++) {
-                    values.put(col, source.getString(col));
-                }
-                db.insert(target, "",values);
-            }
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public static int copyRecords(Cursor source, String tableSource, ResultSet target) {
-        ResultSetMetaData RSmd;
-        ContentValues values = new ContentValues();
-        List<String> columnList = null;
-        Integer colInt;
-        try {
-            RSmd = target.getMetaData();
-            String[] args = {tableSource};
-            String[] localColumns = db.rawQuery("SELECT * FROM ? LIMIT 1 ", args).getColumnNames();
-            for (String colname : localColumns) {
-                if (target.findColumn(colname) > 0){
-                    columnList.add(colname);
-                }
-            }
-            while(source.moveToNext()){
-                target.moveToInsertRow();
-                for (String col : columnList) {
-                    colInt = source.getColumnIndex(col);
-                    target.updateString(col, source.getString(colInt));
-                }
-                target.insertRow();
-            }
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-    }
-    public static Cursor getCursorBuscador(String textSearch, String tableSearch, String order){
+    public Cursor getCursorBuscador(String textSearch, String tableSearch, String order){
         textSearch = textSearch.replace("'", "''");
         String[] fields = new String[]{"*" ,"id  AS _id", "RazonSocial AS item"};
         String where = "";
@@ -238,4 +161,28 @@ public class DbAdapter extends SQLiteOpenHelper{
         }
         return db.query(table, fields, where, selectionArgs, "", "", orderBy);
     }
+
+    public Cursor getTable(String tableName){
+        return db.query(tableName,new String[]{"*"},"",new String[]{},"","","");
+    }
+    public Cursor getTable(String tableName, Integer limit){
+        return db.query(tableName,new String[]{"*"},"",new String[]{},"","","",limit.toString());
+    }
+    public Cursor getCursor(String query){
+        return db.rawQuery(query, new String[]{});
+    }
+
+    public int recordCount(String tableName){
+        Cursor cursor = db.rawQuery("SELECT count() FROM " + tableName, new String[]{});
+        if (cursor != null) {
+            return cursor.getCount();
+        } else{
+            return 0;
+        }
+    }
+
+    public long insertRecord(String tableName, ContentValues values){
+        return db.insert(tableName, null, values);
+    };
+
 }
