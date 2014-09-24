@@ -84,6 +84,7 @@ public class SQLConnection {
         Statement statement = null;
         ResultSet rs = null;
         try {
+            statement.setQueryTimeout(180);
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
             rs = statement.executeQuery(sql);
@@ -97,6 +98,7 @@ public class SQLConnection {
         ResultSet rs = null;
         try {
             Statement statement = connection.createStatement();
+            statement.setQueryTimeout(180);
             rs = statement.executeQuery(query);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();

@@ -34,6 +34,7 @@ public class SyncData {
         @Override
         protected String doInBackground(Integer... params) {
             conSQL = new SQLConnection();
+            exportRecords();
             importRecords();
             return "Datos Sincronizados";
         }
@@ -56,10 +57,10 @@ public class SyncData {
     public int exportRecords(){
         Cursor cursor;
         ResultSet resultSet = null;
-        for (int i = DbAdapter.tablesToExport; i < DbAdapter.QUERY_LIST.length; i++){
-            cursor = dbAdapter.getTable(DbAdapter.QUERY_LIST[i][0]);
-            resultSet = conSQL.getResultset("Select * FROM "+ DbAdapter.QUERY_LIST[i][0]);
-            copyRecords(cursor, DbAdapter.QUERY_LIST[i][0], resultSet);
+        for (int i = DbAdapter.tablesToExport; i < DbAdapter.QUERY_LIST.length + 1; i++){
+            cursor = dbAdapter.getTable(DbAdapter.QUERY_LIST[i-1][0]);
+            resultSet = conSQL.getResultset("Select * FROM "+ DbAdapter.QUERY_LIST[i-1][0]);
+            copyRecords(cursor, DbAdapter.QUERY_LIST[i-1][0], resultSet);
         }
         return 0;
     }

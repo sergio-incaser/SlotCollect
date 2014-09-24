@@ -37,25 +37,21 @@ import java.util.Random;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 10;
+	private static final int DATABASE_VER = 15;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
     public static String[][] QUERY_LIST = {
             //Tablas a importar
-            {"Establecimientos","SELECT DISTINCT \n" +
-                    "                     IdDelegacion, CodigoCanal, INC_CodigoEstablecimiento, RazonSocial, INC_CodigoRecaudador, INC_ZonaRecaudacion, Domicilio, CodigoPostal, Municipio, Telefono, Telefono2, \n" +
-                    "                      Email, PersonaContacto\n" +
-                    "FROM         Vis_INC_UltimasRecaudaciones\n" +
-                    "WHERE INC_CodigoEstablecimiento>'100000'"},
-            {"Maquinas","SELECT TOP 1 * FROM VIS_INC_MaquinasInstaladas"},
-            {"Prestamos","SELECT TOP 1 * FROM INC_PrestamosEstablecimiento"},
-            {"UltimaRecaudacion","SELECT TOP 1 * FROM VIS_INC_UltimaRecaudacion"},
+            {"Establecimientos","SELECT * FROM VIS_INC_EstablecARecaudar"},
+            {"Maquinas","SELECT * FROM VIS_INC_MaquinasInstaladas"},
+            {"Prestamos","SELECT * FROM INC_PrestamosEstablecimiento"},
+            {"UltimaRecaudacion","SELECT * FROM VIS_INC_UltimaRecaudacion"},
             //Fin Tablas a importar
-            {"Recaudaciones","SELECT TOP 1 * FROM INC_RecaudacionesPDA"},
+            {"INC_RecaudacionesPDA","SELECT * FROM INC_RecaudacionesPDA"},
     };
     public static int tablesToImport = 4; // Modificar en caso de añadir mas tablas
-    public static int tablesToExport = 4; // Exportar tablas mayores a este indice
+    public static int tablesToExport = 5; // Exportar tablas a partir de este indice
     private SQLConnection sqlConnection;
 
 	public DbAdapter(Context context) {
@@ -66,7 +62,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 
     @Override
     protected void finalize() throws Throwable {
-        closeDB();
+        //closeDB();
         super.finalize();
     }
 
@@ -84,8 +80,7 @@ public class DbAdapter extends SQLiteOpenHelper{
             for (String[] query : QUERY_LIST) {
                 columnsSql = "";
                 try {
-//                    rs = statement.executeQuery(query[1]);
-                    rs = sqlConnection.getResultset(query[1]);
+                    rs = sqlConnection.getResultset(query[1] + " WHERE 1=2");
                     rsmd = rs.getMetaData();
                     for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                         colname = rsmd.getColumnName(i);
