@@ -37,7 +37,7 @@ import java.util.Random;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 15;
+	private static final int DATABASE_VER = 16;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;

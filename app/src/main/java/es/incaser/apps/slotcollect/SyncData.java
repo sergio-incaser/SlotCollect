@@ -35,7 +35,7 @@ public class SyncData {
         protected String doInBackground(Integer... params) {
             conSQL = new SQLConnection();
             exportRecords();
-            importRecords();
+            //importRecords();
             return "Datos Sincronizados";
         }
         @Override
@@ -60,7 +60,9 @@ public class SyncData {
         for (int i = DbAdapter.tablesToExport; i < DbAdapter.QUERY_LIST.length + 1; i++){
             cursor = dbAdapter.getTable(DbAdapter.QUERY_LIST[i-1][0]);
             resultSet = conSQL.getResultset("Select * FROM "+ DbAdapter.QUERY_LIST[i-1][0]);
-            copyRecords(cursor, DbAdapter.QUERY_LIST[i-1][0], resultSet);
+            if (resultSet != null) {
+                copyRecords(cursor, DbAdapter.QUERY_LIST[i - 1][0], resultSet);
+            }
         }
         return 0;
     }
@@ -101,6 +103,7 @@ public class SyncData {
             String[] args = {tableSource};
             String[] localColumns = dbAdapter.getTable(tableSource, 1).getColumnNames();
             for (String colname : localColumns) {
+
                 if (target.findColumn(colname) > 0){
                     columnList.add(colname);
                 }
