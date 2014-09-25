@@ -1,43 +1,23 @@
 package es.incaser.apps.slotcollect;
 
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.provider.SyncStateContract;
-import android.text.format.DateFormat;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
-import net.sourceforge.jtds.jdbc.ColInfo;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+
 
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 16;
+	private static final int DATABASE_VER = 2;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -69,7 +49,11 @@ public class DbAdapter extends SQLiteOpenHelper{
     private class GetDBConnection extends AsyncTask<Integer, Void, String>{
         @Override
         protected String doInBackground(Integer... params) {
-            sqlConnection = SQLConnection.getInstance();
+            sqlConnection = new SQLConnection();
+            if (SQLConnection.connection == null) {
+                db.setVersion(db.getVersion()-1);
+                return "errorSQLconnection";
+            }
             ResultSet rs;
             ResultSetMetaData rsmd;
             String colname;
@@ -93,13 +77,15 @@ public class DbAdapter extends SQLiteOpenHelper{
                     e.printStackTrace();
                 }
             }
-            return "OK";
+            return "Base de datos actualizada";
         }
 
         @Override
         protected void onPostExecute(String result){
+            if (result == "errorSQLconnection"){
+                result = ctx.getString(R.string.errorSQLconnection);
+            }
             Toast.makeText(ctx,result, Toast.LENGTH_LONG).show();
-
         }
     }
 
@@ -114,7 +100,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO Auto-generated method stub
-        Log.w("SlotCollet", "Actualizando base de datos" + newVersion);
+        Log.w("SlotCollet", "Actualizando base de datos version:" + newVersion);
         for (String[] query : QUERY_LIST) {
             db.execSQL("DROP TABLE IF EXISTS " + query[0]);
         }

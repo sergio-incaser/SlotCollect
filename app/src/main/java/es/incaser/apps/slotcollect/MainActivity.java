@@ -25,6 +25,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static android.provider.Settings.Global.getString;
+
 
 public class MainActivity extends ListActivity{
     private static Cursor cur = null;
@@ -36,7 +38,17 @@ public class MainActivity extends ListActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         ReadPreferences(this);
+        if (SQLConnection.host != ""){
+            bindData();
+        }
+    }
+    public void bindData(){
         dbAdapter = new DbAdapter(this);
         Cursor curtmp = dbAdapter.getCursor("Select * from sqlite_master WHERE name = 'Establecimientos'");
         if (curtmp.getCount() > 0 ) {

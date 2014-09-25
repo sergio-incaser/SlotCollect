@@ -18,5 +18,7 @@
     <string name="title_activity_establecimientos_logic">Establecimientos Logic</string>
     <string name="action_filtrar">Filtrar</string>
     <string name="action_sync_data">Sincronizar</string>
+    <string name="connectionSQLerror">xxx</string>
+    <string name="errorSQLconnection">Falló la conexión con el servidor SQL</string>
 
 </resources>

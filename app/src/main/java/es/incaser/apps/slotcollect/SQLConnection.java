@@ -24,7 +24,8 @@ public class SQLConnection {
     public static String password;
     public static String database;
 
-    private static Connection connection = null;
+    public static Connection connection = null;
+    public static Statement statement;
 
     public SQLConnection(){
         if(connection == null)
@@ -71,6 +72,7 @@ public class SQLConnection {
         try {
             String uri = "jdbc:jtds:sqlserver://" + host + ":"+ port +"/"+ database +";";
             conn = DriverManager.getConnection(uri,user,password);
+            statement = conn.createStatement();
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -81,12 +83,10 @@ public class SQLConnection {
         if(connection == null)
             connection = connectSQL();
         String sql = "Select INC_CodigoEstablecimiento as id, * From INC_Establecimientos";
-        Statement statement = null;
         ResultSet rs = null;
         try {
-            statement.setQueryTimeout(180);
-            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
+//            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+//                    ResultSet.CONCUR_READ_ONLY);
             rs = statement.executeQuery(sql);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -97,8 +97,8 @@ public class SQLConnection {
     public ResultSet getResultset(String query){
         ResultSet rs = null;
         try {
-            Statement statement = connection.createStatement();
-            statement.setQueryTimeout(180);
+//            statement = connection.createStatement();
+//            statement.setQueryTimeout(180);
             rs = statement.executeQuery(query);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();

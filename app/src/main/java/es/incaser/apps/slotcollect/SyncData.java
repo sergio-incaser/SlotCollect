@@ -2,6 +2,7 @@ package es.incaser.apps.slotcollect;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -34,13 +35,20 @@ public class SyncData {
         @Override
         protected String doInBackground(Integer... params) {
             conSQL = new SQLConnection();
+            if (SQLConnection.connection == null) {
+                return "errorSQLconnection";
+            }
             exportRecords();
-            //importRecords();
+            importRecords();
             return "Datos Sincronizados";
         }
         @Override
         protected void onPostExecute(String result){
+            if (result == "errorSQLconnection"){
+                result = myContext.getString(R.string.errorSQLconnection);
+            }
             Toast.makeText(myContext, result, Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -96,16 +104,15 @@ public class SyncData {
     public int copyRecords(Cursor source, String tableSource, ResultSet target) {
         ResultSetMetaData RSmd;
         ContentValues values = new ContentValues();
-        List<String> columnList = null;
+        List<String> columnList = new ArrayList();
         Integer colInt;
         try {
             RSmd = target.getMetaData();
             String[] args = {tableSource};
-            String[] localColumns = dbAdapter.getTable(tableSource, 1).getColumnNames();
-            for (String colname : localColumns) {
-
-                if (target.findColumn(colname) > 0){
-                    columnList.add(colname);
+            String[] localColumns = source.getColumnNames();
+            for (int i = 1; i <= RSmd.getColumnCount(); i++) {
+                if (Arrays.asList(localColumns).contains(RSmd.getColumnName(i))) {
+                    columnList.add(RSmd.getColumnName(i));
                 }
             }
             while(source.moveToNext()){
