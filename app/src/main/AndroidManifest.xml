@@ -24,6 +24,14 @@
             android:name=".EstablecimientosLogic"
             android:label="@string/title_activity_establecimientos_logic" >
         </activity>
+        <activity
+            android:name=".DetallesEstablecimiento"
+            android:label="@string/title_activity_detalles_establecimiento" >
+        </activity>
+        <activity
+            android:name=".RecaudacionMaquina"
+            android:label="@string/title_activity_recaudacion_maquina" >
+        </activity>
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

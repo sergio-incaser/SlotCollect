@@ -42,7 +42,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 
     @Override
     protected void finalize() throws Throwable {
-        //closeDB();
+        closeDB();
         super.finalize();
     }
 
@@ -149,6 +149,13 @@ public class DbAdapter extends SQLiteOpenHelper{
     public Cursor getTable(String tableName, Integer limit){
         return db.query(tableName,new String[]{"*"},"",new String[]{},"","","",limit.toString());
     }
+    public Cursor getEstablecimiento(String id){
+        return db.query("Establecimientos",new String[]{"*"},"id=?",new String[]{id},"","","");
+    }
+    public Cursor getMaquinasEstablecimiento(String codigoEstablecimiento){
+        return db.query("Maquinas",new String[]{"*"},"INC_CodigoEstablecimiento=?",new String[]{codigoEstablecimiento},"","","");
+    }
+
     public Cursor getCursor(String query){
         return db.rawQuery(query, new String[]{});
     }

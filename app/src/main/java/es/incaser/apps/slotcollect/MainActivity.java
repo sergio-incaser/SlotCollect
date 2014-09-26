@@ -168,15 +168,12 @@ public class MainActivity extends ListActivity{
     }
 
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        //Intent myIntent = new Intent(this,input_reading.class);
+        Intent myIntent = new Intent(this,DetallesEstablecimiento.class);
 
-        //cur.moveToPosition(position);
-        //myIntent.putExtra("last_value", cur.getString(cur.getColumnIndex("last_value")));
-        //myIntent.putExtra("name", cur.getString(cur.getColumnIndex("name")));
-        //myIntent.putExtra("id", cur.getInt(cur.getColumnIndex("id")));
-        //startActivity(myIntent);
-        Toast.makeText(getApplicationContext(),"Vamos a Recaudar este establecimiento", Toast.LENGTH_LONG).show();
-
+        cur.moveToPosition(position);
+        myIntent.putExtra("id", cur.getString(cur.getColumnIndex("id")));
+        startActivity(myIntent);
+        //Toast.makeText(getApplicationContext(),"Vamos a Recaudar este establecimiento", Toast.LENGTH_LONG).show();
     }
 
 }

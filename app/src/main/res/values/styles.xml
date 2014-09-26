@@ -5,4 +5,26 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="EtiquetaContadores">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#054657</item>
+        <item name="android:layout_weight">0.33</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+    <style name="TxtContadorAnterior">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.33</item>
+        <item name="android:inputType">number</item>
+        <item name="android:numeric">integer</item>
+    </style>
+    <style name="TxtContadorActual">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.33</item>
+        <item name="android:inputType">number</item>
+        <item name="android:numeric">integer</item>
+    </style>
+
 </resources>
