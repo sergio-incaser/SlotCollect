@@ -22,5 +22,6 @@
     <string name="errorSQLconnection">Falló la conexión con el servidor SQL</string>
     <string name="title_activity_detalles_establecimiento">Detalles Establecimiento</string>
     <string name="title_activity_recaudacion_maquina">Recaudacion Maquina</string>
+    <string name="title_activity_Screen_Slide_Recaudacion">Recaudacion</string>
 
 </resources>

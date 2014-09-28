@@ -11,6 +11,23 @@ import android.view.ViewGroup;
  * Created by sergio on 28/09/14.
  */
 public class FragmentContadoresMaquina extends Fragment {
+    private final static String KEY_REG_TEXT = "texto";
+
+    public static FragmentContadoresMaquina newInstance(String text) {
+        FragmentContadoresMaquina frag = new FragmentContadoresMaquina();
+
+        Bundle args = frag.getArguments();
+        if(args == null)
+            args = new Bundle();
+
+        args.putString(KEY_REG_TEXT, text);
+
+        frag.setArguments(args);
+
+        return frag;
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);

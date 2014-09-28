@@ -2,6 +2,7 @@ package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,10 +36,11 @@ public class DetallesEstablecimiento extends Activity {
 
         // Evento para cuando doy click en algun elemento de la lista ( ListView )
         lvMaquinas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,long id) {
-                // TODO Lanzar activity paa recaudar
+            // TODO Lanzar activity paa recaudar
+            Intent myIntent = new Intent(arg1.getContext(),ScreenSlidePagerRecaudacion.class);
+            startActivity(myIntent);
             }
         });
 

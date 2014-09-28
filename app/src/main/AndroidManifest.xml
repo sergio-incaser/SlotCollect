@@ -32,6 +32,11 @@
             android:name=".RecaudacionMaquina"
             android:label="@string/title_activity_recaudacion_maquina" >
         </activity>
+        <activity
+            android:name=".ScreenSlidePagerRecaudacion"
+            android:label="@string/title_activity_Screen_Slide_Recaudacion" >
+        </activity>
+
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

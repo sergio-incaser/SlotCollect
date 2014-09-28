@@ -11,11 +11,27 @@ import android.view.ViewGroup;
  * Created by sergio on 28/09/14.
  */
 public class FragmentImportesMaquina extends Fragment {
+    private final static String KEY_REG_TEXT = "texto";
+
+    public static FragmentImportesMaquina newInstance(String text) {
+        FragmentImportesMaquina frag = new FragmentImportesMaquina();
+
+        Bundle args = frag.getArguments();
+        if (args == null)
+            args = new Bundle();
+
+        args.putString(KEY_REG_TEXT, text);
+
+        frag.setArguments(args);
+
+        return frag;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
         // Inflamos la Vista que se debe mostrar en pantalla.
-        View rootView = inflater.inflate(R.layout.fragment_slide_page_contadores, container,
+        View rootView = inflater.inflate(R.layout.fragment_slide_page_importes, container,
                 false);
         // Creamos instancia del TextView.
         //TextView tvText =  (TextView)rootView.findViewById(R.id.tvText);
