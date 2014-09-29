@@ -34,7 +34,7 @@ public class FragmentImportesMaquina extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_slide_page_importes, container,
                 false);
         // Creamos instancia del TextView.
-        //TextView tvText =  (TextView)rootView.findViewById(R.id.tvText);
+        //TextView tvEnt10 =  (TextView) rootView.findViewById(R.id.tv);
         // Recogemos el texto que guardamos al crear el Fragment.
         //String text = getArguments().getString(KEY_REG_TEXT);
         // Mostramos el texto en el TextView.

@@ -2,7 +2,9 @@ package es.incaser.apps.slotcollect;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,23 +26,43 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
     private TabsAdapter tAdapter;
     private ActionBar aBar;
     private static int NumPages=3;
+    public static  DbAdapter dbAdapter;
+    public static Cursor curMaquina;
+    public static Cursor curRecaudacion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.slide_screen_recaudacion);
+        Bundle bundle = getIntent().getExtras();
+        String idMaquina = bundle.getString("id");
+        dbAdapter = new DbAdapter(this);
+        curMaquina = dbAdapter.getMaquina(idMaquina);
+        curMaquina.moveToFirst();
+
+        String codigoEmpresa = dbAdapter.getColumnData(curMaquina, "CodigoEmpresa");
+        String codigoMaquina = dbAdapter.getColumnData(curMaquina, "INC_CodigoMaquina");
+        curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoMaquina);
+
+        if (curRecaudacion.getCount() == 0){
+            ContentValues values = new ContentValues();
+            values.put("CodigoEmpresa", codigoEmpresa);
+            values.put("INC_CodigoMaquina", codigoMaquina);
+            values.put("INC_CodigoEstablecimiento", dbAdapter.getColumnData(curMaquina,"INC_CodigoEstablecimiento"));
+            dbAdapter.insertRecord("INC_RecaudacionesPDA",values);
+            curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoMaquina);
+        }
+        curRecaudacion.moveToFirst();
 
         vPager = (ViewPager)findViewById(R.id.recaudacion_pager);
         tAdapter = new TabsAdapter(getSupportFragmentManager());
         aBar = getActionBar();
-
-        vPager.setAdapter(tAdapter);
         aBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
         for (String title : getResources().getStringArray(R.array.tabs_recaudacion)) {
             aBar.addTab(aBar.newTab().setText(title).setTabListener(this));
         }
 
+        vPager.setAdapter(tAdapter);
         vPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
@@ -86,7 +108,8 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
                 //aBar.selectTab(aBar.getTabAt(index));
                 switch(index) {
                     case 0:
-                        return FragmentContadoresMaquina.newInstance("Texto de la pestaña nº 1.");
+                        //return FragmentContadoresMaquina.newInstance("Texto de la pestaña nº 1.", curMaquina);
+                        return new FragmentContadoresMaquina();
                     case 1:
                         return FragmentImportesMaquina.newInstance("Texto de la pestaña nº 2.");
                     case 2:

@@ -40,6 +40,7 @@ public class DetallesEstablecimiento extends Activity {
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,long id) {
             // TODO Lanzar activity paa recaudar
             Intent myIntent = new Intent(arg1.getContext(),ScreenSlidePagerRecaudacion.class);
+            myIntent.putExtra("id", Long.toString(id));
             startActivity(myIntent);
             }
         });

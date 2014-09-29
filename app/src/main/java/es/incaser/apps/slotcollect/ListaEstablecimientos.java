@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import es.incaser.apps.slotcollect.DbAdapter;
-import es.incaser.apps.slotcollect.R;
 
 /**
  * Created by sergio on 23/09/14.

@@ -155,6 +155,13 @@ public class DbAdapter extends SQLiteOpenHelper{
     public Cursor getMaquinasEstablecimiento(String codigoEstablecimiento){
         return db.query("Maquinas",new String[]{"*"},"INC_CodigoEstablecimiento=?",new String[]{codigoEstablecimiento},"","","");
     }
+    public Cursor getMaquina(String id){
+        return db.query("Maquinas",new String[]{"*"},"id=?",new String[]{id},"","","");
+    }
+    public Cursor getRecaudacion(String codigoEmpresa, String codigoMaquina){
+        return db.query("INC_RecaudacionesPDA",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoMaquina=?",
+                new String[]{codigoEmpresa, codigoMaquina},"","","");
+    }
 
     public Cursor getCursor(String query){
         return db.rawQuery(query, new String[]{});
@@ -173,4 +180,11 @@ public class DbAdapter extends SQLiteOpenHelper{
         return db.insert(tableName, null, values);
     };
 
+    public int updateRecord(String table, ContentValues values, String whereClause, String[] whereArgs){
+        return db.update(table, values, whereClause, whereArgs);
+    };
+
+    public String getColumnData(Cursor cur, String column){
+        return cur.getString(cur.getColumnIndex(column));
+    };
 }
