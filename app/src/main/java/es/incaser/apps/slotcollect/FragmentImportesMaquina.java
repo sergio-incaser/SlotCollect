@@ -23,7 +23,7 @@ public class FragmentImportesMaquina extends Fragment {
         args.putString(KEY_REG_TEXT, text);
 
         frag.setArguments(args);
-
+        String a ="0";
         return frag;
     }
 
