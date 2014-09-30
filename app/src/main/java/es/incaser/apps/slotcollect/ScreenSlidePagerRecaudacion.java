@@ -111,7 +111,7 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
                         //return FragmentContadoresMaquina.newInstance("Texto de la pestaña nº 1.", curMaquina);
                         return new FragmentContadoresMaquina();
                     case 1:
-                        return FragmentImportesMaquina.newInstance("Texto de la pestaña nº 2.");
+                        return new FragmentImportesMaquina();
                     case 2:
                         return new FragmentArqueoMaquina();
                 }

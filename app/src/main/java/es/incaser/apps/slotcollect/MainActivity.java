@@ -33,11 +33,9 @@ public class MainActivity extends ListActivity{
     private static EstablecimientosAdapter estabAdapter;
     DbAdapter dbAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
     }
 
     @Override
@@ -68,21 +66,6 @@ public class MainActivity extends ListActivity{
         SQLConnection.password = pref.getString("pref_sql_password","");
         SQLConnection.database = pref.getString("pref_sql_database","");
     }
-
-//    private class ImportSqlData extends AsyncTask<Integer, Void, String>{
-//        @Override
-//        protected String doInBackground(Integer... params) {
-//            adapterDB.openDB();
-//            adapterDB.importRecords();
-//            return "Datos importados";
-//        }
-//        @Override
-//        protected void onPostExecute(String result){
-//            Toast.makeText(getApplicationContext(),result, Toast.LENGTH_SHORT).show();
-//            getDataSql();
-//            setListAdapter(estabAdapter);
-//        }
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -158,11 +141,17 @@ public class MainActivity extends ListActivity{
             if ((cur.getColumnIndex("INC_CodigoEstablecimiento") == 53) || (cur.getColumnIndex("RazonSocial") == 53)){
                 int a = 5;
             }
-            TextView txtCodigoEstablecimiento = (TextView) myView.findViewById(R.id.codigoEstablecimiento);
             TextView txtEstablecimiento = (TextView) myView.findViewById(R.id.Establecimiento);
+            TextView txtCodigoEstablecimiento = (TextView) myView.findViewById(R.id.codigoEstablecimiento);
+            TextView txtDireccion = (TextView) myView.findViewById(R.id.domicilioEstablecimiento);
+            TextView txtMunicipio = (TextView) myView.findViewById(R.id.municipioEstablecimiento);
+            TextView txtTelefono = (TextView) myView.findViewById(R.id.telefonoEstablecimiento);
 
-            txtCodigoEstablecimiento.setText(cur.getString(cur.getColumnIndex("INC_CodigoEstablecimiento")));
-            txtEstablecimiento.setText(cur.getString(cur.getColumnIndex("RazonSocial")));
+            txtEstablecimiento.setText(getEstablecimiento("RazonSocial"));
+            txtCodigoEstablecimiento.setText("("+getEstablecimiento("INC_CodigoEstablecimiento")+")");
+            txtDireccion.setText(getEstablecimiento("Domicilio"));
+            txtMunicipio.setText(getEstablecimiento("Municipio"));
+            txtTelefono.setText(getEstablecimiento("Telefono"));
             return myView;
         }
     }
@@ -173,7 +162,8 @@ public class MainActivity extends ListActivity{
         cur.moveToPosition(position);
         myIntent.putExtra("id", cur.getString(cur.getColumnIndex("id")));
         startActivity(myIntent);
-        //Toast.makeText(getApplicationContext(),"Vamos a Recaudar este establecimiento", Toast.LENGTH_LONG).show();
     }
-
+    private static String getEstablecimiento(String column){
+        return cur.getString(cur.getColumnIndex(column));
+    }
 }

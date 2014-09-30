@@ -2,10 +2,8 @@
 <resources>
 
     <string name="app_name">Slot Collect</string>
-    <string name="title_activity_main">Recaudaciones</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_main">Establecimientos</string>
     <string name="action_settings">Configuración</string>
-    <string name="title_activity_my">MyActivity</string>
     <string name="pref_sql_host">Servidor</string>
     <string name="pref_sql_host_summ">Dirección del servidor</string>
     <string name="pref_sql_port">Puerto</string>

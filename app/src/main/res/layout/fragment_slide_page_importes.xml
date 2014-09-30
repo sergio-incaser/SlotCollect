@@ -18,17 +18,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
-                style="@style/EtiquetaContadores"
-                android:visibility="invisible"
-                android:text="xxxxxxx"/>
-
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Anterior"/>
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Actual" />
-
+                style="@style/EtiquetaSeparador"
+                android:text="Importes"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,16 +27,11 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/EtiquetaContadores"
-                android:text="Ent 0,10€"/>
+                android:text="Bruto"/>
             <EditText
-                android:id="@+id/txtEnt010Ant"
-                style="@style/TxtContadorAnterior"
-                android:text="4564897" />
-            <EditText
-                android:id="@+id/txtEnt010"
-                style="@style/TxtContadorActual"
+                android:id="@+id/txtBruto"
+                style="@style/TxtImportes"
                 android:text="4564897"/>
-
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,16 +39,11 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/EtiquetaContadores"
-                android:text="Sal 0,10€"/>
+                android:text="Fallos"/>
             <EditText
-                android:id="@+id/txtSal010Ant"
-                style="@style/TxtContadorAnterior"
-                android:text="4564897" />
-            <EditText
-                android:id="@+id/txtSal010"
-                style="@style/TxtContadorActual"
+                android:id="@+id/txtFallos"
+                style="@style/TxtImportes"
                 android:text="4564897"/>
-
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -70,16 +51,11 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/EtiquetaContadores"
-                android:text="Ent 0,20€"/>
+                android:text="Rec. carga empresa"/>
             <EditText
-                android:id="@+id/txtEnt020Ant"
-                style="@style/TxtContadorAnterior"
+                android:id="@+id/txtRecCargaEmpresa"
+                style="@style/TxtImportes"
                 android:text="4564897" />
-            <EditText
-                android:id="@+id/txtEnt020"
-                style="@style/TxtContadorActual"
-                android:text="4564897"/>
-
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -87,16 +63,19 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/EtiquetaContadores"
-                android:text="Sal 0,20€"/>
+                android:text="Rec. carga establecimiento"/>
             <EditText
-                android:id="@+id/txtSal020Ant"
-                style="@style/TxtContadorAnterior"
-                android:text="4564897" />
-            <EditText
-                android:id="@+id/txtSal020"
-                style="@style/TxtContadorActual"
+                android:id="@+id/txtRecCargaEstablecimiento"
+                style="@style/TxtImportes"
                 android:text="4564897"/>
-
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/EtiquetaSeparador"
+                android:text="Reparto"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,16 +83,11 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/EtiquetaContadores"
-                android:text="Sal 0,50€"/>
+                android:text="Importe recaudacion"/>
             <EditText
-                android:id="@+id/txtSal050Ant"
-                style="@style/TxtContadorAnterior"
-                android:text="4564897" />
-            <EditText
-                android:id="@+id/txtSal050"
-                style="@style/TxtContadorActual"
+                android:id="@+id/txtImporteRecaudacion"
+                style="@style/TxtImportesBloq"
                 android:text="4564897"/>
-
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -121,16 +95,11 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/EtiquetaContadores"
-                android:text="Ent 1,00€"/>
+                android:text="Importe varios"/>
             <EditText
-                android:id="@+id/txtEnt100Ant"
-                style="@style/TxtContadorAnterior"
-                android:text="4564897" />
-            <EditText
-                android:id="@+id/txtEnt100"
-                style="@style/TxtContadorActual"
+                android:id="@+id/txtImporteVarios"
+                style="@style/TxtImportes"
                 android:text="4564897"/>
-
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -138,16 +107,27 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/EtiquetaContadores"
-                android:text="Sal 1,00€"/>
+                android:text="Importe retencion"/>
             <EditText
-                android:id="@+id/txtSal100Ant"
-                style="@style/TxtContadorAnterior"
-                android:text="4564897" />
-            <EditText
-                android:id="@+id/txtSal100"
-                style="@style/TxtContadorActual"
+                android:id="@+id/txtImporteRetencion"
+                style="@style/TxtImportes"
                 android:text="4564897"/>
-
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/txtPorcentajeDistribucion"
+                style="@style/TxtImportes"
+                android:text="50"/>
+            <TextView
+                style="@style/EtiquetaContadores"
+                android:text="% establecimiento"/>
+            <EditText
+                android:id="@+id/txtImporteEstablecimiento"
+                style="@style/TxtImportes"
+                android:text="4564897"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -155,162 +135,11 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/EtiquetaContadores"
-                android:text="Ent 2,00€"/>
+                android:text="Importe neto"/>
             <EditText
-                android:id="@+id/txtEnt200Ant"
-                style="@style/TxtContadorAnterior"
-                android:text="4564897" />
-            <EditText
-                android:id="@+id/txtEnt200"
-                style="@style/TxtContadorActual"
-                android:text="4564897"/>
-
+                android:id="@+id/txtImporteNeto"
+                style="@style/TxtImportesBloq"/>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Ent 5,00€"/>
-            <EditText
-                android:id="@+id/txtEnt500Ant"
-                style="@style/TxtContadorAnterior"
-                android:text="4564897" />
-            <EditText
-                android:id="@+id/txtEnt500"
-                style="@style/TxtContadorActual"
-                android:text="4564897"/>
 
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Ent 10,00€"/>
-            <EditText
-                android:id="@+id/txtEnt1000Ant"
-                style="@style/TxtContadorAnterior"
-                android:text="4564897" />
-            <EditText
-                android:id="@+id/txtEnt1000"
-                style="@style/TxtContadorActual"
-                android:text="4564897"/>
-
-        </LinearLayout>
-        <!--        <LinearLayout
-                    android:id="@+id/lay_contadores"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="0.33">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Cabecera"
-                                android:visibility="invisible"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 0,10€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Sal 0,10€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 0,20€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Sal 0,20€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Sal 0,50€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 1,00€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="XXXXX"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 2,00€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 5,00€"/>
-                        </LinearLayout>
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="0.33">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Anterior"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"/>
-
-                            <EditText
-                                android:id="@+id/txtEnt020"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:numeric="integer"
-                                android:text="1"/>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="0.33">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:text="Actual"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"/>
-
-                            </LinearLayout>
-
-                    </RelativeLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/lay_importes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/lay_arqueo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                </LinearLayout>-->
     </LinearLayout>
-
 </RelativeLayout>

@@ -16,11 +16,9 @@ import android.widget.TextView;
  * Created by sergio on 28/09/14.
  */
 public class FragmentContadoresMaquina extends Fragment {
-    private final static String KEY_REG_TEXT = "texto";
     private static Cursor curMaquina;
     private static Cursor curRecaudacion;
     private static DbAdapter dbAdapter;
-    Context myContext;
 
     //EditText txtSal010Ant = (EditText)rootView.findViewById(R.id.txtSal010Ant);
     EditText txtEnt010Ant;
