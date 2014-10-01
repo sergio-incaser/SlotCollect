@@ -21,5 +21,7 @@
     <string name="title_activity_detalles_establecimiento">Detalles Establecimiento</string>
     <string name="title_activity_recaudacion_maquina">Recaudacion Maquina</string>
     <string name="title_activity_Screen_Slide_Recaudacion">Recaudacion</string>
+    <string name="title_activity_prestamos">Prestamos</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

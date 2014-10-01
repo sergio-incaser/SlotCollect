@@ -36,7 +36,10 @@
             android:name=".ScreenSlidePagerRecaudacion"
             android:label="@string/title_activity_Screen_Slide_Recaudacion" >
         </activity>
-
+        <activity
+            android:name=".Prestamos"
+            android:label="@string/title_activity_prestamos" >
+        </activity>
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,12 +24,14 @@ public class DetallesEstablecimiento extends Activity {
     DbAdapter dbAdapter;
     ListView lvMaquinas;
     DetallesAdapter detallesAdapter;
+    Button btnPrestamos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles_establecimiento);
         lvMaquinas = (ListView) findViewById(R.id.lv_maquinas);
+        btnPrestamos = (Button) findViewById(R.id.btn_prestamos);
 
         Bundle bundle = getIntent().getExtras();
         id = bundle.getString("id");
@@ -38,7 +41,6 @@ public class DetallesEstablecimiento extends Activity {
         lvMaquinas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,long id) {
-            // TODO Lanzar activity paa recaudar
             Intent myIntent = new Intent(arg1.getContext(),ScreenSlidePagerRecaudacion.class);
             myIntent.putExtra("id", Long.toString(id));
             startActivity(myIntent);
@@ -50,6 +52,15 @@ public class DetallesEstablecimiento extends Activity {
             public boolean onLongClick(View view) {
                 // TODO Averias de maquinas
                 return false;
+            }
+        });
+
+        btnPrestamos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(),Prestamos.class);
+                myIntent.putExtra("id",id);
+                startActivity(myIntent);
             }
         });
 

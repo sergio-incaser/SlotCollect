@@ -162,6 +162,10 @@ public class DbAdapter extends SQLiteOpenHelper{
         return db.query("INC_RecaudacionesPDA",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoMaquina=?",
                 new String[]{codigoEmpresa, codigoMaquina},"","","");
     }
+    public Cursor getPrestamosEstablecimiento(String id){
+        return db.query("Prestamos",new String[]{"*"},"id=?",new String[]{id},"","","");
+    }
+
 
     public Cursor getCursor(String query){
         return db.rawQuery(query, new String[]{});
