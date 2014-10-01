@@ -26,6 +26,7 @@ public class Prestamos extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prestamos);
+        lvPrestamos = (ListView) findViewById(R.id.lv_prestamos);
 
         Bundle bundle = getIntent().getExtras();
         idEstablecimiento = bundle.getString("id");

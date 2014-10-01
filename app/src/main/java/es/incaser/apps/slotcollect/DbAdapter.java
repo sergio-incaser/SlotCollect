@@ -17,7 +17,7 @@ import java.sql.ResultSetMetaData;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 3;
+	private static final int DATABASE_VER = 4;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
