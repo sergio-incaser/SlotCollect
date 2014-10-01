@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,14 +29,27 @@ import java.sql.Statement;
 import static android.provider.Settings.Global.getString;
 
 
-public class MainActivity extends ListActivity{
+public class MainActivity extends Activity{
     private static Cursor cur = null;
     private static EstablecimientosAdapter estabAdapter;
     DbAdapter dbAdapter;
+    ListView lvEstablecimientos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        lvEstablecimientos = (ListView) findViewById(R.id.lv_establecimientos);
+
+        lvEstablecimientos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent myIntent = new Intent(view.getContext(),DetallesEstablecimiento.class);
+                cur.moveToPosition(position);
+                myIntent.putExtra("id", cur.getString(cur.getColumnIndex("id")));
+                startActivity(myIntent);
+            }
+        });
     }
 
     @Override
@@ -52,7 +66,8 @@ public class MainActivity extends ListActivity{
         if (curtmp.getCount() > 0 ) {
             getDataSql();
             estabAdapter = new EstablecimientosAdapter(this);
-            setListAdapter(estabAdapter);
+            lvEstablecimientos.setAdapter(estabAdapter);
+            //setListAdapter(estabAdapter);
         };
     }
 
@@ -163,6 +178,7 @@ public class MainActivity extends ListActivity{
         myIntent.putExtra("id", cur.getString(cur.getColumnIndex("id")));
         startActivity(myIntent);
     }
+
     private static String getEstablecimiento(String column){
         return cur.getString(cur.getColumnIndex(column));
     }
