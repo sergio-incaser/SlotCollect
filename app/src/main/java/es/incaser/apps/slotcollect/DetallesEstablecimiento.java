@@ -1,6 +1,7 @@
 package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,15 +17,20 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import static es.incaser.apps.slotcollect.tools.*;
+
 
 public class DetallesEstablecimiento extends Activity {
     String id = "";
     Cursor curEstablecimiento;
     static Cursor curMaquinas;
+    static Cursor curCabRecaudacion;
     DbAdapter dbAdapter;
     ListView lvMaquinas;
     DetallesAdapter detallesAdapter;
     Button btnPrestamos;
+    String codEstablecimiento;
+    String codEmpresa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,21 +76,45 @@ public class DetallesEstablecimiento extends Activity {
     protected void onStart() {
         super.onStart();
         curEstablecimiento = dbAdapter.getEstablecimiento(id);
+        //curEstablecimiento.moveToFirst();
+        codEmpresa = getEstablecimiento("CodigoEmpresa");
+        codEstablecimiento = getEstablecimiento("INC_CodigoEstablecimiento");
         bindData();
+        getCabeceraRecaudacion();
     }
 
     public void bindData(){
-        curEstablecimiento.moveToFirst();
-        this.setTitle(curEstablecimiento.getString(
-                curEstablecimiento.getColumnIndex("RazonSocial")));
-        curMaquinas = dbAdapter.getMaquinasEstablecimiento(
-                curEstablecimiento.getString(
-                        curEstablecimiento.getColumnIndex("INC_CodigoEstablecimiento")));
-
+        this.setTitle(getEstablecimiento("RazonSocial"));
+        curMaquinas = dbAdapter.getMaquinasEstablecimiento(codEmpresa, codEstablecimiento);
         detallesAdapter = new DetallesAdapter(this);
         lvMaquinas.setAdapter(detallesAdapter);
     }
 
+    private ContentValues initialValues(){
+        ContentValues values = new ContentValues();
+        values.put("CodigoEmpresa", codEmpresa);
+        values.put("INC_CodigoEstablecimiento",codEstablecimiento);
+        values.put("IdDelegacion", getEstablecimiento("IdDelegacion"));
+        values.put("INC_FechaRecaudacion", getToday());
+        values.put("INC_HoraRecaudacion", getActualHour());
+        values.put("CodigoCanal", getEstablecimiento("CodigoCanal"));
+        values.put("INC_MaquinasInstaladas", curMaquinas.getCount());
+        values.put("INC_MaquinasRecaudadas", 0);
+
+        return values;
+    }
+
+    private void getCabeceraRecaudacion(){
+        curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codEmpresa,codEstablecimiento);
+        if (!curCabRecaudacion.moveToFirst()){
+            dbAdapter.insertRecord("INC_CabeceraRecaudacion", initialValues());
+            curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codEmpresa,codEstablecimiento);
+        }
+    }
+
+    private String getEstablecimiento(String col){
+        return curEstablecimiento.getString(curEstablecimiento.getColumnIndex(col));
+    }
     public static class DetallesAdapter extends BaseAdapter {
         private Context myContext;
 

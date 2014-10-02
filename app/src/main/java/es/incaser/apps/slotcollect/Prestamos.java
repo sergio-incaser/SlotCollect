@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,6 +32,13 @@ public class Prestamos extends Activity {
         Bundle bundle = getIntent().getExtras();
         idEstablecimiento = bundle.getString("id");
         dbAdapter = new DbAdapter(this);
+
+        lvPrestamos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //TODO abrir activity de las devoluciones del prestamo
+            }
+        });
     }
 
 

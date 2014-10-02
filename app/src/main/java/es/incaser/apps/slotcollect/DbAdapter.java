@@ -17,7 +17,7 @@ import java.sql.ResultSetMetaData;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 4;
+	private static final int DATABASE_VER = 10;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -26,9 +26,11 @@ public class DbAdapter extends SQLiteOpenHelper{
             {"Establecimientos","SELECT * FROM VIS_INC_EstablecARecaudar"},
             {"Maquinas","SELECT * FROM VIS_INC_MaquinasInstaladas"},
             {"Prestamos","SELECT * FROM INC_PrestamosEstablecimiento"},
-            {"UltimaRecaudacion","SELECT * FROM VIS_INC_UltimaRecaudacion"},
+            {"RecaudacionesAnteriores","SELECT * FROM VIS_INC_RecaudaInstalaActivas"},
             //Fin Tablas a importar
-            {"INC_RecaudacionesPDA","SELECT * FROM INC_RecaudacionesPDA"},
+            {"INC_CabeceraRecaudacion","SELECT * FROM INC_CabeceraRecaudacion"},
+            {"INC_LineasRecaudacion","SELECT * FROM INC_LineasRecaudacion"},
+            {"INC_RecuperacionesPrestamo","SELECT * FROM INC_RecuperacionesPrestamo"},
     };
     public static int tablesToImport = 4; // Modificar en caso de añadir mas tablas
     public static int tablesToExport = 5; // Exportar tablas a partir de este indice
@@ -150,18 +152,32 @@ public class DbAdapter extends SQLiteOpenHelper{
         return db.query(tableName,new String[]{"*"},"",new String[]{},"","","",limit.toString());
     }
     public Cursor getEstablecimiento(String id){
-        return db.query("Establecimientos",new String[]{"*"},"id=?",new String[]{id},"","","");
+        Cursor cur = db.query("Establecimientos",new String[]{"*"},"id=?",new String[]{id},"","","");
+        cur.moveToFirst();
+        return cur;
     }
-    public Cursor getMaquinasEstablecimiento(String codigoEstablecimiento){
-        return db.query("Maquinas",new String[]{"*"},"INC_CodigoEstablecimiento=?",new String[]{codigoEstablecimiento},"","","");
+    public Cursor getMaquinasEstablecimiento(String codigoEmpresa, String codigoEstablecimiento){
+        return db.query("Maquinas",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoEstablecimiento=?",
+                        new String[]{codigoEmpresa, codigoEstablecimiento},"","","");
     }
     public Cursor getMaquina(String id){
         return db.query("Maquinas",new String[]{"*"},"id=?",new String[]{id},"","","");
     }
     public Cursor getRecaudacion(String codigoEmpresa, String codigoMaquina){
-        return db.query("INC_RecaudacionesPDA",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoMaquina=?",
+        return db.query("INC_LineasRecaudacion",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoMaquina=?",
                 new String[]{codigoEmpresa, codigoMaquina},"","","");
     }
+    public Cursor getCabeceraRecaudacion(String codigoEmpresa, String codigoEstablecimiento){
+        return db.query("INC_CabeceraRecaudacion",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoEstablecimiento=?",
+                new String[]{codigoEmpresa, codigoEstablecimiento},"","","");
+    }
+
+    public Cursor getUltimaRecaudacion(String codigoEmpresa, String codigoMaquina){
+        String order = "INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC";
+        return db.query("RecaudacionesAnteriores",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoMaquina=?",
+                new String[]{codigoEmpresa, codigoMaquina},"","",order,"1");
+    }
+
     public Cursor getPrestamosEstablecimiento(String id){
         return db.query("Prestamos",new String[]{"*"},"id=?",new String[]{id},"","","");
     }

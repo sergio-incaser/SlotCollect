@@ -13,10 +13,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import static es.incaser.apps.slotcollect.tools.*;
 
 /**
  * Created by sergio on 28/09/14.
@@ -45,11 +52,7 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoMaquina);
 
         if (curRecaudacion.getCount() == 0){
-            ContentValues values = new ContentValues();
-            values.put("CodigoEmpresa", codigoEmpresa);
-            values.put("INC_CodigoMaquina", codigoMaquina);
-            values.put("INC_CodigoEstablecimiento", dbAdapter.getColumnData(curMaquina,"INC_CodigoEstablecimiento"));
-            dbAdapter.insertRecord("INC_RecaudacionesPDA",values);
+            dbAdapter.insertRecord("INC_LineasRecaudacion",initialValues());
             curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoMaquina);
         }
         curRecaudacion.moveToFirst();
@@ -67,6 +70,7 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
 
             @Override
             public void onPageSelected(int position) {
+
                 aBar.setSelectedNavigationItem(position);
             }
 
@@ -80,10 +84,28 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         });
     }
 
+    private ContentValues initialValues(){
+        ContentValues values = new ContentValues();
+        values.put("CodigoEmpresa", getColMaquina("CodigoEmpresa"));
+        values.put("INC_CodigoMaquina", getColMaquina("INC_CodigoMaquina"));
+        values.put("INC_CodigoEstablecimiento", getColMaquina("INC_CodigoEstablecimiento"));
+        values.put("IdDelegacion", getColMaquina("IdDelegacion"));
+        //values.put("INC_CodigoModelo", getColMaquina("INC_CodigoModelo"));
+        values.put("INC_FechaRecaudacion", getToday());
+        values.put("INC_HoraRecaudacion", getActualHour());
+        values.put("CodigoCanal", getColMaquina("CodigoCanal"));
+        values.put("INC_PorcentajeDistribucion", getColMaquina("INC_PorcentajeDistribucion"));
+
+        return values;
+    }
+
+    private String getColMaquina(String col){
+      return curMaquina.getString(curMaquina.getColumnIndex(col));
+    };
+
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
         vPager.setCurrentItem(tab.getPosition());
-        //Toast.makeText(getBaseContext(), "Tab Seleccionado: " + tab.getText(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -105,10 +127,8 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         @Override
         public Fragment getItem(int index) {
             if(index < 3) {
-                //aBar.selectTab(aBar.getTabAt(index));
                 switch(index) {
                     case 0:
-                        //return FragmentContadoresMaquina.newInstance("Texto de la pestaña nº 1.", curMaquina);
                         return new FragmentContadoresMaquina();
                     case 1:
                         return new FragmentImportesMaquina();
@@ -125,4 +145,13 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         }
 
     }
+
+    public static String getRecaudacion(String columna){
+        return curRecaudacion.getString(curRecaudacion.getColumnIndex(columna));
+    }
+
+    public static String getRecaudacionImporte(String columna){
+        return importeStr(getRecaudacion(columna));
+    }
+
 }

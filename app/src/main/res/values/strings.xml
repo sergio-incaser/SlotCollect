@@ -23,5 +23,6 @@
     <string name="title_activity_Screen_Slide_Recaudacion">Recaudacion</string>
     <string name="title_activity_prestamos">Prestamos</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_devoluciones_prestamo">Devoluciones Prestamo</string>
 
 </resources>

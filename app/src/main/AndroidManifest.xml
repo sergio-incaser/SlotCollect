@@ -40,6 +40,10 @@
             android:name=".Prestamos"
             android:label="@string/title_activity_prestamos" >
         </activity>
+        <activity
+            android:name=".DevolucionesPrestamo"
+            android:label="@string/title_activity_devoluciones_prestamo" >
+        </activity>
     </application>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->

@@ -21,7 +21,7 @@ import java.util.Locale;
  * Created by sergio on 28/09/14.
  */
 public class FragmentImportesMaquina extends Fragment{
-    //private static Cursor curMaquina;
+    private static Cursor curMaquina;
     private static Cursor curRecaudacion;
     private static DbAdapter dbAdapter;
 
@@ -78,6 +78,7 @@ public class FragmentImportesMaquina extends Fragment{
         values.put("INC_RecuperaCargaEstablecimiento", getNumber(txtRecCargaEstablecimiento));
         values.put("INC_ImporteRecaudacion", getNumber(txtImporteRecaudacion));
         values.put("INC_ImporteVarios", getNumber(txtImporteVarios));
+        values.put("INC_ImporteRetencion", getNumber(txtImporteRetencion));
         values.put("INC_PorcentajeDistribucion", getNumber(txtPorcentajeDistribucion));
         values.put("INC_ImporteEstablecimiento", getNumber(txtImporteEstablecimiento));
         values.put("INC_ImporteNeto", getNumber(txtImporteNeto));
@@ -105,6 +106,7 @@ public class FragmentImportesMaquina extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_slide_page_importes, container,false);
+        curMaquina = ScreenSlidePagerRecaudacion.curMaquina;
         curRecaudacion = ScreenSlidePagerRecaudacion.curRecaudacion;
         bindRecaudacionData(rootView);
         return rootView;
@@ -155,18 +157,31 @@ public class FragmentImportesMaquina extends Fragment{
     }
 
     private void calcImportes(){
-
-        Float importeRecaudacion = (getNumber(txtBruto)
+        //TODO Leer de cursor instalacion
+        float redondeo = (float) getNumber(curMaquina.getString(
+                                            curMaquina.getColumnIndex("INC_Redondeo")));
+        boolean aFavorEmpresa = (curMaquina.getInt(
+                                curMaquina.getColumnIndex("INC_AFavorEmpresa")) != 0);
+        float importeRecaudacion = (getNumber(txtBruto)
                                     - getNumber(txtFallos)
                                     - getNumber(txtRecCargaEmpresa)
                                     - getNumber(txtRecCargaEstablecimiento));
         txtImporteRecaudacion.setText(importeStr(importeRecaudacion));
-        Float importeReparto = (importeRecaudacion
+        float importeReparto = (importeRecaudacion
                                 - getNumber(txtImporteVarios)
                                 - getNumber(txtImporteRetencion));
 
-        Float neto = importeReparto - getNumber(txtImporteEstablecimiento);
-        txtImporteNeto.setText(importeStr(neto));
+        float monedas = importeReparto / redondeo;
+        float monedasEst = monedas * getNumber(txtPorcentajeDistribucion)/100;
+        if (aFavorEmpresa){
+            monedasEst = (int) monedasEst;
+        }else{
+            // Restamos a las monedas totales, las monedas que corresponderian a la empresa truncadas
+            monedasEst = monedas - ((int) (monedas - monedasEst));
+        }
+        float estab = monedasEst * redondeo;
+        txtImporteEstablecimiento.setText(importeStr(estab));
+        txtImporteNeto.setText(importeStr(importeReparto - estab));
     }
 
     public static float val(String str) {
