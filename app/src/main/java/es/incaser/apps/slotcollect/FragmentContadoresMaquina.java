@@ -43,6 +43,11 @@ public class FragmentContadoresMaquina extends Fragment {
     EditText txtEnt500;
     EditText txtEnt1000;
 
+    //Valores teoricos
+    EditText txtJugadoTeorico;
+    EditText txtPremioTeorico;
+    EditText txtPartidas;
+
     private void bindAntData(View rootView){
         txtSal010Ant = (EditText)rootView.findViewById(R.id.txtSal010Ant);
         txtEnt010Ant = (EditText)rootView.findViewById(R.id.txtEnt010Ant);
@@ -55,18 +60,18 @@ public class FragmentContadoresMaquina extends Fragment {
         txtEnt500Ant = (EditText)rootView.findViewById(R.id.txtEnt500Ant);
         txtEnt1000Ant = (EditText)rootView.findViewById(R.id.txtEnt1000Ant);
 
-        txtEnt010Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Entrada010")));
+        txtEnt010Ant.setText(getMaquina("INC_Entrada010"));
 
-        txtSal010Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Salida010")));
+        txtSal010Ant.setText(getMaquina("INC_Salida010"));
 
-        txtEnt020Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Entrada020")));
-        txtSal020Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Salida020")));
-        txtEnt050Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Entrada050")));
-        txtEnt100Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Entrada100")));
-        txtSal100Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Salida100")));
-        txtEnt200Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Entrada200")));
-        txtEnt500Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Entrada500")));
-        txtEnt1000Ant.setText(curMaquina.getString(curMaquina.getColumnIndex("INC_Entrada1000")));
+        txtEnt020Ant.setText(getMaquina("INC_Entrada020"));
+        txtSal020Ant.setText(getMaquina("INC_Salida020"));
+        txtEnt050Ant.setText(getMaquina("INC_Entrada050"));
+        txtEnt100Ant.setText(getMaquina("INC_Entrada100"));
+        txtSal100Ant.setText(getMaquina("INC_Salida100"));
+        txtEnt200Ant.setText(getMaquina("INC_Entrada200"));
+        txtEnt500Ant.setText(getMaquina("INC_Entrada500"));
+        txtEnt1000Ant.setText(getMaquina("INC_Entrada1000"));
     }
 
     private void bindActualData(View rootView) {
@@ -81,20 +86,29 @@ public class FragmentContadoresMaquina extends Fragment {
         txtEnt500 = (EditText)rootView.findViewById(R.id.txtEnt500);
         txtEnt1000 = (EditText)rootView.findViewById(R.id.txtEnt1000);
 
-        txtEnt010.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Entrada010")));
-        txtSal010.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Salida010")));
-        txtEnt020.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Entrada020")));
-        txtSal020.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Salida020")));
-        txtEnt050.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Entrada050")));
-        txtEnt100.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Entrada100")));
-        txtSal100.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Salida100")));
-        txtEnt200.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Entrada200")));
-        txtEnt500.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Entrada500")));
-        txtEnt1000.setText(curRecaudacion.getString(curRecaudacion.getColumnIndex("INC_Entrada1000")));
-    }
+        txtJugadoTeorico = (EditText)rootView.findViewById(R.id.txtJugadoTeorico);
+        txtPremioTeorico = (EditText)rootView.findViewById(R.id.txtPremioTeorico);
+        txtPartidas = (EditText)rootView.findViewById(R.id.txtPartidas);
 
+        txtEnt010.setText(getRecaudacion("INC_Entrada010"));
+        txtSal010.setText(getRecaudacion("INC_Salida010"));
+        txtEnt020.setText(getRecaudacion("INC_Entrada020"));
+        txtSal020.setText(getRecaudacion("INC_Salida020"));
+        txtEnt050.setText(getRecaudacion("INC_Entrada050"));
+        txtEnt100.setText(getRecaudacion("INC_Entrada100"));
+        txtSal100.setText(getRecaudacion("INC_Salida100"));
+        txtEnt200.setText(getRecaudacion("INC_Entrada200"));
+        txtEnt500.setText(getRecaudacion("INC_Entrada500"));
+        txtEnt1000.setText(getRecaudacion("INC_Entrada1000"));
+
+        txtJugadoTeorico.setText(getRecaudacion("INC_JugadoTeorico"));
+        txtPremioTeorico.setText(getRecaudacion("INC_PremioTeorico"));
+        txtPartidas.setText(getRecaudacion("INC_Partidas"));
+
+    }
+    
     private String getMaquina(String columna){
-        return curMaquina.getString(curMaquina.getColumnIndex(columna));
+        return curMaquina.getString(curMaquina.getColumnIndex((columna)));
     }
     private String getRecaudacion(String columna){
         return curRecaudacion.getString(curRecaudacion.getColumnIndex(columna));
@@ -138,7 +152,11 @@ public class FragmentContadoresMaquina extends Fragment {
         values.put("INC_Salida020", txtSal020.getText().toString());
         values.put("INC_Salida100", txtSal100.getText().toString());
 
-        int numRecords = ScreenSlidePagerRecaudacion.dbAdapter.updateRecord("INC_RecaudacionesPDA", values,
+        values.put("INC_JugadoTeorico", txtJugadoTeorico.getText().toString());
+        values.put("INC_PremioTeorico", txtPremioTeorico.getText().toString());
+        values.put("INC_Partidas", txtPartidas.getText().toString());
+
+        int numRecords = ScreenSlidePagerRecaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
                 "CodigoEmpresa=? AND INC_CodigoMaquina=?",
                 new String[]{getRecaudacion("CodigoEmpresa"), getRecaudacion("INC_CodigoMaquina")});
     }

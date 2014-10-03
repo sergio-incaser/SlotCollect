@@ -48,4 +48,10 @@ public class tools {
         return sdf.format(date);
     }
 
+    public static String getTimeStamp(){
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
+        return sdf.format(date);
+    }
+
 }

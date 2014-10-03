@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,7 +18,7 @@ import java.sql.ResultSetMetaData;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 10;
+	private static final int DATABASE_VER = 14;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -109,11 +110,16 @@ public class DbAdapter extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-	public void emptyTables(){
+    public void emptyTables(){
         for (String[] query:QUERY_LIST) {
-            db.execSQL("DROP TABLE IF EXISTS " + query[0]);
+            db.execSQL("DELETE FROM " + query[0]);
         }
-	}
+    }
+
+    public void emptyTables(String table){
+        db.execSQL("DELETE FROM " + table);
+    }
+
 	public void openDB() {
 		if (db == null){
 			db = this.getWritableDatabase();
@@ -207,4 +213,16 @@ public class DbAdapter extends SQLiteOpenHelper{
     public String getColumnData(Cursor cur, String column){
         return cur.getString(cur.getColumnIndex(column));
     };
+
+    public void initTransaction(){
+        db.beginTransaction();
+    }
+
+    public void endTransaction(){
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+    SQLiteDatabase getDb(){
+        return db;
+    }
 }

@@ -112,6 +112,12 @@ public class MainActivity extends Activity{
             syncData.SincronizarDatos();
             return true;
         }
+        if (id == R.id.action_test) {
+            //new ImportSqlData().execute(1);
+            SyncData syncData = new SyncData(this);
+            syncData.test();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

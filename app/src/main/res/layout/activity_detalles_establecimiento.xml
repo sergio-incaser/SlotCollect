@@ -37,7 +37,6 @@
                     <TextView
                         style="@style/TxtImportesBloq"
                         android:id="@+id/tvTotalRecaudacion"
-                        android:
                         android:text="0.00"/>
                     </LinearLayout>
                 <LinearLayout
@@ -51,7 +50,6 @@
                     <TextView
                         style="@style/TxtImportesBloq"
                         android:id="@+id/tvTotalEstablecimiento"
-                        android:
                         android:text="0.00"/>
                 </LinearLayout>
                 <LinearLayout
@@ -65,7 +63,6 @@
                     <TextView
                         style="@style/TxtImportesBloq"
                         android:id="@+id/tvTotalRetencion"
-                        android:
                         android:text="0.00"/>
                 </LinearLayout>
                 </LinearLayout>

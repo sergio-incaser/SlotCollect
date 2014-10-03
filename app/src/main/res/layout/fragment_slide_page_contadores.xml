@@ -201,117 +201,40 @@
                 android:text="4564897"/>
 
         </LinearLayout>
-        <!--        <LinearLayout
-                    android:id="@+id/lay_contadores"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="0.33">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Cabecera"
-                                android:visibility="invisible"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 0,10€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Sal 0,10€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 0,20€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Sal 0,20€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Sal 0,50€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 1,00€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="XXXXX"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 2,00€"/>
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Ent 5,00€"/>
-                        </LinearLayout>
-                    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/EtiquetaContadores"
+                android:text="Jugado teórico"/>
+            <EditText
+                android:id="@+id/txtJugadoTeorico"
+                style="@style/TxtContadorAnterior"
+                android:text="4564897" />
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="0.33">
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/EtiquetaContadores"
+                android:text="Premio teórico"/>
+            <EditText
+                android:id="@+id/txtPremioTeorico"
+                style="@style/TxtContadorAnterior"
+                android:text="4564897" />
+            <TextView
+                style="@style/EtiquetaContadores"
+                android:text="Partidas"/>
+            <EditText
+                android:id="@+id/txtPartidas"
+                style="@style/TxtContadorActual"
+                android:text="4564897"/>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                style="@style/EtiquetaContadores"
-                                android:text="Anterior"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"/>
-
-                            <EditText
-                                android:id="@+id/txtEnt020"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:inputType="number"
-                                android:numeric="integer"
-                                android:text="1"/>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_weight="0.33">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:text="Actual"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"/>
-
-                            </LinearLayout>
-
-                    </RelativeLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/lay_importes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/lay_arqueo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                </LinearLayout>-->
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

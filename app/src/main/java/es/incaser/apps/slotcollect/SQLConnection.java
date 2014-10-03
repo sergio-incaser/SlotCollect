@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import net.sourceforge.jtds.jdbc.CachedResultSet;
 import net.sourceforge.jtds.jdbc.Driver;
 
 
@@ -26,6 +27,7 @@ public class SQLConnection {
 
     public static Connection connection = null;
     public static Statement statement;
+    public static Statement statementReadOnly;
 
     public SQLConnection(){
         if(connection == null)
@@ -72,7 +74,8 @@ public class SQLConnection {
         try {
             String uri = "jdbc:jtds:sqlserver://" + host + ":"+ port +"/"+ database +";";
             conn = DriverManager.getConnection(uri,user,password);
-            statement = conn.createStatement();
+//            statement = conn.createStatement();
+            statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -84,6 +87,7 @@ public class SQLConnection {
             connection = connectSQL();
         String sql = "Select INC_CodigoEstablecimiento as id, * From INC_Establecimientos";
         ResultSet rs = null;
+
         try {
 //            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
 //                    ResultSet.CONCUR_READ_ONLY);
@@ -96,9 +100,11 @@ public class SQLConnection {
 
     public ResultSet getResultset(String query){
         ResultSet rs = null;
+        //CachedResultSet crs = null;
         try {
 //            statement = connection.createStatement();
 //            statement.setQueryTimeout(180);
+            //crs = (CachedResultSet) statement.executeQuery(query);
             rs = statement.executeQuery(query);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
