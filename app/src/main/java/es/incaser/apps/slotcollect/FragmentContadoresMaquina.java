@@ -157,8 +157,8 @@ public class FragmentContadoresMaquina extends Fragment {
         values.put("INC_Partidas", txtPartidas.getText().toString());
 
         int numRecords = ScreenSlidePagerRecaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
-                "CodigoEmpresa=? AND INC_CodigoMaquina=?",
-                new String[]{getRecaudacion("CodigoEmpresa"), getRecaudacion("INC_CodigoMaquina")});
+                "id=?",
+                new String[]{getRecaudacion("id")});
     }
 
     @Override

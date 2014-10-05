@@ -98,9 +98,8 @@ public class FragmentArqueoMaquina extends Fragment {
         values.put("INC_MediaDiaria", getNumber(txtMediaDiaria));
 
         int numRecords = ScreenSlidePagerRecaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
-                "CodigoEmpresa=? AND INC_CodigoMaquina=?",
-                new String[]{ScreenSlidePagerRecaudacion.getRecaudacion("CodigoEmpresa"),
-                             ScreenSlidePagerRecaudacion.getRecaudacion("INC_CodigoMaquina")});
+                "id=?",
+                new String[]{ScreenSlidePagerRecaudacion.getRecaudacion("id")});
     }
 
 

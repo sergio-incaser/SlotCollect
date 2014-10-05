@@ -18,7 +18,7 @@ import java.sql.ResultSetMetaData;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 14;
+	private static final int DATABASE_VER = 15;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -153,6 +153,9 @@ public class DbAdapter extends SQLiteOpenHelper{
 
     public Cursor getTable(String tableName){
         return db.query(tableName,new String[]{"*"},"",new String[]{},"","","");
+    }
+    public Cursor getTableToExport(String tableName){
+        return db.query(tableName,new String[]{"*"},"printable=?",new String[]{"-1"},"","","");
     }
     public Cursor getTable(String tableName, Integer limit){
         return db.query(tableName,new String[]{"*"},"",new String[]{},"","","",limit.toString());

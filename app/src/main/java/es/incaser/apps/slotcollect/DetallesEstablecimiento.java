@@ -105,11 +105,12 @@ public class DetallesEstablecimiento extends Activity {
     }
 
     private void getCabeceraRecaudacion(){
+        //Intentamos obtener cursor a cabecera recaudacion. De lo contrario NO se crea
         curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codEmpresa,codEstablecimiento);
-        if (!curCabRecaudacion.moveToFirst()){
-            dbAdapter.insertRecord("INC_CabeceraRecaudacion", initialValues());
-            curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codEmpresa,codEstablecimiento);
-        }
+//        if (!curCabRecaudacion.moveToFirst()){
+//            dbAdapter.insertRecord("INC_CabeceraRecaudacion", initialValues());
+//            curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codEmpresa,codEstablecimiento);
+//        }
     }
 
     private String getEstablecimiento(String col){

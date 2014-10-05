@@ -84,8 +84,8 @@ public class FragmentImportesMaquina extends Fragment{
         values.put("INC_ImporteNeto", getNumber(txtImporteNeto));
 
         int numRecords = ScreenSlidePagerRecaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
-                "CodigoEmpresa=? AND INC_CodigoMaquina=?",
-                new String[]{getRecaudacion("CodigoEmpresa"), getRecaudacion("INC_CodigoMaquina")});
+                "id=?",
+                new String[]{getRecaudacion("id")});
     }
 
     @Override

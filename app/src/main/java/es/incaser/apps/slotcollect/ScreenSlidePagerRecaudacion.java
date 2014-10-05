@@ -1,27 +1,17 @@
 package es.incaser.apps.slotcollect;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ContentValues;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.format.DateUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import static es.incaser.apps.slotcollect.tools.*;
 
@@ -36,7 +26,11 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
     public static  DbAdapter dbAdapter;
     public static Cursor curMaquina;
     public static Cursor curRecaudacion;
-
+    public static Cursor curCabRecaudacion;
+    public AlertDialog alertDialog;
+    private boolean dialogoContestado = false;
+    String codigoEmpresa;
+    String codigoMaquina;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +41,11 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         curMaquina = dbAdapter.getMaquina(idMaquina);
         curMaquina.moveToFirst();
 
-        String codigoEmpresa = dbAdapter.getColumnData(curMaquina, "CodigoEmpresa");
-        String codigoMaquina = dbAdapter.getColumnData(curMaquina, "INC_CodigoMaquina");
+        codigoEmpresa = dbAdapter.getColumnData(curMaquina, "CodigoEmpresa");
+        codigoMaquina = dbAdapter.getColumnData(curMaquina, "INC_CodigoMaquina");
+
+        curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codigoEmpresa,getColMaquina("INC_CodigoEstablecimiento"));
+
         curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoMaquina);
 
         if (curRecaudacion.getCount() == 0){
@@ -152,6 +149,65 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
 
     public static String getRecaudacionImporte(String columna){
         return importeStr(getRecaudacion(columna));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!dialogoContestado){
+            mostrarDialogo();
+        }else{
+            super.onBackPressed();
+        }
+    }
+
+    public void mostrarDialogo(){
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialogoContestado = true;
+                validarRecaudacion();
+                ScreenSlidePagerRecaudacion.this.onBackPressed();
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+                dialogoContestado = true;
+                ScreenSlidePagerRecaudacion.this.onBackPressed();
+            }
+        });
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage("Quiere validar la recaudación")
+                .setTitle("Recaudaciones");
+
+        // 3. Get the AlertDialog from create()
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+    private ContentValues initialValuesCabRecaudacion(){
+        ContentValues values = new ContentValues();
+        values.put("CodigoEmpresa", codigoEmpresa);
+        values.put("INC_CodigoEstablecimiento", getColMaquina("INC_CodigoEstablecimiento"));
+        values.put("IdDelegacion", getColMaquina("IdDelegacion"));
+        values.put("CodigoCanal", getColMaquina("CodigoCanal"));
+        values.put("printable", true);
+        return values;
+    }
+    public void validarRecaudacion(){
+        //Modificamos el campo printable a true en las lineas y si no hay cabecera la creamos
+        ContentValues values = new ContentValues();
+        values.put("printable", true);
+        if (curCabRecaudacion.getCount()==0){
+            //Si no existe la cabcera de recaudacion la creamos
+            dbAdapter.insertRecord("INC_CabeceraRecaudacion",initialValuesCabRecaudacion());
+        }else{
+            int res = dbAdapter.updateRecord("INC_LineasRecaudacion",values,"id=?",new String[]{getRecaudacion("id")});
+        }
+        //curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codigoEmpresa,getColMaquina("INC_CodigoEstablecimiento"));
     }
 
 }
