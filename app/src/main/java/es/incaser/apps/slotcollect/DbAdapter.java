@@ -13,12 +13,15 @@ import android.widget.Toast;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 15;
+	private static final int DATABASE_VER = 16;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -41,7 +44,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 		super(context, DATABASE_NAME, null, DATABASE_VER);
 		ctx = context;
         openDB();
-	}
+    }
 
     @Override
     protected void finalize() throws Throwable {
@@ -191,6 +194,24 @@ public class DbAdapter extends SQLiteOpenHelper{
         return db.query("Prestamos",new String[]{"*"},"id=?",new String[]{id},"","","");
     }
 
+    public Map<String, String> getDicRelLineasCabecera(){
+        Map<String, String> dicRelLineasCabecera = new HashMap<String, String>();
+        dicRelLineasCabecera.put("INC_ImporteRecaudacion", "INC_TotalRecaudacion");
+        dicRelLineasCabecera.put("INC_ImporteRetencion", "INC_TotalRetencion");
+        dicRelLineasCabecera.put("INC_ImporteNeto", "INC_TotalNeto");
+        dicRelLineasCabecera.put("INC_ImporteEstablecimiento", "INC_TotalEstablecimiento");
+
+        return dicRelLineasCabecera;
+    }
+
+    public Cursor getTotalesRecaudacion(String empresa, String establecimento, String fecha){
+        Map<String, String> dicRelLineasCabecera = getDicRelLineasCabecera();
+        String[] campos = dicRelLineasCabecera.keySet().toString().replace("[","").replace("]","").split(",");
+        String where = "Printable=1 AND CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_FechaRecaudacion=?";
+        String groupBy = "CodigoEmpresa, INC_CodigoEstablecimiento, INC_FechaRecaudacion";
+        String[] whereArgs = new String[]{empresa, establecimento, fecha};
+        return db.query("INC_LineasRecaudacion", campos, where, whereArgs, groupBy,"","");
+    }
 
     public Cursor getCursor(String query){
         return db.rawQuery(query, new String[]{});

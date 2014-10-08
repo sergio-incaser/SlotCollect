@@ -143,7 +143,7 @@ public class SyncData{
         Log.w(tableSource, "A exportar: " + numReg);
         try {
             RSmd = target.getMetaData();
-            String[] args = {tableSource};
+            //String[] args = {tableSource};
             String[] localColumns = source.getColumnNames();
             for (int i = 1; i <= RSmd.getColumnCount(); i++) {
                 if (Arrays.asList(localColumns).contains(RSmd.getColumnName(i))) {
