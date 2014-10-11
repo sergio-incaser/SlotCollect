@@ -185,7 +185,6 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
             }
 
         }
-
         return cv;
     }
 

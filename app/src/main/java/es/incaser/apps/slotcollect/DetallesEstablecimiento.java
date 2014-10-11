@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Date;
+
 import static es.incaser.apps.slotcollect.tools.*;
 
 
@@ -152,8 +154,14 @@ public class DetallesEstablecimiento extends Activity {
             }
             curMaquinas.moveToPosition(position);
             TextView txtDescripcionMaquina = (TextView) myView.findViewById(R.id.tv_descripcion_maquina);
+            TextView txtCodigoMaquina = (TextView) myView.findViewById(R.id.tv_codigoMaquina);
+            TextView txtFechainstalacion = (TextView) myView.findViewById(R.id.tv_fechaInstalacionMaquina);
 
             txtDescripcionMaquina.setText(curMaquinas.getString(curMaquinas.getColumnIndex("INC_DescripcionModelo")));
+            txtCodigoMaquina.setText("("+curMaquinas.getString(curMaquinas.getColumnIndex("INC_CodigoMaquina"))+")");
+            String myTimestamp = curMaquinas.getString(curMaquinas.getColumnIndex("INC_FechaInstalacion"));
+            txtFechainstalacion.setText(date2str(str2date(myTimestamp,""),""));
+
             return myView;
         }
     }

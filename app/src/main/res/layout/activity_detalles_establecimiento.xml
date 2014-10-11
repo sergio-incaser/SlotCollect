@@ -72,6 +72,10 @@
                 android:layout_height="wrap_content"
                 android:text="PRESTAMOS" />
             </LinearLayout>
+        <TextView
+            style="@style/EtiquetaSeparador"
+            android:text="Máquinas instaladas"
+            />
         <LinearLayout
             android:id="@+id/lay_maquinas"
             android:layout_width="match_parent"

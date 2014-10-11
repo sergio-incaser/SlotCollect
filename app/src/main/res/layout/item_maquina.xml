@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:text="NOMBRE DE LA MAQUINA"/>
         <TextView
-            android:id="@+id/codigoMaquina"
+            android:id="@+id/tv_codigoMaquina"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
@@ -29,9 +29,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Instalación" />
+            android:text="Fecha de instalación: " />
         <TextView
-            android:id="@+id/fechaInstalacionMaquina"
+            android:id="@+id/tv_fechaInstalacionMaquina"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="12/12/1955" />
