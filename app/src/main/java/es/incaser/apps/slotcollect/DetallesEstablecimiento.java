@@ -33,6 +33,9 @@ public class DetallesEstablecimiento extends Activity {
     Button btnPrestamos;
     String codEstablecimiento;
     String codEmpresa;
+    TextView txtTotalRecaudacion;
+    TextView txtTotalEstablecimiento;
+    TextView txtTotalRetencion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,10 @@ public class DetallesEstablecimiento extends Activity {
         setContentView(R.layout.activity_detalles_establecimiento);
         lvMaquinas = (ListView) findViewById(R.id.lv_maquinas);
         btnPrestamos = (Button) findViewById(R.id.btn_prestamos);
+
+        txtTotalRecaudacion = (TextView) findViewById(R.id.tv_totalRecaudacion);
+        txtTotalEstablecimiento = (TextView) findViewById(R.id.tv_totalEstablecimiento);
+        txtTotalRetencion = (TextView) findViewById(R.id.tv_totalRetencion);
 
         Bundle bundle = getIntent().getExtras();
         id = bundle.getString("id");
@@ -55,13 +62,16 @@ public class DetallesEstablecimiento extends Activity {
             }
         });
 
-        lvMaquinas.setOnLongClickListener(new View.OnLongClickListener() {
+        lvMaquinas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onLongClick(View view) {
-                // TODO Averias de maquinas
-                return false;
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent myIntent = new Intent(view.getContext(),AveriasMaquina.class);
+                myIntent.putExtra("id", Long.toString(id));
+                startActivity(myIntent);
+                return true;
             }
         });
+
 
         btnPrestamos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +100,7 @@ public class DetallesEstablecimiento extends Activity {
         curMaquinas = dbAdapter.getMaquinasEstablecimiento(codEmpresa, codEstablecimiento);
         detallesAdapter = new DetallesAdapter(this);
         lvMaquinas.setAdapter(detallesAdapter);
+
     }
 
     private ContentValues initialValues(){
@@ -109,14 +120,18 @@ public class DetallesEstablecimiento extends Activity {
     private void getCabeceraRecaudacion(){
         //Intentamos obtener cursor a cabecera recaudacion. De lo contrario NO se crea
         curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codEmpresa,codEstablecimiento);
-//        if (!curCabRecaudacion.moveToFirst()){
-//            dbAdapter.insertRecord("INC_CabeceraRecaudacion", initialValues());
-//            curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codEmpresa,codEstablecimiento);
-//        }
+        if (curCabRecaudacion.moveToFirst()){
+            writeTxtFields();
+        }else{
+            //TODO Campos de la pantalla a cero
+        }
     }
 
     private String getEstablecimiento(String col){
         return curEstablecimiento.getString(curEstablecimiento.getColumnIndex(col));
+    }
+    private String cabeceraRecaudacion(String col){
+        return curCabRecaudacion.getString(curCabRecaudacion.getColumnIndex(col));
     }
     public static class DetallesAdapter extends BaseAdapter {
         private Context myContext;
@@ -184,4 +199,10 @@ public class DetallesEstablecimiento extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private void writeTxtFields(){
+        txtTotalRecaudacion.setText(cabeceraRecaudacion("INC_TotalRecaudacion"));
+        txtTotalEstablecimiento.setText(cabeceraRecaudacion("INC_TotalEstablecimiento"));
+        txtTotalRetencion.setText(cabeceraRecaudacion("INC_TotalRetencion"));
+    }
+
 }

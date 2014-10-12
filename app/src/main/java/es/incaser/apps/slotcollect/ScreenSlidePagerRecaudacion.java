@@ -155,6 +155,9 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         return importeStr(getRecaudacion(columna));
     }
 
+    public static String getCabeceraRecaudacion(String columna){
+        return curCabRecaudacion.getString(curCabRecaudacion.getColumnIndex(columna));
+    }
     private ContentValues initialValuesCabRecaudacion(){
         ContentValues values = new ContentValues();
         values.put("CodigoEmpresa", codigoEmpresa);
@@ -180,6 +183,8 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
                     cv.put(col, curTotales.getString(curTotales.getColumnIndex(col)));
                 }
             }
+            //TODO Para que conservar los valores de las lineas en el contentValue??
+            cv.clear();
             for (String key: dicRelLineasCabecera.keySet()){
                 cv.put(dicRelLineasCabecera.get(key), curTotales.getString(curTotales.getColumnIndex(key)));
             }
@@ -194,16 +199,14 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         cvLineas.put("printable", true);
         int res = dbAdapter.updateRecord("INC_LineasRecaudacion",cvLineas,"id=?",
                 new String[]{getRecaudacion("id")});
-        if (curCabRecaudacion.getCount()==0){
+        if (!curCabRecaudacion.moveToFirst()){
             //Si no existe la cabcera de recaudacion la creamos
             dbAdapter.insertRecord("INC_CabeceraRecaudacion",initialValuesCabRecaudacion());
         }else{
-            dbAdapter.updateRecord("INC_CabeceraRecaudacion",computedValuesCabRecaudacion(),"", new String[]{});
+            dbAdapter.updateRecord("INC_CabeceraRecaudacion",
+                                computedValuesCabRecaudacion(),"id=?",
+                                            new String[]{getCabeceraRecaudacion("id")});
         }
-    }
-
-    public void calcularRecaudacion(){
-
     }
 
     public void mostrarDialogo(){

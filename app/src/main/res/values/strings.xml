@@ -24,5 +24,6 @@
     <string name="title_activity_prestamos">Prestamos</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_devoluciones_prestamo">Devoluciones Prestamo</string>
+    <string name="title_activity_averias_maquina">AveriasMaquina</string>
 
 </resources>
