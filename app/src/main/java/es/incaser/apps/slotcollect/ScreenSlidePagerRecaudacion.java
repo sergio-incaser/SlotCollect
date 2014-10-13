@@ -13,8 +13,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static es.incaser.apps.slotcollect.tools.*;
 
@@ -34,6 +37,9 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
     private boolean dialogoContestado = false;
     String codigoEmpresa;
     String codigoMaquina;
+    FragmentContadoresMaquina fragmentContadoresMaquina;
+    FragmentImportesMaquina fragmentImportesMaquina;
+    FragmentArqueoMaquina fragmentArqueoMaquina;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,14 +79,25 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
             public void onPageSelected(int position) {
 
                 aBar.setSelectedNavigationItem(position);
+                switch(position) {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        fragmentArqueoMaquina.calculaArqueo();
+                        break;
+                }
             }
 
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
+                String a="2";
             }
 
             @Override
             public void onPageScrollStateChanged(int arg0) {
+                String a="2";
             }
         });
     }
@@ -96,6 +113,27 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         values.put("INC_HoraRecaudacion", getActualHour());
         values.put("CodigoCanal", getColMaquina("CodigoCanal"));
         values.put("INC_PorcentajeDistribucion", getColMaquina("INC_PorcentajeDistribucion"));
+
+        values.put("INC_Entrada010ANT", getColMaquina("INC_Entrada010"));
+        values.put("INC_Entrada010", getColMaquina("INC_Entrada010"));
+        values.put("INC_Salida010ANT", getColMaquina("INC_Salida010"));
+        values.put("INC_Salida010", getColMaquina("INC_Salida010"));
+        values.put("INC_Entrada020ANT", getColMaquina("INC_Entrada020"));
+        values.put("INC_Entrada020", getColMaquina("INC_Entrada020"));
+        values.put("INC_Salida020ANT", getColMaquina("INC_Salida020"));
+        values.put("INC_Salida020", getColMaquina("INC_Salida020"));
+        values.put("INC_Entrada050ANT", getColMaquina("INC_Entrada050"));
+        values.put("INC_Entrada050", getColMaquina("INC_Entrada050"));
+        values.put("INC_Entrada100ANT", getColMaquina("INC_Entrada100"));
+        values.put("INC_Entrada100", getColMaquina("INC_Entrada100"));
+        values.put("INC_Salida100ANT", getColMaquina("INC_Salida100"));
+        values.put("INC_Salida100", getColMaquina("INC_Salida100"));
+        values.put("INC_Entrada200ANT", getColMaquina("INC_Entrada200"));
+        values.put("INC_Entrada200", getColMaquina("INC_Entrada200"));
+        values.put("INC_Entrada500ANT", getColMaquina("INC_Entrada500"));
+        values.put("INC_Entrada500", getColMaquina("INC_Entrada500"));
+        values.put("INC_Entrada1000ANT", getColMaquina("INC_Entrada1000"));
+        values.put("INC_Entrada1000", getColMaquina("INC_Entrada1000"));
 
         return values;
     }
@@ -130,11 +168,14 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
             if(index < 3) {
                 switch(index) {
                     case 0:
-                        return new FragmentContadoresMaquina();
+                        fragmentContadoresMaquina = new FragmentContadoresMaquina();
+                        return fragmentContadoresMaquina;
                     case 1:
-                        return new FragmentImportesMaquina();
+                        fragmentImportesMaquina = new FragmentImportesMaquina();
+                        return fragmentImportesMaquina;
                     case 2:
-                        return new FragmentArqueoMaquina();
+                        fragmentArqueoMaquina = new FragmentArqueoMaquina();
+                        return fragmentArqueoMaquina;
                 }
             }
             return null;
@@ -166,29 +207,31 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         values.put("CodigoCanal", getColMaquina("CodigoCanal"));
         values.put("INC_FechaRecaudacion", getToday());
         values.put("INC_HoraRecaudacion", getActualHour());
-
+        //Se crea la cabcera con al menos una linea asi que hay que calcular tambien totales
+        values.putAll(computedValuesCabRecaudacion());
         return values;
     }
 
     private ContentValues computedValuesCabRecaudacion(){
         ContentValues cv = new ContentValues();
-        Map<String, String> dicRelLineasCabecera = dbAdapter.getDicRelLineasCabecera();
+        //Map<String, String> dicRelLineasCabecera = dbAdapter.getDicRelLineasCabecera();
         Cursor curTotales = dbAdapter.getTotalesRecaudacion(codigoEmpresa,
                                         getRecaudacion("INC_CodigoEstablecimiento"),
                                         getRecaudacion("INC_FechaRecaudacion"));
         if (curTotales.moveToFirst()){
-            String[] colLineas = curRecaudacion.getColumnNames();
-            for (String col: curTotales.getColumnNames()){
-                if (Arrays.asList(colLineas).contains(col)) {
+            List<String> listColLineas = Arrays.asList(curRecaudacion.getColumnNames());
+            for (String col: curCabRecaudacion.getColumnNames()){
+                if (listColLineas.contains(col)) {
+                    cv.put(col, curRecaudacion.getString(curRecaudacion.getColumnIndex(col)));
+                }
+            }
+            cv.remove("id");
+            List<String> listColTotales = Arrays.asList(curTotales.getColumnNames());
+            for (String col: curCabRecaudacion.getColumnNames()){
+                if (listColTotales.contains(col)) {
                     cv.put(col, curTotales.getString(curTotales.getColumnIndex(col)));
                 }
             }
-            //TODO Para que conservar los valores de las lineas en el contentValue??
-            cv.clear();
-            for (String key: dicRelLineasCabecera.keySet()){
-                cv.put(dicRelLineasCabecera.get(key), curTotales.getString(curTotales.getColumnIndex(key)));
-            }
-
         }
         return cv;
     }
@@ -201,7 +244,7 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
                 new String[]{getRecaudacion("id")});
         if (!curCabRecaudacion.moveToFirst()){
             //Si no existe la cabcera de recaudacion la creamos
-            dbAdapter.insertRecord("INC_CabeceraRecaudacion",initialValuesCabRecaudacion());
+            dbAdapter.insertRecord("INC_CabeceraRecaudacion",computedValuesCabRecaudacion());
         }else{
             dbAdapter.updateRecord("INC_CabeceraRecaudacion",
                                 computedValuesCabRecaudacion(),"id=?",
@@ -211,6 +254,10 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
 
     public void mostrarDialogo(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        fragmentContadoresMaquina.saveRecaudacion();
+        fragmentImportesMaquina.saveRecaudacion();
+        //fragmentArqueoMaquina.saveRecaudacion();
 
         builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

@@ -18,6 +18,7 @@ import static es.incaser.apps.slotcollect.tools.*;
  */
 public class FragmentArqueoMaquina extends Fragment {
     private static Cursor curRecaudacion;
+    private static Cursor curMaquina;
     private static DbAdapter dbAdapter;
 
     private CheckBox chkArqueoRealizado;
@@ -81,7 +82,7 @@ public class FragmentArqueoMaquina extends Fragment {
 //        txtImporteEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
     }
 
-    private void saveRecaudacion(){
+    protected void saveRecaudacion(){
         ContentValues values = new ContentValues();
 
         values.put("INC_ArqueoRealizado", chkArqueoRealizado.isChecked());
@@ -108,7 +109,7 @@ public class FragmentArqueoMaquina extends Fragment {
         // Inflamos la Vista que se debe mostrar en pantalla.
         View rootView = inflater.inflate(R.layout.fragment_slide_page_arqueo, container,
                 false);
-        //curMaquina = ScreenSlidePagerRecaudacion.curMaquina;
+        curMaquina = ScreenSlidePagerRecaudacion.curMaquina;
         curRecaudacion = ScreenSlidePagerRecaudacion.curRecaudacion;
         bindRecaudacionData(rootView);
         return rootView;
@@ -119,5 +120,30 @@ public class FragmentArqueoMaquina extends Fragment {
         saveRecaudacion();
         super.onDestroy();
     }
+    protected void calculaArqueo(){
+        float valorUltimoArqueo = 0;
+        float diferenciaRecaudacion = 0;
+        Cursor curUltimoArqueo = dbAdapter.getUltimoArqueo(getRecaudacion("CodigoEmpresa"), getRecaudacion("INC_CodigoEstablecimiento"),getRecaudacion("INC_CodigoMaquina"));
 
+        //Obtener el valor introducido en el hopper del ultimo arqueo o de la instalacion
+        if (curUltimoArqueo.moveToFirst()){
+            valorUltimoArqueo = curUltimoArqueo.getFloat(curUltimoArqueo.getColumnIndex("INC_ValorArqueoTeorico"));
+        }else {
+            valorUltimoArqueo = curMaquina.getFloat(curMaquina.getColumnIndex("INC_IntroducidoHopper"));
+        }
+        //Lineas.INC_DiferenciaRecaudacion= Lineas.INC_Bruto - Lineas.INC_JugadoTeorico + Lineas.INC_PremioTeorico + Lineas.INC_ValorArqueoTeorico - ValorUltimoArqueo
+        diferenciaRecaudacion = (getRecaudacionFloat("INC_Bruto")
+                - getRecaudacionFloat("INC_JugadoTerico")
+                + getRecaudacionFloat("INC_ValorArqueoTeorico")
+                - valorUltimoArqueo);
+        txtDiferenciaRecaudacion.setText(importeStr(diferenciaRecaudacion));
+
+    }
+    private String getRecaudacion(String col){
+        return curRecaudacion.getString(curRecaudacion.getColumnIndex(col));
+    }
+
+    private Float getRecaudacionFloat(String col){
+        return getNumber(getRecaudacion(col));
+    }
 }

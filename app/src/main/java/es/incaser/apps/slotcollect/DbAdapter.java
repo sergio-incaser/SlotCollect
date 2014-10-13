@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 16;
+	private static final int DATABASE_VER = 18;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -194,7 +194,7 @@ public class DbAdapter extends SQLiteOpenHelper{
         return db.query("Prestamos",new String[]{"*"},"id=?",new String[]{id},"","","");
     }
 
-    public Map<String, String> getDicRelLineasCabecera(){
+    public Map<String, String> getDicRelLineasCabecerax(){
         Map<String, String> dicRelLineasCabecera = new HashMap<String, String>();
         dicRelLineasCabecera.put("INC_ImporteRecaudacion", "INC_TotalRecaudacion");
         dicRelLineasCabecera.put("INC_ImporteRetencion", "INC_TotalRetencion");
@@ -205,8 +205,15 @@ public class DbAdapter extends SQLiteOpenHelper{
     }
 
     public Cursor getTotalesRecaudacion(String empresa, String establecimento, String fecha){
-        Map<String, String> dicRelLineasCabecera = getDicRelLineasCabecera();
-        String[] campos = dicRelLineasCabecera.keySet().toString().replace("[","").replace("]","").split(",");
+//        Map<String, String> dicRelLineasCabecera = getDicRelLineasCabecera();
+//        String[] campos = dicRelLineasCabecera.keySet().toString().replace("[","").replace("]","").split(",");
+        String[] campos = new String[]{
+                "SUM(INC_ImporteRecaudacion) AS INC_TotalRecaudacion",
+                "SUM(INC_ImporteRetencion) AS INC_TotalRetencion",
+                "SUM(INC_ImporteNeto) AS INC_TotalNeto",
+                "SUM(INC_ImporteEstablecimiento) AS INC_TotalEstablecimiento"
+              };
+
         String where = "Printable=1 AND CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_FechaRecaudacion=?";
         String groupBy = "CodigoEmpresa, INC_CodigoEstablecimiento, INC_FechaRecaudacion";
         String[] whereArgs = new String[]{empresa, establecimento, fecha};
@@ -248,5 +255,13 @@ public class DbAdapter extends SQLiteOpenHelper{
     }
     SQLiteDatabase getDb(){
         return db;
+    }
+
+    public Cursor getUltimoArqueo(String empresa, String establecimiento, String maquina){
+        String[] cols = new String[]{"INC_ValorArqueoTeorico"};
+        String where = "INC_ArqueoRealizado<>0 AND CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?";
+        String[] whereArgs = new String[]{empresa, establecimiento, maquina};
+
+        return  db.query("RecaudacionesAnteriores", cols, where, whereArgs,"","","INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC","1");
     }
 }

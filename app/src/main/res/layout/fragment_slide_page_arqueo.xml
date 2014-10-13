@@ -121,7 +121,7 @@
             android:orientation="horizontal">
             <TextView
                 style="@style/EtiquetaContadores"
-                android:text="Recaudado"/>
+                android:text="Recaudación"/>
             <EditText
                 android:id="@+id/txtDiferenciaRecaudacion"
                 style="@style/EditTextContadores"

@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import static es.incaser.apps.slotcollect.tools.*;
 /**
  * Created by sergio on 28/09/14.
  */
@@ -69,7 +70,7 @@ public class FragmentImportesMaquina extends Fragment{
         txtImporteEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
     }
 
-    private void saveRecaudacion(){
+    public void saveRecaudacion(){
         ContentValues values = new ContentValues();
 
         values.put("INC_Bruto", getNumber(txtBruto));
@@ -93,7 +94,6 @@ public class FragmentImportesMaquina extends Fragment{
         saveRecaudacion();
         super.onDestroy();
     }
-
 
     private String getRecaudacion(String columna){
         return curRecaudacion.getString(curRecaudacion.getColumnIndex(columna));
@@ -126,35 +126,35 @@ public class FragmentImportesMaquina extends Fragment{
         }
     }
 
-    private float getNumber(String text){
-        if (text == null){
-            return 0;
-        }else if (text.length() == 0){
-            return 0;
-        }else if (text.matches(".*\\\\D+.*")){
-            return 0;
-        }else {
-            //TODO Controlar separador de miles
-            return Float.valueOf(text.replace(",","."));
-        }
-    }
-    private float getNumber(EditText txt){
-        return getNumber(txt.getText().toString());
-    }
+//    private float getNumber(String text){
+//        if (text == null){
+//            return 0;
+//        }else if (text.length() == 0){
+//            return 0;
+//        }else if (text.matches(".*\\\\D+.*")){
+//            return 0;
+//        }else {
+//            //TODO Controlar separador de miles
+//            return Float.valueOf(text.replace(",","."));
+//        }
+//    }
+//    private float getNumber(EditText txt){
+//        return getNumber(txt.getText().toString());
+//    }
 
-    private String importeStr(Float importe){
-        DecimalFormat nf = new DecimalFormat();
-        nf.applyPattern("#0.00");
-        return nf.format(importe);
-    }
-
-    private String importeStr(String importe){
-        return importeStr(getNumber(importe));
-    }
-
-    private String importeStr(EditText txt){
-        return importeStr(txt.getText().toString());
-    }
+//    private String importeStr(Float importe){
+//        DecimalFormat nf = new DecimalFormat();
+//        nf.applyPattern("#0.00");
+//        return nf.format(importe);
+//    }
+//
+//    private String importeStr(String importe){
+//        return importeStr(getNumber(importe));
+//    }
+//
+//    private String importeStr(EditText txt){
+//        return importeStr(txt.getText().toString());
+//    }
 
     private void calcImportes(){
         //TODO Leer de cursor instalacion

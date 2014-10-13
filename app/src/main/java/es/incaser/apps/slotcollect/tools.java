@@ -24,6 +24,7 @@ public class tools {
             return Float.valueOf(text.replace(",","."));
         }
     }
+
     public static float getNumber(EditText txt){
         return getNumber(txt.getText().toString());
     }
@@ -36,6 +37,21 @@ public class tools {
 
     public static String importeStr(String importe){
         return importeStr(getNumber(importe));
+    }
+
+
+    public static int getInt(String text){
+        return Math.round(getNumber(text));
+    }
+    public static int getInt(EditText txtView) {
+        return  getInt(txtView.getText().toString());
+    }
+    public static String enteroStr(Integer x){
+        return x.toString();
+    }
+
+    public static String importeStr(EditText txt){
+        return importeStr(txt.getText().toString());
     }
 
     public static String getToday(){

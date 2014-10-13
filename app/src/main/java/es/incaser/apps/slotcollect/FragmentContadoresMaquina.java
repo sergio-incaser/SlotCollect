@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import static es.incaser.apps.slotcollect.tools.*;
+
 /**
  * Created by sergio on 28/09/14.
  */
@@ -60,18 +62,16 @@ public class FragmentContadoresMaquina extends Fragment {
         txtEnt500Ant = (EditText)rootView.findViewById(R.id.txtEnt500Ant);
         txtEnt1000Ant = (EditText)rootView.findViewById(R.id.txtEnt1000Ant);
 
-        txtEnt010Ant.setText(getMaquina("INC_Entrada010"));
-
-        txtSal010Ant.setText(getMaquina("INC_Salida010"));
-
-        txtEnt020Ant.setText(getMaquina("INC_Entrada020"));
-        txtSal020Ant.setText(getMaquina("INC_Salida020"));
-        txtEnt050Ant.setText(getMaquina("INC_Entrada050"));
-        txtEnt100Ant.setText(getMaquina("INC_Entrada100"));
-        txtSal100Ant.setText(getMaquina("INC_Salida100"));
-        txtEnt200Ant.setText(getMaquina("INC_Entrada200"));
-        txtEnt500Ant.setText(getMaquina("INC_Entrada500"));
-        txtEnt1000Ant.setText(getMaquina("INC_Entrada1000"));
+        txtEnt010Ant.setText(getRecaudacion("INC_Entrada010ANT"));
+        txtSal010Ant.setText(getRecaudacion("INC_Salida010ANT"));
+        txtEnt020Ant.setText(getRecaudacion("INC_Entrada020ANT"));
+        txtSal020Ant.setText(getRecaudacion("INC_Salida020ANT"));
+        txtEnt050Ant.setText(getRecaudacion("INC_Entrada050ANT"));
+        txtEnt100Ant.setText(getRecaudacion("INC_Entrada100ANT"));
+        txtSal100Ant.setText(getRecaudacion("INC_Salida100ANT"));
+        txtEnt200Ant.setText(getRecaudacion("INC_Entrada200ANT"));
+        txtEnt500Ant.setText(getRecaudacion("INC_Entrada500ANT"));
+        txtEnt1000Ant.setText(getRecaudacion("INC_Entrada1000ANT"));
     }
 
     private void bindActualData(View rootView) {
@@ -105,6 +105,16 @@ public class FragmentContadoresMaquina extends Fragment {
         txtPremioTeorico.setText(getRecaudacion("INC_PremioTeorico"));
         txtPartidas.setText(getRecaudacion("INC_Partidas"));
 
+        txtEnt010.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtSal010.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt020.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtSal020.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt050.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt100.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtSal100.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt200.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt500.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt1000.setOnFocusChangeListener(new CustomOnFocusChange());
     }
     
     private String getMaquina(String columna){
@@ -121,14 +131,14 @@ public class FragmentContadoresMaquina extends Fragment {
                 false);
 
         curMaquina = ScreenSlidePagerRecaudacion.curMaquina;
-        bindAntData(rootView);
 
         curRecaudacion = ScreenSlidePagerRecaudacion.curRecaudacion;
+        bindAntData(rootView);
         bindActualData(rootView);
         return rootView;
     }
 
-    private void saveRecaudacion(){
+    protected void saveRecaudacion(){
         ContentValues values = new ContentValues();
         values.put("INC_Entrada010Ant", txtEnt010Ant.getText().toString());
         values.put("INC_Entrada020Ant", txtEnt020Ant.getText().toString());
@@ -165,5 +175,40 @@ public class FragmentContadoresMaquina extends Fragment {
     public void onDestroy() {
         saveRecaudacion();
         super.onDestroy();
+    }
+
+    private void calcTeoricos(){
+        float precioPartida = getNumber(getMaquina("INC_PrecioPartida"));
+        float jugadoTeorico = 0;
+        float premioTeorico = 0;
+        Integer partidas = 0;
+
+        //Calculo jugado teorico
+        jugadoTeorico += 0.10 * (getInt(txtEnt010) - getInt(txtEnt010Ant));
+        jugadoTeorico += 0.20 * (getInt(txtEnt020) - getInt(txtEnt020Ant));
+        jugadoTeorico += 0.50 * (getInt(txtEnt050) - getInt(txtEnt050Ant));
+        jugadoTeorico += 1.00 * (getInt(txtEnt100) - getInt(txtEnt100Ant));
+        jugadoTeorico += 2.00 * (getInt(txtEnt200) - getInt(txtEnt200Ant));
+        txtJugadoTeorico.setText(importeStr(jugadoTeorico));
+
+        //Calculo premio teorico
+        premioTeorico += 0.10 * (getInt(txtSal010) - getInt(txtSal010Ant));
+        premioTeorico += 0.20 * (getInt(txtSal020) - getInt(txtSal020Ant));
+        premioTeorico += 1.00 * (getInt(txtSal100) - getInt(txtSal100Ant));
+        txtPremioTeorico.setText(importeStr(premioTeorico));
+
+        //Calculo partidas
+        partidas = Math.round(jugadoTeorico / precioPartida);
+        txtPartidas.setText(partidas.toString());
+    }
+
+    private class CustomOnFocusChange implements View.OnFocusChangeListener {
+
+        @Override
+        public void onFocusChange(View view, boolean b) {
+            if (! b){
+                calcTeoricos();
+            }
+        }
     }
 }
