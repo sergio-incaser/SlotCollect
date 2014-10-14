@@ -2,6 +2,7 @@ package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +56,7 @@ public class MainActivity extends Activity{
             }
         });
     }
+
 
     @Override
     protected void onStart() {
@@ -86,6 +92,31 @@ public class MainActivity extends Activity{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.length() >= 3){
+                    getDataSql(newText.toString());
+                    estabAdapter.notifyDataSetChanged();
+                }else if(newText.length()==0){
+                    getDataSql();
+                    estabAdapter.notifyDataSetChanged();
+                }
+                return false;
+            }
+        });
         return true;
     }
 
@@ -123,6 +154,10 @@ public class MainActivity extends Activity{
     }
     private void getDataSql(){
         cur = dbAdapter.getCursorBuscador("","Establecimientos","");
+    }
+
+    private void getDataSql(String text){
+        cur = dbAdapter.getCursorBuscador(text,"Establecimientos","");
     }
 
     public static class EstablecimientosAdapter extends BaseAdapter {

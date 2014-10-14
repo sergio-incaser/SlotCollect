@@ -136,7 +136,7 @@ public class DbAdapter extends SQLiteOpenHelper{
 
     public Cursor getCursorBuscador(String textSearch, String tableSearch, String order){
         textSearch = textSearch.replace("'", "''");
-        String[] fields = new String[]{"*" ,"id  AS _id", "RazonSocial AS item"};
+        String[] fields = new String[]{"*" ,"id  AS _id", "RazonSocial AS name"};
         String where = "";
         String[] selectionArgs = new String[]{};
         String orderBy ="id";
