@@ -33,7 +33,7 @@
             android:label="@string/title_activity_recaudacion_maquina" >
         </activity>
         <activity
-            android:name=".ScreenSlidePagerRecaudacion"
+            android:name=".Recaudacion"
             android:label="@string/title_activity_Screen_Slide_Recaudacion" >
         </activity>
         <activity

@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 18;
+	private static final int DATABASE_VER = 19;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -175,9 +175,9 @@ public class DbAdapter extends SQLiteOpenHelper{
     public Cursor getMaquina(String id){
         return db.query("Maquinas",new String[]{"*"},"id=?",new String[]{id},"","","");
     }
-    public Cursor getRecaudacion(String codigoEmpresa, String codigoMaquina){
-        return db.query("INC_LineasRecaudacion",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoMaquina=?",
-                new String[]{codigoEmpresa, codigoMaquina},"","","");
+    public Cursor getRecaudacion(String codigoEmpresa, String codigoEstablecimiento, String codigoMaquina){
+        return db.query("INC_LineasRecaudacion",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?",
+                new String[]{codigoEmpresa, codigoEstablecimiento, codigoMaquina},"","","");
     }
     public Cursor getCabeceraRecaudacion(String codigoEmpresa, String codigoEstablecimiento){
         return db.query("INC_CabeceraRecaudacion",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoEstablecimiento=?",
@@ -276,6 +276,7 @@ public class DbAdapter extends SQLiteOpenHelper{
         String[] cols = new String[]{"SUM(INC_Bruto) AS SumaBruto",
                 "SUM(INC_JugadoTeorico) AS SumaJugadoTeorico",
                 "SUM(INC_PremioTeorico) AS SumaPremioTeorico",
+                "SUM(INC_ImporteRetencion) AS SumaImporteRetencion",
                 "SUM(INC_RecuperaCargaEmpresa) AS SumaRecuperaCargaEmpresa",
                 "SUM(INC_RecuperaCargaEstablecimiento) AS SumaRecuperaCargaEstablecimiento",
                 "SUM(INC_CargaHopperEmpresa) AS SumaCargaHopperEmpresa",

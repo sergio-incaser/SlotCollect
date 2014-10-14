@@ -5,17 +5,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowId;
 import android.widget.EditText;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 import static es.incaser.apps.slotcollect.tools.*;
 /**
@@ -84,7 +77,7 @@ public class FragmentImportesMaquina extends Fragment{
         values.put("INC_ImporteEstablecimiento", getNumber(txtImporteEstablecimiento));
         values.put("INC_ImporteNeto", getNumber(txtImporteNeto));
 
-        int numRecords = ScreenSlidePagerRecaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
+        int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
                 "id=?",
                 new String[]{getRecaudacion("id")});
     }
@@ -106,8 +99,8 @@ public class FragmentImportesMaquina extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_slide_page_importes, container,false);
-        curMaquina = ScreenSlidePagerRecaudacion.curMaquina;
-        curRecaudacion = ScreenSlidePagerRecaudacion.curRecaudacion;
+        curMaquina = Recaudacion.curMaquina;
+        curRecaudacion = Recaudacion.curRecaudacion;
         bindRecaudacionData(rootView);
         return rootView;
     }
@@ -183,7 +176,7 @@ public class FragmentImportesMaquina extends Fragment{
         txtImporteEstablecimiento.setText(importeStr(estab));
         txtImporteNeto.setText(importeStr(importeReparto - estab));
 
-        ScreenSlidePagerRecaudacion.isModified = true;
+        Recaudacion.isModified = true;
     }
 
     public static float val(String str) {

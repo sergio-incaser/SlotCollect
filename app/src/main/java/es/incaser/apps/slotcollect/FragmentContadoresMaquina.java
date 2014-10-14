@@ -1,7 +1,6 @@
 package es.incaser.apps.slotcollect;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import static es.incaser.apps.slotcollect.tools.*;
 
@@ -130,9 +128,9 @@ public class FragmentContadoresMaquina extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_slide_page_contadores, container,
                 false);
 
-        curMaquina = ScreenSlidePagerRecaudacion.curMaquina;
+        curMaquina = Recaudacion.curMaquina;
 
-        curRecaudacion = ScreenSlidePagerRecaudacion.curRecaudacion;
+        curRecaudacion = Recaudacion.curRecaudacion;
         bindAntData(rootView);
         bindActualData(rootView);
         return rootView;
@@ -166,7 +164,7 @@ public class FragmentContadoresMaquina extends Fragment {
         values.put("INC_PremioTeorico", txtPremioTeorico.getText().toString());
         values.put("INC_Partidas", txtPartidas.getText().toString());
 
-        int numRecords = ScreenSlidePagerRecaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
+        int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
                 "id=?",
                 new String[]{getRecaudacion("id")});
     }
@@ -201,7 +199,7 @@ public class FragmentContadoresMaquina extends Fragment {
         partidas = Math.round(jugadoTeorico / precioPartida);
         txtPartidas.setText(partidas.toString());
 
-        ScreenSlidePagerRecaudacion.isModified = true;
+        Recaudacion.isModified = true;
     }
 
     private class CustomOnFocusChange implements View.OnFocusChangeListener {

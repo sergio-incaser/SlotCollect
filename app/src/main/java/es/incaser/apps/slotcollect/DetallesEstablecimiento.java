@@ -17,8 +17,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.Date;
-
 import static es.incaser.apps.slotcollect.tools.*;
 
 
@@ -56,7 +54,7 @@ public class DetallesEstablecimiento extends Activity {
         lvMaquinas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,long id) {
-            Intent myIntent = new Intent(arg1.getContext(),ScreenSlidePagerRecaudacion.class);
+            Intent myIntent = new Intent(arg1.getContext(),Recaudacion.class);
             myIntent.putExtra("id", Long.toString(id));
             startActivity(myIntent);
             }

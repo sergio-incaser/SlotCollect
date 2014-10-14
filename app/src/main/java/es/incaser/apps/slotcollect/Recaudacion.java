@@ -13,18 +13,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 import static es.incaser.apps.slotcollect.tools.*;
 
 /**
  * Created by sergio on 28/09/14.
  */
-public class ScreenSlidePagerRecaudacion extends FragmentActivity implements ActionBar.TabListener{
+public class Recaudacion extends FragmentActivity implements ActionBar.TabListener{
     private ViewPager vPager;
     private TabsAdapter tAdapter;
     private ActionBar aBar;
@@ -33,45 +32,34 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
     public static Cursor curMaquina;
     public static Cursor curRecaudacion;
     public static Cursor curCabRecaudacion;
+    public static Cursor curUltimoArqueo;
     public static Cursor curSumasDesdeA;
     public static Cursor curSumasDesdeI;
+    public static Cursor curUltimaRecaudacion;
+    public static float valorUltimoArqueo = 0;
+    public static Date fechaUltimaRecaudacion;
+    public static String fechaUltimoArqueo;
+
     public AlertDialog alertDialog;
     private boolean dialogoContestado = false;
     String codigoEmpresa;
+    String codigoEstablecimiento;
     String codigoMaquina;
     FragmentContadoresMaquina fragmentContadoresMaquina;
     FragmentImportesMaquina fragmentImportesMaquina;
     FragmentArqueoMaquina fragmentArqueoMaquina;
     public static boolean isModified = false;
     public static int oldPagePosition = -1;
+    String idMaquina;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.slide_screen_recaudacion);
         Bundle bundle = getIntent().getExtras();
-        String idMaquina = bundle.getString("id");
+        idMaquina = bundle.getString("id");
         dbAdapter = new DbAdapter(this);
-        curMaquina = dbAdapter.getMaquina(idMaquina);
-        curMaquina.moveToFirst();
-
-        codigoEmpresa = dbAdapter.getColumnData(curMaquina, "CodigoEmpresa");
-        codigoMaquina = dbAdapter.getColumnData(curMaquina, "INC_CodigoMaquina");
-
-        curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codigoEmpresa,getColMaquina("INC_CodigoEstablecimiento"));
-
-        curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoMaquina);
-
-        if (curRecaudacion.getCount() == 0){
-            dbAdapter.insertRecord("INC_LineasRecaudacion",initialValues());
-            curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoMaquina);
-        }
-        curRecaudacion.moveToFirst();
-
-//        curSumasDesdeA = dbAdapter.getSumasDesde(getRecaudacion("CodigoEmpresa"),
-//                getRecaudacion("INC_CodigoEstablecimiento"),
-//                getRecaudacion("INC_CodigoMaquina"), fechaUltimoArqueo);
-
+        initCursors();
 
         vPager = (ViewPager)findViewById(R.id.recaudacion_pager);
         tAdapter = new TabsAdapter(getSupportFragmentManager());
@@ -88,12 +76,12 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
             public void onPageSelected(int position) {
 
                 aBar.setSelectedNavigationItem(position);
-                if (ScreenSlidePagerRecaudacion.isModified) {
+                if (Recaudacion.isModified) {
                     fragmentContadoresMaquina.saveRecaudacion();
                     fragmentImportesMaquina.saveRecaudacion();
                     fragmentArqueoMaquina.saveRecaudacion();
 
-                    curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoMaquina);
+                    curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
                     curRecaudacion.moveToFirst();
 
                     fragmentArqueoMaquina.calculaArqueo();
@@ -107,7 +95,7 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
                             break;
                     }
                 }
-                ScreenSlidePagerRecaudacion.isModified = false;
+                Recaudacion.isModified = false;
                 oldPagePosition = position;
             }
 
@@ -123,6 +111,36 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         });
     }
 
+    private void initCursors(){
+        curMaquina = dbAdapter.getMaquina(idMaquina);
+        curMaquina.moveToFirst();
+
+        codigoEmpresa = dbAdapter.getColumnData(curMaquina, "CodigoEmpresa");
+        codigoEstablecimiento = dbAdapter.getColumnData(curMaquina, "INC_CodigoEstablecimiento");
+        codigoMaquina = dbAdapter.getColumnData(curMaquina, "INC_CodigoMaquina");
+
+        curUltimoArqueo = dbAdapter.getUltimoArqueo(codigoEmpresa, codigoEstablecimiento,codigoMaquina);
+        //Obtener el valor introducido en el hopper del ultimo arqueo o de la instalacion
+        if (curUltimoArqueo.moveToFirst()) {
+            valorUltimoArqueo = curUltimoArqueo.getFloat(curUltimoArqueo.getColumnIndex("INC_ValorArqueoTeorico"));
+            fechaUltimoArqueo = curUltimoArqueo.getString(curUltimoArqueo.getColumnIndex("INC_FechaRecaudacion"));
+        } else {
+            valorUltimoArqueo = curMaquina.getFloat(curMaquina.getColumnIndex("INC_IntroducidoHopper"));
+            fechaUltimoArqueo = curMaquina.getString(curMaquina.getColumnIndex("INC_FechaInstalacion"));
+        }
+        curUltimaRecaudacion = dbAdapter.getUltimaRecaudacion(codigoEmpresa, codigoEstablecimiento,codigoMaquina);
+        curSumasDesdeI = dbAdapter.getSumasDesde(codigoEmpresa, codigoEstablecimiento, codigoMaquina,
+                            curMaquina.getString(curMaquina.getColumnIndex("INC_FechaInstalacion")));
+        curSumasDesdeA = dbAdapter.getSumasDesde(codigoEmpresa, codigoEstablecimiento,codigoMaquina, fechaUltimoArqueo);
+
+        curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codigoEmpresa,codigoEstablecimiento);
+        curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
+        if (!curRecaudacion.moveToFirst()){
+            dbAdapter.insertRecord("INC_LineasRecaudacion",initialValues());
+            curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
+            curRecaudacion.moveToFirst();
+        }
+    }
     private ContentValues initialValues(){
         ContentValues values = new ContentValues();
         values.put("CodigoEmpresa", getColMaquina("CodigoEmpresa"));
@@ -156,11 +174,45 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         values.put("INC_Entrada1000ANT", getColMaquina("INC_Entrada1000"));
         values.put("INC_Entrada1000", getColMaquina("INC_Entrada1000"));
 
+        //Date now = Calendar.getInstance().getTime();
+        Date now = str2date(getToday(),"yyyy-MM-dd");
+        int semanas = Math.round((now.getTime() - str2date(getColMaquina("INC_FechaInstalacion")).getTime())
+                        / (86400000 * 7));
+
+        float importeRetencion;
+        float recuperaEmpresa;
+        float recuperaEstablecimiento;
+
+        if (curSumasDesdeI.moveToFirst()){
+            importeRetencion = ((getFloatMaquina("INC_RetencionFija") * semanas)
+                    + getFloatMaquina("INC_RetencionPendiente")
+                    - curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaImporteRetencion")));
+            recuperaEmpresa = (getFloatMaquina("INC_CargaHopperEmpresa")
+                    + curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaCargaHopperEmpresa"))
+                    - curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaRecuperaCargaEmpresa")));
+
+            recuperaEstablecimiento = (getFloatMaquina("INC_CargeHopperEstablecimiento")
+                    + curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaCargaHopperEstablecimiento"))
+                    - curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaRecuperaCargaEstablecimiento")));
+        }else {
+            importeRetencion = ((getFloatMaquina("INC_RetencionFija") * semanas)
+                    + getFloatMaquina("INC_RetencionPendiente"));
+            recuperaEmpresa = (getFloatMaquina("INC_CargeHopperEmpresa"));
+            recuperaEstablecimiento = (getFloatMaquina("INC_CargeHopperEstablecimiento"));
+        }
+        values.put("INC_ImporteRetencion", importeRetencion);
+        values.put("INC_RecuperaCargaEmpresa", recuperaEmpresa);
+        values.put("INC_RecuperaCargaEstablecimiento", recuperaEstablecimiento);
+
         return values;
     }
 
     private String getColMaquina(String col){
-      return curMaquina.getString(curMaquina.getColumnIndex(col));
+        return curMaquina.getString(curMaquina.getColumnIndex(col));
+    };
+
+    private float getFloatMaquina(String col){
+        return curMaquina.getFloat(curMaquina.getColumnIndex(col));
     };
 
     @Override
@@ -285,14 +337,14 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
                 // User clicked OK button
                 dialogoContestado = true;
                 validarRecaudacion();
-                ScreenSlidePagerRecaudacion.this.onBackPressed();
+                Recaudacion.this.onBackPressed();
             }
         });
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
                 dialogoContestado = true;
-                ScreenSlidePagerRecaudacion.this.onBackPressed();
+                Recaudacion.this.onBackPressed();
             }
         });
 
