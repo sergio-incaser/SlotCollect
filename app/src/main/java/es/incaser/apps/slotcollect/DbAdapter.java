@@ -184,11 +184,11 @@ public class DbAdapter extends SQLiteOpenHelper{
                 new String[]{codigoEmpresa, codigoEstablecimiento},"","","");
     }
 
-    public Cursor getUltimaRecaudacion(String codigoEmpresa, String codigoMaquina){
-        String order = "INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC";
-        return db.query("RecaudacionesAnteriores",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoMaquina=?",
-                new String[]{codigoEmpresa, codigoMaquina},"","",order,"1");
-    }
+//    public Cursor getUltimaRecaudacion(String codigoEmpresa, String codigoMaquina){
+//        String order = "INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC";
+//        return db.query("RecaudacionesAnteriores",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoMaquina=?",
+//                new String[]{codigoEmpresa, codigoMaquina},"","",order,"1");
+//    }
 
     public Cursor getPrestamosEstablecimiento(String id){
         return db.query("Prestamos",new String[]{"*"},"id=?",new String[]{id},"","","");
@@ -258,9 +258,30 @@ public class DbAdapter extends SQLiteOpenHelper{
     }
 
     public Cursor getUltimoArqueo(String empresa, String establecimiento, String maquina){
-        String[] cols = new String[]{"INC_ValorArqueoTeorico"};
+        String[] cols = new String[]{"INC_FechaRecaudacion","INC_ValorArqueoTeorico"};
         String where = "INC_ArqueoRealizado<>0 AND CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?";
         String[] whereArgs = new String[]{empresa, establecimiento, maquina};
+
+        return  db.query("RecaudacionesAnteriores", cols, where, whereArgs,"","","INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC","1");
+    }
+    public Cursor getUltimaRecaudacion(String empresa, String establecimiento, String maquina){
+        String[] cols = new String[]{"INC_FechaRecaudacion"};
+        String where = "CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?";
+        String[] whereArgs = new String[]{empresa, establecimiento, maquina};
+
+        return  db.query("RecaudacionesAnteriores", cols, where, whereArgs,"","","INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC","1");
+    }
+
+    public Cursor getSumasDesde(String empresa, String establecimiento, String maquina, String fechaDesde){
+        String[] cols = new String[]{"SUM(INC_Bruto) AS SumaBruto",
+                "SUM(INC_JugadoTeorico) AS SumaJugadoTeorico",
+                "SUM(INC_PremioTeorico) AS SumaPremioTeorico",
+                "SUM(INC_RecuperaCargaEmpresa) AS SumaRecuperaCargaEmpresa",
+                "SUM(INC_RecuperaCargaEstablecimiento) AS SumaRecuperaCargaEstablecimiento",
+                "SUM(INC_CargaHopperEmpresa) AS SumaCargaHopperEmpresa",
+                "SUM(INC_CargaHopperEstablecimiento) AS SumaCargaHopperEstablecimiento"};
+        String where = "CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=? AND INC_FechaRecaudacion > ?";
+        String[] whereArgs = new String[]{empresa, establecimiento, maquina, fechaDesde};
 
         return  db.query("RecaudacionesAnteriores", cols, where, whereArgs,"","","INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC","1");
     }

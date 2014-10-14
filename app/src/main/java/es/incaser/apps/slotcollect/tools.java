@@ -72,25 +72,23 @@ public class tools {
     }
 
     public static Date str2date(String myTimestamp, String strFormat){
-        if (strFormat == ""){
-            strFormat = "yyyy-mm-dd HH:mm:ss";
-        }
-        SimpleDateFormat myDate = new SimpleDateFormat(strFormat);
-        Date convertedDate = new Date();
+        SimpleDateFormat formato = new SimpleDateFormat(strFormat);
+        Date convertedDate = null;
         try {
-            convertedDate = myDate.parse(myTimestamp);
+            convertedDate = formato.parse(myTimestamp);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return convertedDate;
     }
-
-    public static String date2str(Date date, String strFormat){
-        if (strFormat == ""){
-            strFormat = "dd-MM-yyyy";
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        return sdf.format(date);
+    public static Date str2date(String myTimestamp) {
+        return str2date(myTimestamp,"yyyy-MM-dd HH:mm:ss.S");
     }
-
+    public static String date2str(Date date, String strFormat){
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+        return formato.format(date);
+    }
+    public static String date2str(Date date) {
+        return date2str(date,"dd-MM-yyyy");
+    }
 }

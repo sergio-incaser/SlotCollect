@@ -11,7 +11,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import java.util.Date;
+
 import static es.incaser.apps.slotcollect.tools.*;
+import static es.incaser.apps.slotcollect.tools.importeStr;
 
 /**
  * Created by sergio on 28/09/14.
@@ -111,6 +114,7 @@ public class FragmentArqueoMaquina extends Fragment {
                 false);
         curMaquina = ScreenSlidePagerRecaudacion.curMaquina;
         curRecaudacion = ScreenSlidePagerRecaudacion.curRecaudacion;
+        dbAdapter = ScreenSlidePagerRecaudacion.dbAdapter;
         bindRecaudacionData(rootView);
         return rootView;
     }
@@ -120,24 +124,124 @@ public class FragmentArqueoMaquina extends Fragment {
         saveRecaudacion();
         super.onDestroy();
     }
-    protected void calculaArqueo(){
+    protected void calculaArqueo() {
+        long diasNaturales = 0;
         float valorUltimoArqueo = 0;
+        float valorArqueoteorico = 0;
+        Date fechaUltimaRecaudacion;
+        String fechaUltimoArqueo;
         float diferenciaRecaudacion = 0;
-        Cursor curUltimoArqueo = dbAdapter.getUltimoArqueo(getRecaudacion("CodigoEmpresa"), getRecaudacion("INC_CodigoEstablecimiento"),getRecaudacion("INC_CodigoMaquina"));
+        float diferenciaArqueo = 0;
+        float diferenciaInstalacion = 0;
+        float porcentajeRecaudacion = 0;
+        float porcentajeArqueo = 0;
+        float porcentajeInstalacion = 0;
+
+        curRecaudacion = ScreenSlidePagerRecaudacion.curRecaudacion;
+
+        Cursor curUltimoArqueo = dbAdapter.getUltimoArqueo(getRecaudacion("CodigoEmpresa"),
+                getRecaudacion("INC_CodigoEstablecimiento"),
+                getRecaudacion("INC_CodigoMaquina"));
 
         //Obtener el valor introducido en el hopper del ultimo arqueo o de la instalacion
-        if (curUltimoArqueo.moveToFirst()){
+        if (curUltimoArqueo.moveToFirst()) {
             valorUltimoArqueo = curUltimoArqueo.getFloat(curUltimoArqueo.getColumnIndex("INC_ValorArqueoTeorico"));
-        }else {
+            fechaUltimoArqueo = curUltimoArqueo.getString(curUltimoArqueo.getColumnIndex("INC_FechaRecaudacion"));
+        } else {
             valorUltimoArqueo = curMaquina.getFloat(curMaquina.getColumnIndex("INC_IntroducidoHopper"));
+            fechaUltimoArqueo = curMaquina.getString(curMaquina.getColumnIndex("INC_FechaInstalacion"));
         }
-        //Lineas.INC_DiferenciaRecaudacion= Lineas.INC_Bruto - Lineas.INC_JugadoTeorico + Lineas.INC_PremioTeorico + Lineas.INC_ValorArqueoTeorico - ValorUltimoArqueo
-        diferenciaRecaudacion = (getRecaudacionFloat("INC_Bruto")
-                - getRecaudacionFloat("INC_JugadoTerico")
-                + getRecaudacionFloat("INC_ValorArqueoTeorico")
-                - valorUltimoArqueo);
+//        Ifn Lineas.INC_ArqueoRealizado=0 Then
+//          Lineas.INC_DiferenciaRecaudacion= Lineas.INC_Bruto - Lineas.INC_JugadoTeorico + Lineas.INC_PremioTeorico
+//        Else
+//          Gosub CargarUltimoArqueo
+//          Lineas.INC_DiferenciaRecaudacion= Lineas.INC_Bruto - Lineas.INC_JugadoTeorico + Lineas.INC_PremioTeorico + Lineas.INC_ValorArqueoTeorico - ValorUltimoArqueo
+//        Endif
+        if (chkArqueoRealizado.isChecked()){
+            diferenciaRecaudacion = (getRecaudacionFloat("INC_Bruto")
+                    - getRecaudacionFloat("INC_JugadoTeorico")
+                    + getRecaudacionFloat("INC_PremioTeorico")
+                    + getNumber(txtArqueoTeorico)
+                    - valorUltimoArqueo);
+        } else {
+            diferenciaRecaudacion = (getRecaudacionFloat("INC_Bruto")
+                    - getRecaudacionFloat("INC_JugadoTeorico")
+                    + getRecaudacionFloat("INC_PremioTeorico"));
+        }
+
         txtDiferenciaRecaudacion.setText(importeStr(diferenciaRecaudacion));
 
+        porcentajeRecaudacion = (getRecaudacionFloat("INC_PremioTeorico")
+                / getRecaudacionFloat("INC_JugadoTeorico") * 100);
+        txtPorcPremio.setText(importeStr(porcentajeRecaudacion));
+
+        Cursor curUltimaRecaudacion = dbAdapter.getUltimaRecaudacion(getRecaudacion("CodigoEmpresa"),
+                                                        getRecaudacion("INC_CodigoEstablecimiento"),
+                                                        getRecaudacion("INC_CodigoMaquina"));
+        if (curUltimaRecaudacion.moveToFirst()){
+            fechaUltimaRecaudacion = str2date(curUltimaRecaudacion.getString(
+                                    curUltimaRecaudacion.getColumnIndex("INC_FechaRecaudacion")));
+        }else{
+            fechaUltimaRecaudacion = str2date(curMaquina.getString(curMaquina.getColumnIndex("INC_FechaInstalacion")));
+        }
+        Date now = str2date(getToday(),"yyyy-MM-dd");
+        diasNaturales = now.getTime() - fechaUltimaRecaudacion.getTime();
+        diasNaturales = diasNaturales / 86400000;
+
+        txtDiasNaturalesUR.setText(enteroStr(Math.round(diasNaturales)));
+        txtDiasEfectivosUR.setText(txtDiasNaturalesUR.getText().toString());
+        txtMediaDiaria.setText(importeStr(getRecaudacionFloat("INC_Bruto") / diasNaturales));
+
+        Cursor curSumasDesdeI = dbAdapter.getSumasDesde(getRecaudacion("CodigoEmpresa"),
+                getRecaudacion("INC_CodigoEstablecimiento"),
+                getRecaudacion("INC_CodigoMaquina"),
+                curMaquina.getString(curMaquina.getColumnIndex("INC_FechaInstalacion")));
+        if (curSumasDesdeI.moveToFirst()) {
+            diferenciaInstalacion = diferenciaRecaudacion
+                    + curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaBruto"))
+                    - curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaJugadoTeorico"))
+                    + curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaPremioTeorico"));
+
+            porcentajeInstalacion = (curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaPremioTeorico"))
+                    + getRecaudacionFloat("INC_PremioTeorico"))
+                    / (curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaJugadoTeorico"))
+                    + getRecaudacionFloat("INC_JugadoTeorico")) * 100;
+        }else{
+            diferenciaInstalacion = diferenciaRecaudacion;
+            porcentajeInstalacion = porcentajeRecaudacion;
+        }
+        txtDiferenciaInstalacion.setText(importeStr(diferenciaInstalacion));
+        txtPorcInstalacion.setText(importeStr(porcentajeInstalacion));
+
+        Cursor curSumasDesdeA = dbAdapter.getSumasDesde(getRecaudacion("CodigoEmpresa"),
+                getRecaudacion("INC_CodigoEstablecimiento"),
+                getRecaudacion("INC_CodigoMaquina"), fechaUltimoArqueo);
+
+
+        if (curSumasDesdeA.moveToFirst()){
+            diferenciaArqueo = diferenciaRecaudacion
+                    + curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaBruto"))
+                    - curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaJugadoTeorico"))
+                    + curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaPremioTeorico"));
+
+            porcentajeArqueo = (curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaPremioTeorico"))
+                    + getRecaudacionFloat("INC_PremioTeorico"))
+                    / (curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaJugadoTeorico"))
+                    + getRecaudacionFloat("INC_JugadoTeorico")) * 100;
+        }else {
+            diferenciaArqueo = diferenciaInstalacion;
+            porcentajeArqueo = porcentajeInstalacion;
+        }
+
+        txtDiferenciaArqueo.setText(importeStr(diferenciaArqueo));
+        txtPorcArqueo.setText(importeStr(porcentajeArqueo));
+
+        if (! chkArqueoRealizado.isChecked()){
+            valorArqueoteorico = valorUltimoArqueo - diferenciaArqueo;
+            txtArqueoTeorico.setText(importeStr(valorArqueoteorico));
+        }
+
+        ScreenSlidePagerRecaudacion.isModified = true;
     }
     private String getRecaudacion(String col){
         return curRecaudacion.getString(curRecaudacion.getColumnIndex(col));

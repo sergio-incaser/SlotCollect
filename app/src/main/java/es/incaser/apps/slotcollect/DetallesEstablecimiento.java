@@ -175,7 +175,7 @@ public class DetallesEstablecimiento extends Activity {
             txtDescripcionMaquina.setText(curMaquinas.getString(curMaquinas.getColumnIndex("INC_DescripcionModelo")));
             txtCodigoMaquina.setText("("+curMaquinas.getString(curMaquinas.getColumnIndex("INC_CodigoMaquina"))+")");
             String myTimestamp = curMaquinas.getString(curMaquinas.getColumnIndex("INC_FechaInstalacion"));
-            txtFechainstalacion.setText(date2str(str2date(myTimestamp,""),""));
+            txtFechainstalacion.setText(date2str(str2date(myTimestamp)));
 
             return myView;
         }

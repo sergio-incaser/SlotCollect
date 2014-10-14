@@ -200,6 +200,8 @@ public class FragmentContadoresMaquina extends Fragment {
         //Calculo partidas
         partidas = Math.round(jugadoTeorico / precioPartida);
         txtPartidas.setText(partidas.toString());
+
+        ScreenSlidePagerRecaudacion.isModified = true;
     }
 
     private class CustomOnFocusChange implements View.OnFocusChangeListener {

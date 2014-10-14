@@ -20,6 +20,7 @@
         <item name="android:numeric">integer</item>
     </style>
     <style name="TxtContadorActual">
+        <item name="android:selectAllOnFocus">true</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">0.33</item>
@@ -40,6 +41,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:inputType">numberDecimal</item>
+        <item name="android:selectAllOnFocus">true</item>
         <!--<item name="android:numeric">decimal</item>-->
     </style>
 

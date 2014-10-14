@@ -33,6 +33,8 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
     public static Cursor curMaquina;
     public static Cursor curRecaudacion;
     public static Cursor curCabRecaudacion;
+    public static Cursor curSumasDesdeA;
+    public static Cursor curSumasDesdeI;
     public AlertDialog alertDialog;
     private boolean dialogoContestado = false;
     String codigoEmpresa;
@@ -40,6 +42,8 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
     FragmentContadoresMaquina fragmentContadoresMaquina;
     FragmentImportesMaquina fragmentImportesMaquina;
     FragmentArqueoMaquina fragmentArqueoMaquina;
+    public static boolean isModified = false;
+    public static int oldPagePosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,11 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
         }
         curRecaudacion.moveToFirst();
 
+//        curSumasDesdeA = dbAdapter.getSumasDesde(getRecaudacion("CodigoEmpresa"),
+//                getRecaudacion("INC_CodigoEstablecimiento"),
+//                getRecaudacion("INC_CodigoMaquina"), fechaUltimoArqueo);
+
+
         vPager = (ViewPager)findViewById(R.id.recaudacion_pager);
         tAdapter = new TabsAdapter(getSupportFragmentManager());
         aBar = getActionBar();
@@ -79,15 +88,27 @@ public class ScreenSlidePagerRecaudacion extends FragmentActivity implements Act
             public void onPageSelected(int position) {
 
                 aBar.setSelectedNavigationItem(position);
-                switch(position) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        fragmentArqueoMaquina.calculaArqueo();
-                        break;
+                if (ScreenSlidePagerRecaudacion.isModified) {
+                    fragmentContadoresMaquina.saveRecaudacion();
+                    fragmentImportesMaquina.saveRecaudacion();
+                    fragmentArqueoMaquina.saveRecaudacion();
+
+                    curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoMaquina);
+                    curRecaudacion.moveToFirst();
+
+                    fragmentArqueoMaquina.calculaArqueo();
+
+                    switch (position) {
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                    }
                 }
+                ScreenSlidePagerRecaudacion.isModified = false;
+                oldPagePosition = position;
             }
 
             @Override

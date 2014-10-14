@@ -182,6 +182,8 @@ public class FragmentImportesMaquina extends Fragment{
         float estab = monedasEst * redondeo;
         txtImporteEstablecimiento.setText(importeStr(estab));
         txtImporteNeto.setText(importeStr(importeReparto - estab));
+
+        ScreenSlidePagerRecaudacion.isModified = true;
     }
 
     public static float val(String str) {
