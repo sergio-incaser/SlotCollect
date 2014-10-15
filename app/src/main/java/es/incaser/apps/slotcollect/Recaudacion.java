@@ -6,17 +6,26 @@ import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import static es.incaser.apps.slotcollect.tools.*;
 
@@ -51,6 +60,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public static boolean isModified = false;
     public static int oldPagePosition = -1;
     String idMaquina;
+    LocationManager locManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +149,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             dbAdapter.insertRecord("INC_LineasRecaudacion",initialValues());
             curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
             curRecaudacion.moveToFirst();
+            getPositionGPS(getRecaudacion("id"));
         }
     }
     private ContentValues initialValues(){
@@ -305,6 +316,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                     cv.put(col, curTotales.getString(curTotales.getColumnIndex(col)));
                 }
             }
+            byte[] blob = new byte[16];
+            new Random().nextBytes(blob);
+            cv.put("INC_CodigoRecaudacion",blob);
         }
         return cv;
     }
@@ -317,12 +331,74 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                 new String[]{getRecaudacion("id")});
         if (!curCabRecaudacion.moveToFirst()){
             //Si no existe la cabcera de recaudacion la creamos
-            dbAdapter.insertRecord("INC_CabeceraRecaudacion",computedValuesCabRecaudacion());
+            Long id = dbAdapter.insertRecord("INC_CabeceraRecaudacion",computedValuesCabRecaudacion());
         }else{
             dbAdapter.updateRecord("INC_CabeceraRecaudacion",
                                 computedValuesCabRecaudacion(),"id=?",
                                             new String[]{getCabeceraRecaudacion("id")});
         }
+    }
+
+
+    LocationListener locListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.w("onLocationChanged", "Latitud: " + location.getLatitude());
+            ContentValues cv = new ContentValues();
+            cv.put("CodigoEmpresa",codigoEmpresa);
+            cv.put("INC_CodigoEstablecimiento",codigoEstablecimiento);
+            cv.put("INC_FechaRecaudacion",getRecaudacion("INC_FechaRecaudacion"));
+            cv.put("INC_HoraRecaudacion",getRecaudacion("INC_HoraRecaudacion"));
+            cv.put("INC_FechaLocalizacion",location.getTime());
+            cv.put("INC_Latitud",location.getLatitude());
+            cv.put("INC_Longitud",location.getLongitude());
+
+            dbAdapter.insertRecord("INC_Localizaciones",cv);
+            locManager.removeUpdates(locListener);
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+        }
+    };
+
+    private ContentValues getPositionGPS(String id){
+        ContentValues cv = new ContentValues();
+
+        locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+        Criteria req = new Criteria();
+        req.setAccuracy(Criteria.ACCURACY_COARSE);
+
+        //Mejor proveedor por criterio
+        String mejorProviderCrit = locManager.getBestProvider(req, true);
+        LocationProvider provider = locManager.getProvider(mejorProviderCrit);
+
+        if (mejorProviderCrit == null){
+            return cv;
+        }
+
+        if (!locManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            mostrarAvisoGpsDeshabilitado();
+        }
+
+        Location lastLocation = locManager.getLastKnownLocation(mejorProviderCrit);
+
+        locManager.requestLocationUpdates(
+                mejorProviderCrit, 30000, 0, locListener);
+
+        return cv;
+    }
+
+    private void mostrarAvisoGpsDeshabilitado(){
+        Toast.makeText(this, "GPS desactivado",Toast.LENGTH_SHORT);
     }
 
     public void mostrarDialogo(){

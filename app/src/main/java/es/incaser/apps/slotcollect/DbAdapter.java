@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 19;
+	private static final int DATABASE_VER = 22;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -30,13 +30,15 @@ public class DbAdapter extends SQLiteOpenHelper{
             {"Establecimientos","SELECT * FROM VIS_INC_EstablecARecaudar"},
             {"Maquinas","SELECT * FROM VIS_INC_MaquinasInstaladas"},
             {"Prestamos","SELECT * FROM INC_PrestamosEstablecimiento"},
-            {"RecaudacionesAnteriores","SELECT * FROM VIS_INC_RecaudaInstalaActivas"},
+            {"RecaudacionesAnteriores","SELECT TOP 100 * FROM VIS_INC_RecaudaInstalaActivas"},
+            {"INC_Incidencias","SELECT * FROM INC_Incidencias"},
             //Fin Tablas a importar
             {"INC_CabeceraRecaudacion","SELECT * FROM INC_CabeceraRecaudacion"},
             {"INC_LineasRecaudacion","SELECT * FROM INC_LineasRecaudacion"},
             {"INC_RecuperacionesPrestamo","SELECT * FROM INC_RecuperacionesPrestamo"},
+            {"INC_Localizaciones","SELECT * FROM INC_Localizaciones"},
     };
-    public static int tablesToImport = 4; // Modificar en caso de añadir mas tablas
+    public static int tablesToImport = 5; // Modificar en caso de añadir mas tablas
     public static int tablesToExport = 5; // Exportar tablas a partir de este indice
     private SQLConnection sqlConnection;
 

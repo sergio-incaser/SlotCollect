@@ -27,7 +27,7 @@ public class SQLConnection {
 
     public static Connection connection = null;
     public static Statement statement;
-    public static Statement statementReadOnly;
+    public static Statement statementWrite;
 
     public SQLConnection(){
         if(connection == null)
@@ -40,26 +40,26 @@ public class SQLConnection {
         return instance;
     }
 
-    public Connection getConnection(String host, String port, String user, String password, String database){
-        try {
-            if (this.host != host || this.user != user || this.password != password) {
-                this.host = host;
-                this.port = port;
-                this.user = user;
-                this.password = password;
-                this.database = database;
-                if ((connection != null) && !connection.isClosed()) {
-                    connection.close();
-                }
-            }
-            if(connection == null || connection.isClosed())
-                connection = connectSQL();
-            return connection;
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    public Connection getConnection(String host, String port, String user, String password, String database){
+//        try {
+//            if (this.host != host || this.user != user || this.password != password) {
+//                this.host = host;
+//                this.port = port;
+//                this.user = user;
+//                this.password = password;
+//                this.database = database;
+//                if ((connection != null) && !connection.isClosed()) {
+//                    connection.close();
+//                }
+//            }
+//            if(connection == null || connection.isClosed())
+//                connection = connectSQL();
+//            return connection;
+//        } catch (java.sql.SQLException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
     public Connection getConnection(){
         if(connection == null)
@@ -67,15 +67,15 @@ public class SQLConnection {
         return connection;
     }
 
-
     private Connection connectSQL(){
         Connection conn = null;
         (new Driver()).getClass();
         try {
             String uri = "jdbc:jtds:sqlserver://" + host + ":"+ port +"/"+ database +";";
             conn = DriverManager.getConnection(uri,user,password);
-//            statement = conn.createStatement();
-            statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,ResultSet.CONCUR_READ_ONLY);
+            //statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            statement = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            statementWrite = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -99,16 +99,21 @@ public class SQLConnection {
     }
 
     public ResultSet getResultset(String query){
+        return getResultset(query, false);
+    }
+
+    public ResultSet getResultset(String query, boolean writable){
         ResultSet rs = null;
-        //CachedResultSet crs = null;
         try {
-//            statement = connection.createStatement();
-//            statement.setQueryTimeout(180);
-            //crs = (CachedResultSet) statement.executeQuery(query);
-            rs = statement.executeQuery(query);
+            if (writable) {
+                rs = statementWrite.executeQuery(query);
+            }else {
+                rs = statement.executeQuery(query);
+            }
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
         return rs;
+
     }
 }

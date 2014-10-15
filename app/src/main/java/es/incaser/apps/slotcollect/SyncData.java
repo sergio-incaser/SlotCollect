@@ -1,26 +1,22 @@
 package es.incaser.apps.slotcollect;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 /**
  * Created by sergio on 23/09/14.
@@ -56,8 +52,7 @@ public class SyncData{
             if (SQLConnection.connection == null) {
                 return "errorSQLconnection";
             }
-//            if (exportRecords() >= 0){
-            if (1 >= 0){
+            if (exportRecords() >= 0){
                 importRecords();
                 return "Datos Sincronizados";
             }else {
@@ -93,7 +88,7 @@ public class SyncData{
         for (int i = DbAdapter.tablesToExport; i < DbAdapter.QUERY_LIST.length + 1; i++){
             cursor = dbAdapter.getTable(DbAdapter.QUERY_LIST[i-1][0]);
             //cursor = dbAdapter.getTableToExport(DbAdapter.QUERY_LIST[i-1][0]);
-            resultSet = conSQL.getResultset("Select * FROM "+ DbAdapter.QUERY_LIST[i-1][0] + " WHERE 1=2");
+            resultSet = conSQL.getResultset("Select * FROM "+ DbAdapter.QUERY_LIST[i-1][0] + " WHERE 1=2", true);
             if (resultSet != null) {
                 int x;
                 x = copyRecords(cursor, DbAdapter.QUERY_LIST[i - 1][0], resultSet);
@@ -137,6 +132,7 @@ public class SyncData{
         ResultSetMetaData RSmd;
         ContentValues values = new ContentValues();
         List<String> columnList = new ArrayList();
+        List<String> columnListBynary = new ArrayList();
         Integer colInt;
         int numReg = source.getCount();
         int progresscount=0;
@@ -147,7 +143,12 @@ public class SyncData{
             String[] localColumns = source.getColumnNames();
             for (int i = 1; i <= RSmd.getColumnCount(); i++) {
                 if (Arrays.asList(localColumns).contains(RSmd.getColumnName(i))) {
-                    columnList.add(RSmd.getColumnName(i));
+                    switch (RSmd.getColumnType(i)) {
+                        case Types.BLOB:
+                            columnListBynary.add(RSmd.getColumnName(i));
+                        default:
+                            columnList.add(RSmd.getColumnName(i));
+                    }
                 }
             }
             while(source.moveToNext()){
@@ -156,6 +157,10 @@ public class SyncData{
                 for (String col : columnList) {
                     colInt = source.getColumnIndex(col);
                     target.updateString(col, source.getString(colInt));
+                }
+                for (String col : columnListBynary) {
+                    colInt = source.getColumnIndex(col);
+                    target.updateBinaryStream(col, new ByteArrayInputStream(source.getBlob(colInt)), 16);
                 }
                 target.insertRow();
             }
