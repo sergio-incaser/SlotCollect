@@ -8,15 +8,22 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.ViewParent;
 import android.widget.Toast;
 
+import net.sourceforge.jtds.jdbc.DateTime;
+
 import java.io.ByteArrayInputStream;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+
+import static es.incaser.apps.slotcollect.tools.str2date;
 
 /**
  * Created by sergio on 23/09/14.
@@ -24,50 +31,11 @@ import java.util.List;
 public class SyncData{
     private static DbAdapter dbAdapter;
     private Context myContext;
-    private SQLConnection conSQL;
-    private ProgressDialog progressDialog;
+    public SQLConnection conSQL;
 
     public SyncData(Context ctx){
         myContext = ctx;
         dbAdapter = new DbAdapter(myContext);
-    }
-
-    public void SincronizarDatos(){
-        new Synchronize().execute(1);
-    }
-
-    private class Synchronize extends AsyncTask<Integer, Void, String> {
-        @Override
-        protected void onPreExecute(){
-            progressDialog = new ProgressDialog(myContext);
-            progressDialog.setIndeterminate(false);
-            progressDialog.setTitle("Proceso de sincronización");
-            progressDialog.setMax(100);
-            progressDialog.show();
-            progressDialog.setMessage("Sincronizando datos");
-        }
-        @Override
-        protected String doInBackground(Integer... params) {
-            conSQL = new SQLConnection();
-            if (SQLConnection.connection == null) {
-                return "errorSQLconnection";
-            }
-            if (exportRecords() >= 0){
-                importRecords();
-                return "Datos Sincronizados";
-            }else {
-                return "ERROR EN LA SINCRONIZACION";
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result){
-            if (result == "errorSQLconnection"){
-                result = myContext.getString(R.string.errorSQLconnection);
-            }
-            Toast.makeText(myContext, result, Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
-        }
     }
 
     public int importRecords() {
@@ -133,7 +101,11 @@ public class SyncData{
         ContentValues values = new ContentValues();
         List<String> columnList = new ArrayList();
         List<String> columnListBynary = new ArrayList();
+        List<String> columnListDate = new ArrayList();
+        List<String> columnListInt = new ArrayList();
+        List<String> columnListDecimal = new ArrayList();
         Integer colInt;
+
         int numReg = source.getCount();
         int progresscount=0;
         Log.w(tableSource, "A exportar: " + numReg);
@@ -144,8 +116,18 @@ public class SyncData{
             for (int i = 1; i <= RSmd.getColumnCount(); i++) {
                 if (Arrays.asList(localColumns).contains(RSmd.getColumnName(i))) {
                     switch (RSmd.getColumnType(i)) {
-                        case Types.BLOB:
+                        case 3: //decimal
+                            columnListDecimal.add(RSmd.getColumnName(i));
+                            break;
+                        case 5: //smallint
+                            columnListInt.add(RSmd.getColumnName(i));
+                            break;
+                        case 93: //datetime
+                            columnListDate.add(RSmd.getColumnName(i));
+                            break;
+                        case 1: //uniqueidentifier
                             columnListBynary.add(RSmd.getColumnName(i));
+                            break;
                         default:
                             columnList.add(RSmd.getColumnName(i));
                     }
@@ -154,13 +136,38 @@ public class SyncData{
             while(source.moveToNext()){
                 progresscount++;
                 target.moveToInsertRow();
-                for (String col : columnList) {
+                for (String col : columnListDecimal) {
                     colInt = source.getColumnIndex(col);
-                    target.updateString(col, source.getString(colInt));
+                    target.updateDouble(col, source.getDouble(colInt));
+                }
+                for (String col : columnListInt) {
+                    colInt = source.getColumnIndex(col);
+                    target.updateInt(col, source.getInt(colInt));
+                }
+                for (String col : columnListDate) {
+                    colInt = source.getColumnIndex(col);
+                    Date dateSql = new Date(str2date(source.getString(colInt), "yyyy-MM-dd HH:mm:ss").getTime());
+                    target.updateDate(col, dateSql);
                 }
                 for (String col : columnListBynary) {
                     colInt = source.getColumnIndex(col);
-                    target.updateBinaryStream(col, new ByteArrayInputStream(source.getBlob(colInt)), 16);
+
+                    if (source.getBlob(colInt) != null){
+                        target.updateString(col, source.getString(colInt));
+//                        if (source.getBlob(colInt).length != 37){
+//                            target.updateBinaryStream(col, new ByteArrayInputStream(source.getBlob(colInt)), 16);
+//                        }else{
+//                            target.updateString(col, source.getString(colInt));
+//                        }
+                    }
+                }
+                for (String col : columnList) {
+                    colInt = source.getColumnIndex(col);
+                    String val = source.getString(colInt);
+                    if (val == null){
+                        val = "";
+                    }
+                    target.updateString(col, val);
                 }
                 target.insertRow();
             }

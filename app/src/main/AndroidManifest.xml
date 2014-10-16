@@ -45,8 +45,12 @@
             android:label="@string/title_activity_devoluciones_prestamo" >
         </activity>
         <activity
-            android:name=".AveriasMaquina"
+            android:name=".Incidencias"
             android:label="@string/title_activity_averias_maquina" >
+        </activity>
+        <activity
+            android:name=".IncidenciaEdit"
+            android:label="@string/title_activity_incidencia_edit" >
         </activity>
     </application>
 
@@ -55,6 +59,6 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>

@@ -63,8 +63,11 @@ public class DetallesEstablecimiento extends Activity {
         lvMaquinas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent myIntent = new Intent(view.getContext(),AveriasMaquina.class);
-                myIntent.putExtra("id", Long.toString(id));
+                Intent myIntent = new Intent(view.getContext(),Incidencias.class);
+                myIntent.putExtra("codigoEmpresa", codEmpresa);
+                myIntent.putExtra("codigoEstablecimiento", codEstablecimiento);
+                myIntent.putExtra("codigoMaquina", detallesAdapter.getCodigoMaquina(position));
+
                 startActivity(myIntent);
                 return true;
             }
@@ -155,6 +158,11 @@ public class DetallesEstablecimiento extends Activity {
             return curMaquinas.getInt(curMaquinas.getColumnIndex("id"));
         }
 
+        public String getCodigoMaquina(int i) {
+            curMaquinas.moveToPosition(i);
+            return curMaquinas.getString(curMaquinas.getColumnIndex("INC_CodigoMaquina"));
+        }
+
         @Override
         public View getView(int position, View convertView, ViewGroup viewGroup) {
             View myView = null;
@@ -202,5 +210,4 @@ public class DetallesEstablecimiento extends Activity {
         txtTotalEstablecimiento.setText(cabeceraRecaudacion("INC_TotalEstablecimiento"));
         txtTotalRetencion.setText(cabeceraRecaudacion("INC_TotalRetencion"));
     }
-
 }

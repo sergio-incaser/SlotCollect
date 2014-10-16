@@ -164,6 +164,9 @@ public class FragmentArqueoMaquina extends Fragment {
         Date now = str2date(getToday(),"yyyy-MM-dd");
         diasNaturales = now.getTime() - Recaudacion.fechaUltimaRecaudacion.getTime();
         diasNaturales = diasNaturales / 86400000;
+        if (diasNaturales == 0){
+            diasNaturales += 1;
+        };
 
         txtDiasNaturalesUR.setText(enteroStr(Math.round(diasNaturales)));
         txtDiasEfectivosUR.setText(txtDiasNaturalesUR.getText().toString());

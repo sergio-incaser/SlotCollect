@@ -2,6 +2,7 @@ package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ public class MainActivity extends Activity{
     private static EstablecimientosAdapter estabAdapter;
     DbAdapter dbAdapter;
     ListView lvEstablecimientos;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,9 +140,9 @@ public class MainActivity extends Activity{
             return true;
         }
         if (id == R.id.action_sync_data) {
-            //new ImportSqlData().execute(1);
-            SyncData syncData = new SyncData(this);
-            syncData.SincronizarDatos();
+//            SyncData syncData = new SyncData(this);
+//            syncData.SincronizarDatos();
+            sincronizarDatos();
             return true;
         }
         if (id == R.id.action_test) {
@@ -194,9 +196,7 @@ public class MainActivity extends Activity{
                 myView = convertView;
             }
             cur.moveToPosition(position);
-            if ((cur.getColumnIndex("INC_CodigoEstablecimiento") == 53) || (cur.getColumnIndex("RazonSocial") == 53)){
-                int a = 5;
-            }
+
             TextView txtEstablecimiento = (TextView) myView.findViewById(R.id.Establecimiento);
             TextView txtCodigoEstablecimiento = (TextView) myView.findViewById(R.id.codigoEstablecimiento);
             TextView txtDireccion = (TextView) myView.findViewById(R.id.domicilioEstablecimiento);
@@ -223,4 +223,44 @@ public class MainActivity extends Activity{
     private static String getEstablecimiento(String column){
         return cur.getString(cur.getColumnIndex(column));
     }
+    public void sincronizarDatos(){
+        new Synchronize().execute(1);
+    }
+
+    private class Synchronize extends AsyncTask<Integer, Void, String> {
+        @Override
+        protected void onPreExecute(){
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setIndeterminate(false);
+            progressDialog.setTitle("Proceso de sincronización");
+            progressDialog.setMax(100);
+            progressDialog.show();
+            progressDialog.setMessage("Sincronizando datos");
+        }
+        @Override
+        protected String doInBackground(Integer... params) {
+            SyncData syncData = new SyncData(MainActivity.this);
+            syncData.conSQL = new SQLConnection();
+            if (SQLConnection.connection == null) {
+                return "errorSQLconnection";
+            }
+            if (syncData.exportRecords() >= 0){
+                syncData.importRecords();
+                return "Datos Sincronizados";
+            }else {
+                return "ERROR EN LA SINCRONIZACION";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            if (result == "errorSQLconnection"){
+                result = MainActivity.this.getString(R.string.errorSQLconnection);
+            }
+            Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+            bindData();
+        }
+    }
+
 }

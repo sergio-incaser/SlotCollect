@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 22;
+	private static final int DATABASE_VER = 36;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -30,7 +30,9 @@ public class DbAdapter extends SQLiteOpenHelper{
             {"Establecimientos","SELECT * FROM VIS_INC_EstablecARecaudar"},
             {"Maquinas","SELECT * FROM VIS_INC_MaquinasInstaladas"},
             {"Prestamos","SELECT * FROM INC_PrestamosEstablecimiento"},
-            {"RecaudacionesAnteriores","SELECT TOP 100 * FROM VIS_INC_RecaudaInstalaActivas"},
+            {"RecaudacionesAnteriores","SELECT * FROM VIS_INC_RecaudaInstalaActivas"},
+            {"Recaudadores","SELECT * FROM VIS_INC_Recaudadores"},
+            {"Zonas","SELECT * FROM VIS_INC_Zonas"},
             {"INC_Incidencias","SELECT * FROM INC_Incidencias"},
             //Fin Tablas a importar
             {"INC_CabeceraRecaudacion","SELECT * FROM INC_CabeceraRecaudacion"},
@@ -38,8 +40,8 @@ public class DbAdapter extends SQLiteOpenHelper{
             {"INC_RecuperacionesPrestamo","SELECT * FROM INC_RecuperacionesPrestamo"},
             {"INC_Localizaciones","SELECT * FROM INC_Localizaciones"},
     };
-    public static int tablesToImport = 5; // Modificar en caso de añadir mas tablas
-    public static int tablesToExport = 5; // Exportar tablas a partir de este indice
+    public static int tablesToImport = 7; // Modificar en caso de añadir mas tablas
+    public static int tablesToExport = 7; // Exportar tablas a partir de este indice
     private SQLConnection sqlConnection;
 
 	public DbAdapter(Context context) {
@@ -213,7 +215,15 @@ public class DbAdapter extends SQLiteOpenHelper{
                 "SUM(INC_ImporteRecaudacion) AS INC_TotalRecaudacion",
                 "SUM(INC_ImporteRetencion) AS INC_TotalRetencion",
                 "SUM(INC_ImporteNeto) AS INC_TotalNeto",
-                "SUM(INC_ImporteEstablecimiento) AS INC_TotalEstablecimiento"
+                "SUM(INC_ImporteEstablecimiento) AS INC_TotalEstablecimiento",
+                "SUM(INC_ImporteNeto + INC_ImporteRetencion)  AS INC_TotalNetoMasRetencion",
+                "SUM(INC_RecuperaCargaEmpresa) AS INC_TotalRecuperaCarga",
+                "0 AS INC_TotalRecuperaPrestamo",
+                "0 AS INC_TotalSaldo",
+                "0 AS INC_MaquinasInstaladas",
+                "0 AS INC_MaquinasRecaudadas",
+                "0 AS INC_StatusAlbaran",
+                "0 AS INC_Porcentaje",
               };
 
         String where = "Printable=1 AND CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_FechaRecaudacion=?";
@@ -267,12 +277,20 @@ public class DbAdapter extends SQLiteOpenHelper{
         return  db.query("RecaudacionesAnteriores", cols, where, whereArgs,"","","INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC","1");
     }
     public Cursor getUltimaRecaudacion(String empresa, String establecimiento, String maquina){
-        String[] cols = new String[]{"INC_FechaRecaudacion"};
+        String[] cols = new String[]{"*"};
         String where = "CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?";
         String[] whereArgs = new String[]{empresa, establecimiento, maquina};
 
         return  db.query("RecaudacionesAnteriores", cols, where, whereArgs,"","","INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC","1");
     }
+    public Cursor getIncidencias(String empresa, String establecimiento, String maquina){
+        String[] cols = new String[]{"*"};
+        String where = "CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?";
+        String[] whereArgs = new String[]{empresa, establecimiento, maquina};
+
+        return  db.query("INC_Incidencias", cols, where, whereArgs,"","","Fecha DESC");
+    }
+
 
     public Cursor getSumasDesde(String empresa, String establecimiento, String maquina, String fechaDesde){
         String[] cols = new String[]{"SUM(INC_Bruto) AS SumaBruto",

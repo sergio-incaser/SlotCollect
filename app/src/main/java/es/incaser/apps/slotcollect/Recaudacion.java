@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import static es.incaser.apps.slotcollect.tools.*;
 
@@ -61,6 +62,8 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public static int oldPagePosition = -1;
     String idMaquina;
     LocationManager locManager;
+//    static byte[] codigoRecaudacion;
+    static String codigoRecaudacion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,11 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         Bundle bundle = getIntent().getExtras();
         idMaquina = bundle.getString("id");
         dbAdapter = new DbAdapter(this);
+        codigoRecaudacion = UUID.randomUUID().toString();
+
+//        codigoRecaudacion = new byte[16];
+//        new Random().nextBytes(codigoRecaudacion);
+
         initCursors();
 
         vPager = (ViewPager)findViewById(R.id.recaudacion_pager);
@@ -164,26 +172,43 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         values.put("CodigoCanal", getColMaquina("CodigoCanal"));
         values.put("INC_PorcentajeDistribucion", getColMaquina("INC_PorcentajeDistribucion"));
 
-        values.put("INC_Entrada010ANT", getColMaquina("INC_Entrada010"));
-        values.put("INC_Entrada010", getColMaquina("INC_Entrada010"));
-        values.put("INC_Salida010ANT", getColMaquina("INC_Salida010"));
-        values.put("INC_Salida010", getColMaquina("INC_Salida010"));
-        values.put("INC_Entrada020ANT", getColMaquina("INC_Entrada020"));
-        values.put("INC_Entrada020", getColMaquina("INC_Entrada020"));
-        values.put("INC_Salida020ANT", getColMaquina("INC_Salida020"));
-        values.put("INC_Salida020", getColMaquina("INC_Salida020"));
-        values.put("INC_Entrada050ANT", getColMaquina("INC_Entrada050"));
-        values.put("INC_Entrada050", getColMaquina("INC_Entrada050"));
-        values.put("INC_Entrada100ANT", getColMaquina("INC_Entrada100"));
-        values.put("INC_Entrada100", getColMaquina("INC_Entrada100"));
-        values.put("INC_Salida100ANT", getColMaquina("INC_Salida100"));
-        values.put("INC_Salida100", getColMaquina("INC_Salida100"));
-        values.put("INC_Entrada200ANT", getColMaquina("INC_Entrada200"));
-        values.put("INC_Entrada200", getColMaquina("INC_Entrada200"));
-        values.put("INC_Entrada500ANT", getColMaquina("INC_Entrada500"));
-        values.put("INC_Entrada500", getColMaquina("INC_Entrada500"));
-        values.put("INC_Entrada1000ANT", getColMaquina("INC_Entrada1000"));
-        values.put("INC_Entrada1000", getColMaquina("INC_Entrada1000"));
+        if (curUltimaRecaudacion.moveToFirst()) {
+            values.put("INC_Entrada010ANT", getUltRecaudacion("INC_Entrada010"));
+            values.put("INC_Salida010ANT", getUltRecaudacion("INC_Salida010"));
+            values.put("INC_Entrada020ANT", getUltRecaudacion("INC_Entrada020"));
+            values.put("INC_Salida020ANT", getUltRecaudacion("INC_Salida020"));
+            values.put("INC_Entrada050ANT", getUltRecaudacion("INC_Entrada050"));
+            values.put("INC_Entrada100ANT", getUltRecaudacion("INC_Entrada100"));
+            values.put("INC_Salida100ANT", getUltRecaudacion("INC_Salida100"));
+            values.put("INC_Entrada200ANT", getUltRecaudacion("INC_Entrada200"));
+            values.put("INC_Entrada500ANT", getUltRecaudacion("INC_Entrada500"));
+            values.put("INC_Entrada1000ANT", getUltRecaudacion("INC_Entrada1000"));
+        }else {
+            values.put("INC_Entrada010ANT", getColMaquina("INC_Entrada010"));
+            values.put("INC_Salida010ANT", getColMaquina("INC_Salida010"));
+            values.put("INC_Entrada020ANT", getColMaquina("INC_Entrada020"));
+            values.put("INC_Salida020ANT", getColMaquina("INC_Salida020"));
+            values.put("INC_Entrada050ANT", getColMaquina("INC_Entrada050"));
+            values.put("INC_Entrada100ANT", getColMaquina("INC_Entrada100"));
+            values.put("INC_Salida100ANT", getColMaquina("INC_Salida100"));
+            values.put("INC_Entrada200ANT", getColMaquina("INC_Entrada200"));
+            values.put("INC_Entrada500ANT", getColMaquina("INC_Entrada500"));
+            values.put("INC_Entrada1000ANT", getColMaquina("INC_Entrada1000"));
+        }
+
+        values.put("INC_Entrada010", values.getAsString("INC_Entrada010ANT"));
+        values.put("INC_Salida010", values.getAsString("INC_Salida010ANT"));
+        values.put("INC_Entrada020", values.getAsString("INC_Entrada020ANT"));
+        values.put("INC_Salida020", values.getAsString("INC_Salida020ANT"));
+        values.put("INC_Entrada050", values.getAsString("INC_Entrada050ANT"));
+        values.put("INC_Entrada100", values.getAsString("INC_Entrada100ANT"));
+        values.put("INC_Salida100", values.getAsString("INC_Salida100ANT"));
+        values.put("INC_Entrada200", values.getAsString("INC_Entrada200ANT"));
+        values.put("INC_Entrada500", values.getAsString("INC_Entrada500ANT"));
+        values.put("INC_Entrada1000", values.getAsString("INC_Entrada1000ANT"));
+
+        values.put("INC_CodigoInstalacion", getColMaquina("INC_CodigoInstalacion"));
+        values.put("INC_CodigoRecaudacion",codigoRecaudacion);
 
         //Date now = Calendar.getInstance().getTime();
         Date now = str2date(getToday(),"yyyy-MM-dd");
@@ -220,6 +245,10 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
 
     private String getColMaquina(String col){
         return curMaquina.getString(curMaquina.getColumnIndex(col));
+    };
+
+    private String getUltRecaudacion(String col){
+        return curUltimaRecaudacion.getString(curUltimaRecaudacion.getColumnIndex(col));
     };
 
     private float getFloatMaquina(String col){
@@ -283,18 +312,18 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public static String getCabeceraRecaudacion(String columna){
         return curCabRecaudacion.getString(curCabRecaudacion.getColumnIndex(columna));
     }
-    private ContentValues initialValuesCabRecaudacion(){
-        ContentValues values = new ContentValues();
-        values.put("CodigoEmpresa", codigoEmpresa);
-        values.put("INC_CodigoEstablecimiento", getColMaquina("INC_CodigoEstablecimiento"));
-        values.put("IdDelegacion", getColMaquina("IdDelegacion"));
-        values.put("CodigoCanal", getColMaquina("CodigoCanal"));
-        values.put("INC_FechaRecaudacion", getToday());
-        values.put("INC_HoraRecaudacion", getActualHour());
-        //Se crea la cabcera con al menos una linea asi que hay que calcular tambien totales
-        values.putAll(computedValuesCabRecaudacion());
-        return values;
-    }
+//    private ContentValues initialValuesCabRecaudacion(){
+//        ContentValues values = new ContentValues();
+//        values.put("CodigoEmpresa", codigoEmpresa);
+//        values.put("INC_CodigoEstablecimiento", getColMaquina("INC_CodigoEstablecimiento"));
+//        values.put("IdDelegacion", getColMaquina("IdDelegacion"));
+//        values.put("CodigoCanal", getColMaquina("CodigoCanal"));
+//        values.put("INC_FechaRecaudacion", getToday());
+//        values.put("INC_HoraRecaudacion", getActualHour());
+//        //Se crea la cabcera con al menos una linea asi que hay que calcular tambien totales
+//        values.putAll(computedValuesCabRecaudacion());
+//        return values;
+//    }
 
     private ContentValues computedValuesCabRecaudacion(){
         ContentValues cv = new ContentValues();
@@ -306,7 +335,11 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             List<String> listColLineas = Arrays.asList(curRecaudacion.getColumnNames());
             for (String col: curCabRecaudacion.getColumnNames()){
                 if (listColLineas.contains(col)) {
-                    cv.put(col, curRecaudacion.getString(curRecaudacion.getColumnIndex(col)));
+                    if (col.equals("INC_CodigoRecaudacion")){
+                        cv.put("INC_CodigoRecaudacion", codigoRecaudacion);
+                    }else {
+                        cv.put(col, curRecaudacion.getString(curRecaudacion.getColumnIndex(col)));
+                    }
                 }
             }
             cv.remove("id");
@@ -316,9 +349,6 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                     cv.put(col, curTotales.getString(curTotales.getColumnIndex(col)));
                 }
             }
-            byte[] blob = new byte[16];
-            new Random().nextBytes(blob);
-            cv.put("INC_CodigoRecaudacion",blob);
         }
         return cv;
     }
@@ -349,7 +379,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             cv.put("INC_CodigoEstablecimiento",codigoEstablecimiento);
             cv.put("INC_FechaRecaudacion",getRecaudacion("INC_FechaRecaudacion"));
             cv.put("INC_HoraRecaudacion",getRecaudacion("INC_HoraRecaudacion"));
-            cv.put("INC_FechaLocalizacion",location.getTime());
+            cv.put("INC_FechaLocalizacion",millis2String(location.getTime()));
             cv.put("INC_Latitud",location.getLatitude());
             cv.put("INC_Longitud",location.getLongitude());
 

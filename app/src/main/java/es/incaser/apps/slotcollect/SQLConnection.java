@@ -73,8 +73,7 @@ public class SQLConnection {
         try {
             String uri = "jdbc:jtds:sqlserver://" + host + ":"+ port +"/"+ database +";";
             conn = DriverManager.getConnection(uri,user,password);
-            //statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-            statement = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             statementWrite = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();

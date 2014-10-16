@@ -25,5 +25,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_devoluciones_prestamo">Devoluciones Prestamo</string>
     <string name="title_activity_averias_maquina">AveriasMaquina</string>
+    <string name="title_activity_incidencia_edit">IncidenciaEdit</string>
 
 </resources>

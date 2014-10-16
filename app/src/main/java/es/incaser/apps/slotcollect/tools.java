@@ -56,18 +56,32 @@ public class tools {
 
     public static String getToday(){
         Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 00:00:00.0");
         return sdf.format(date);
     }
-    public static String getActualHour(){
+
+    public static String millis2String(Long miliseconds){
+        Calendar date = Calendar.getInstance();
+        date.setTimeInMillis(miliseconds);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        return sdf.format(date.getTime());
+    }
+
+//    public static String getActualHour(){
+//        Date date = Calendar.getInstance().getTime();
+//        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+//        return sdf.format(date);
+//    }
+
+    public static double getActualHour(){
         Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-        return sdf.format(date);
+        double milisecondsDay = 86400000.00;
+        return (date.getTime() % (milisecondsDay))/milisecondsDay;
     }
 
     public static String getTimeStamp(){
         Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.S");
         return sdf.format(date);
     }
 
@@ -85,10 +99,10 @@ public class tools {
         return str2date(myTimestamp,"yyyy-MM-dd HH:mm:ss.S");
     }
     public static String date2str(Date date, String strFormat){
-        SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat formato = new SimpleDateFormat(strFormat);
         return formato.format(date);
     }
     public static String date2str(Date date) {
-        return date2str(date,"dd-MM-yyyy");
+        return date2str(date,"dd-MM-yyyy 00:00:00.0");
     }
 }
