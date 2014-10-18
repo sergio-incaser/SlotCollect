@@ -198,6 +198,11 @@ public class DbAdapter extends SQLiteOpenHelper{
         return db.query("Prestamos",new String[]{"*"},"id=?",new String[]{id},"","","");
     }
 
+    public Cursor getPrestamo(String codigoPrestamo){
+        return db.query("Prestamos",new String[]{"*"},"INC_CodigoPrestamo=?",
+                        new String[]{codigoPrestamo},"","","");
+    }
+
     public Map<String, String> getDicRelLineasCabecerax(){
         Map<String, String> dicRelLineasCabecera = new HashMap<String, String>();
         dicRelLineasCabecera.put("INC_ImporteRecaudacion", "INC_TotalRecaudacion");
@@ -291,6 +296,14 @@ public class DbAdapter extends SQLiteOpenHelper{
         return  db.query("INC_Incidencias", cols, where, whereArgs,"","","Fecha DESC");
     }
 
+    public Cursor getRecuperacionesPrestamo(String empresa, String codigoPrestamo){
+        String[] cols = new String[]{"*"};
+        String where = "CodigoEmpresa=? AND INC_CodigoPrestamo=?";
+        String[] whereArgs = new String[]{empresa, codigoPrestamo};
+
+        return  db.query("INC_RecuperacionesPrestamo", cols, where, whereArgs,
+                          "","","INC_FechaRecuperacion DESC");
+    }
 
     public Cursor getSumasDesde(String empresa, String establecimiento, String maquina, String fechaDesde){
         String[] cols = new String[]{"SUM(INC_Bruto) AS SumaBruto",

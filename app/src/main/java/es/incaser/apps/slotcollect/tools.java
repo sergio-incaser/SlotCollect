@@ -105,4 +105,8 @@ public class tools {
     public static String date2str(Date date) {
         return date2str(date,"dd-MM-yyyy 00:00:00.0");
     }
+
+    public static String dateStr2str(String date){
+        return date2str(str2date(date),"dd-MM-yyyy");
+    }
 }

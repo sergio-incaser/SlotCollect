@@ -1,8 +1,8 @@
 package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,39 +11,71 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
-public class RecuperacionesPrestamo extends ListActivity{
-    static Cursor curDevoluciones;
+public class RecuperacionesPrestamo extends Activity{
+    static Cursor cur;
+    static Cursor curPrestamo;
+    DbAdapter dbAdapter;
+    private static RecuperacionesAdapter recuperacionesAdapter;
+    ListView lvRecuperaciones;
+    String codigoEmpresa;
+    String codigoPrestamo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setListAdapter();
+        setContentView(R.layout.activity_recuperaciones_prestamo);
+        Bundle bundle = getIntent().getExtras();
+        codigoEmpresa = bundle.getString("codigoEmpresa");
+        codigoPrestamo = bundle.getString("codigoPrestamo");
+
+        //curPrestamo = dbAdapter.getPrestamo(codigoPrestamo);
+        //curPrestamo.moveToFirst();
+
+        lvRecuperaciones = (ListView) findViewById(R.id.lv_recuperacionesPrestamo);
     }
 
-    public static class PrestamosAdapter extends BaseAdapter {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bindData();
+    }
+
+    public void bindData(){
+        dbAdapter = new DbAdapter(this);
+        cur = dbAdapter.getRecuperacionesPrestamo(codigoEmpresa, codigoPrestamo);
+        if (cur.moveToFirst()) {
+            recuperacionesAdapter = new RecuperacionesAdapter(this);
+            lvRecuperaciones.setAdapter(recuperacionesAdapter);
+        };
+    }
+
+
+    public static class RecuperacionesAdapter extends BaseAdapter {
         private Context myContext;
 
-        public PrestamosAdapter(Context ctx){
+        public RecuperacionesAdapter(Context ctx){
             myContext = ctx;
         }
 
         @Override
         public int getCount() {
-            return curDevoluciones.getCount();
+            return cur.getCount();
         }
 
         @Override
         public Object getItem(int i) {
-            curDevoluciones.moveToPosition(i);
-            return curDevoluciones;
+            cur.moveToPosition(i);
+            return cur;
         }
 
         @Override
         public long getItemId(int i) {
-            curDevoluciones.moveToPosition(i);
-            return curDevoluciones.getLong(curDevoluciones.getColumnIndex("id"));
+            cur.moveToPosition(i);
+            return cur.getLong(cur.getColumnIndex("id"));
         }
 
         @Override
@@ -52,26 +84,36 @@ public class RecuperacionesPrestamo extends ListActivity{
 
             if (convertView == null) {
                 LayoutInflater myInflater = (LayoutInflater) myContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                myView = myInflater.inflate(R.layout.item_prestamo, null);
+                myView = myInflater.inflate(R.layout.item_recuperacion_prestamo, null);
             } else {
                 myView = convertView;
             }
-            curDevoluciones.moveToPosition(position);
+            cur.moveToPosition(position);
 
-            TextView tvConcepto = (TextView) myView.findViewById(R.id.tvConceptoPrestamo);
-            tvConcepto.setText(getDevolucion("id"));
+            TextView tvFecha = (TextView) myView.findViewById(R.id.tv_FechaRecuperacion);
+            TextView tvImporte = (TextView) myView.findViewById(R.id.tv_ImporteLiquidoRecuperacion);
+            TextView tvDescripcion = (TextView) myView.findViewById(R.id.tv_descripcionRecuperacion);
+
+            tvFecha.setText(getRecuperacion("INC_FechaRecuperacion"));
+            tvImporte.setText(getRecuperacion("ImporteLiquido"));
+            tvDescripcion.setText(getRecuperacion("INC_ComentarioRecuperacion"));
 
             return myView;
         }
     }
 
-    private static String getDevolucion(String columna){
-        return curDevoluciones.getString(curDevoluciones.getColumnIndex(columna));
+    private static String getRecuperacion(String columna){
+        return cur.getString(cur.getColumnIndex(columna));
     }
+
+    private static String getPrestamo(String columna){
+        return curPrestamo.getString(curPrestamo.getColumnIndex(columna));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.devoluciones_prestamo, menu);
+        getMenuInflater().inflate(R.menu.recuperaciones_prestamo, menu);
         return true;
     }
 
@@ -81,6 +123,14 @@ public class RecuperacionesPrestamo extends ListActivity{
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if (id == R.id.action_add) {
+            Intent myIntent = new Intent(this,RecuperacionPrestamoEdit.class);
+            myIntent.putExtra("codigoEmpresa", codigoEmpresa);
+            myIntent.putExtra("codigoPrestamo", codigoPrestamo);
+            startActivity(myIntent);
+            return true;
+        }
+
         if (id == R.id.action_settings) {
             return true;
         }

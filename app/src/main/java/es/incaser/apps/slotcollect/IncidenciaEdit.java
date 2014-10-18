@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 public class IncidenciaEdit extends Activity {
@@ -61,7 +62,11 @@ public class IncidenciaEdit extends Activity {
         cv.put("Fecha", txtFecha.getText().toString());
         cv.put("Descripcion", txtDescricion.getText().toString());
 
-        dbAdapter.insertRecord("INC_Incidencias", cv);
+        if (dbAdapter.insertRecord("INC_Incidencias", cv) != -1){
+            Toast.makeText(this, "Se ha guardado la incidencia", Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(this, "Error al guardar",Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

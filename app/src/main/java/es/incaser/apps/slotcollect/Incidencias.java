@@ -34,8 +34,6 @@ public class Incidencias extends Activity {
         codigoMaquina = bundle.getString("codigoMaquina");
 
         lvIncidencias = (ListView) findViewById(R.id.lv_incidencias);
-
-
     }
 
     @Override

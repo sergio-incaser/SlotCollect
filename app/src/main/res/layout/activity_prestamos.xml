@@ -9,10 +9,6 @@
     tools:context="es.incaser.apps.slotcollect.Prestamos"
     android:orientation="vertical"
     android:background="#ddd">
-    <!--<EditText-->
-        <!--android:text="Buesqueda"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
     <ListView
         android:id="@+id/lv_prestamos"
         android:layout_width="match_parent"

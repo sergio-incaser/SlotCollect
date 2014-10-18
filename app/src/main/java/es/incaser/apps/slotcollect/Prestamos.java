@@ -2,6 +2,7 @@ package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import static es.incaser.apps.slotcollect.tools.*;
 
 
 public class Prestamos extends Activity {
@@ -37,6 +40,11 @@ public class Prestamos extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //TODO abrir activity de las devoluciones del prestamo
+                Intent myIntent = new Intent(view.getContext(),RecuperacionesPrestamo.class);
+                //Paso solo el codigo del prestamo para cargarlo en la otra activity
+                myIntent.putExtra("codigoEmpresa", getPrestamo("CodigoEmpresa"));
+                myIntent.putExtra("codigoPrestamo", getPrestamo("INC_CodigoPrestamo"));
+                startActivity(myIntent);
             }
         });
     }
@@ -113,17 +121,17 @@ public class Prestamos extends Activity {
             }
             curPrestamos.moveToPosition(position);
 
-            TextView tvConcepto = (TextView) myView.findViewById(R.id.tvConceptoPrestamo);
-            TextView tvCodigoPrestamo = (TextView) myView.findViewById(R.id.tvCodigoPrestamo);
-            TextView tvFecha = (TextView) myView.findViewById(R.id.tvFechaPrestamo);
-            TextView tvImporteLiquido = (TextView) myView.findViewById(R.id.tvImporteLiquidoPrestamo);
-            TextView tvSaldoResto = (TextView) myView.findViewById(R.id.tvSaldoRestoPrestamo);
+            TextView tvConcepto = (TextView) myView.findViewById(R.id.tv_ConceptoPrestamo);
+            TextView tvCodigoPrestamo = (TextView) myView.findViewById(R.id.tv_CodigoPrestamo);
+            TextView tvFecha = (TextView) myView.findViewById(R.id.tv_FechaPrestamo);
+            TextView tvImporteLiquido = (TextView) myView.findViewById(R.id.tv_ImporteLiquidoPrestamo);
+            TextView tvSaldoResto = (TextView) myView.findViewById(R.id.tv_SaldoRestoPrestamo);
 
-            tvConcepto.setText(getPrestamo("id"));
-            tvCodigoPrestamo.setText(getPrestamo("INC_CodigoPrestamo"));
-            tvFecha.setText(getPrestamo("INC_FechaPrestamo"));
-            tvImporteLiquido.setText(getPrestamo("ImporteLiquido"));
-            tvSaldoResto.setText(getPrestamo("INC_SaldoResto"));
+            tvConcepto.setText(getPrestamo("INC_CodigoConceptoPrestamo"));
+            tvCodigoPrestamo.setText(" ("+getPrestamo("INC_CodigoPrestamo")+") ");
+            tvFecha.setText(dateStr2str(getPrestamo("INC_FechaPrestamo")));
+            tvImporteLiquido.setText(importeStr(getPrestamo("ImporteLiquido")));
+            tvSaldoResto.setText(importeStr(getPrestamo("INC_SaldoResto")));
 
             return myView;
         }

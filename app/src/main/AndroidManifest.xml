@@ -41,8 +41,8 @@
             android:label="@string/title_activity_prestamos" >
         </activity>
         <activity
-            android:name=".DevolucionesPrestamo"
-            android:label="@string/title_activity_devoluciones_prestamo" >
+            android:name=".RecuperacionesPrestamo"
+            android:label="Recuperaciones Prestamo" >
         </activity>
         <activity
             android:name=".Incidencias"
@@ -51,6 +51,10 @@
         <activity
             android:name=".IncidenciaEdit"
             android:label="@string/title_activity_incidencia_edit" >
+        </activity>
+        <activity
+            android:name=".RecuperacionPrestamoEdit"
+            android:label="@string/title_activity_recuperacion_prestamo_edit" >
         </activity>
     </application>
 

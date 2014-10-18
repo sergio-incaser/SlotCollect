@@ -74,9 +74,6 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         dbAdapter = new DbAdapter(this);
         codigoRecaudacion = UUID.randomUUID().toString();
 
-//        codigoRecaudacion = new byte[16];
-//        new Random().nextBytes(codigoRecaudacion);
-
         initCursors();
 
         vPager = (ViewPager)findViewById(R.id.recaudacion_pager);
@@ -312,18 +309,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public static String getCabeceraRecaudacion(String columna){
         return curCabRecaudacion.getString(curCabRecaudacion.getColumnIndex(columna));
     }
-//    private ContentValues initialValuesCabRecaudacion(){
-//        ContentValues values = new ContentValues();
-//        values.put("CodigoEmpresa", codigoEmpresa);
-//        values.put("INC_CodigoEstablecimiento", getColMaquina("INC_CodigoEstablecimiento"));
-//        values.put("IdDelegacion", getColMaquina("IdDelegacion"));
-//        values.put("CodigoCanal", getColMaquina("CodigoCanal"));
-//        values.put("INC_FechaRecaudacion", getToday());
-//        values.put("INC_HoraRecaudacion", getActualHour());
-//        //Se crea la cabcera con al menos una linea asi que hay que calcular tambien totales
-//        values.putAll(computedValuesCabRecaudacion());
-//        return values;
-//    }
+
 
     private ContentValues computedValuesCabRecaudacion(){
         ContentValues cv = new ContentValues();
