@@ -55,11 +55,13 @@ public class tools {
     }
 
     public static String getToday(){
+        return getToday("yyyy-MM-dd 00:00:00.0");
+    }
+    public static String getToday(String format) {
         Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 00:00:00.0");
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(date);
     }
-
     public static String millis2String(Long miliseconds){
         Calendar date = Calendar.getInstance();
         date.setTimeInMillis(miliseconds);

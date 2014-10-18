@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import static es.incaser.apps.slotcollect.tools.*;
+
 
 public class RecuperacionPrestamoEdit extends Activity {
     static DbAdapter dbAdapter;
@@ -32,6 +34,8 @@ public class RecuperacionPrestamoEdit extends Activity {
         Bundle bundle = getIntent().getExtras();
         codigoEmpresa = bundle.getString("codigoEmpresa");
         codigoPrestamo = bundle.getString("codigoPrestamo");
+
+        txtFecha.setText(getToday("dd-MM-yyyy"));
 
         dbAdapter = new DbAdapter(this);
         curPrestamo = dbAdapter.getPrestamo(codigoPrestamo);

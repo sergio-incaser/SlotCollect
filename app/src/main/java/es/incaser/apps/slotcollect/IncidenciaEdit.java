@@ -8,6 +8,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import static es.incaser.apps.slotcollect.tools.*;
+
 
 public class IncidenciaEdit extends Activity {
     static DbAdapter dbAdapter;
@@ -30,6 +32,8 @@ public class IncidenciaEdit extends Activity {
         codigoEmpresa = bundle.getString("codigoEmpresa");
         codigoEstablecimiento = bundle.getString("codigoEstablecimiento");
         codigoMaquina = bundle.getString("codigoMaquina");
+
+        txtFecha.setText(getToday("dd-MM-yyyy"));
 
         dbAdapter = new DbAdapter(this);
     }

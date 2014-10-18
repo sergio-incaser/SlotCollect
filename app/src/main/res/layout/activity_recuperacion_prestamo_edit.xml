@@ -30,7 +30,8 @@
                 android:inputType="date"
                 android:gravity="right"
                 android:layout_weight="0.5"
-                android:text="2014-04-01"
+                android:text="01-04-2014"
+                android:hint="dd-MM-yyyy"
                 />
         </LinearLayout>
         <LinearLayout
