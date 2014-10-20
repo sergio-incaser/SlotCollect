@@ -15,9 +15,11 @@ import static es.incaser.apps.slotcollect.tools.*;
 public class RecuperacionPrestamoEdit extends Activity {
     static DbAdapter dbAdapter;
     Cursor curPrestamo;
+    Cursor curRecupera;
     String codigoEmpresa;
     String codigoEstablecimiento;
     String codigoPrestamo;
+    String codigoRecaudacion;
     EditText txtImporte;
     EditText txtFecha;
     EditText txtComentario;
@@ -34,14 +36,30 @@ public class RecuperacionPrestamoEdit extends Activity {
         Bundle bundle = getIntent().getExtras();
         codigoEmpresa = bundle.getString("codigoEmpresa");
         codigoPrestamo = bundle.getString("codigoPrestamo");
+        codigoRecaudacion = bundle.getString("codigoRecaudacion");
 
-        txtFecha.setText(getToday("dd-MM-yyyy"));
+        txtFecha.setText(getToday());
 
         dbAdapter = new DbAdapter(this);
         curPrestamo = dbAdapter.getPrestamo(codigoPrestamo);
         curPrestamo.moveToFirst();
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bindData();
+    }
+
+    public void bindData(){
+        curRecupera = dbAdapter.getRecuperacionesPrestamo(codigoEmpresa, codigoPrestamo);
+        if (curRecupera.moveToFirst()){
+            txtImporte.setText(importeStr(getRecupera("ImporteLiquido")));
+            txtComentario.setText(getRecupera("INC_ComentarioRecuperacion"));
+        }
+    }
+
     private void createRecuperacion(){
         ContentValues cv = new ContentValues();
         cv.put("CodigoEmpresa", codigoEmpresa);
@@ -53,16 +71,17 @@ public class RecuperacionPrestamoEdit extends Activity {
         cv.put("INC_ComentarioRecuperacion", txtComentario.getText().toString());
         cv.put("IdDelegacion", getPrestamo("IdDelegacion"));
         cv.put("CodigoCanal", getPrestamo("CodigoCanal"));
-        //cv.put("INC_CodigoRecaudacion", "xxxxxxx");
+        cv.put("INC_CodigoRecaudacion", codigoRecaudacion);
         cv.put("Printable", true);
-        cv.put("INC_IdPda", 0);
+        cv.put("INC_IdPda", "0");
 
-        if (dbAdapter.insertRecord("INC_RecuperacionesPrestamo", cv) != -1){
-            Toast.makeText(this, "Se ha guardado la recuperación",Toast.LENGTH_LONG).show();
+        if (curRecupera.moveToFirst()){
+            dbAdapter.updateRecord("INC_RecuperacionesPrestamo", cv,"id=?",
+                    new String[]{getRecupera("id")});
         }else {
-            Toast.makeText(this, "Error al guardar",Toast.LENGTH_LONG).show();
+            dbAdapter.insertRecord("INC_RecuperacionesPrestamo", cv);
         }
-
+        Toast.makeText(this, "Se ha guardado la recuperación",Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -73,6 +92,10 @@ public class RecuperacionPrestamoEdit extends Activity {
 
     private String getPrestamo(String col){
         return curPrestamo.getString(curPrestamo.getColumnIndex(col));
+    }
+
+    private String getRecupera(String col){
+        return curRecupera.getString(curRecupera.getColumnIndex(col));
     }
 
     @Override
@@ -88,7 +111,8 @@ public class RecuperacionPrestamoEdit extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_delete) {
+            dbAdapter.deleteRecuperacion(getRecupera("id"));
             return true;
         }
         return super.onOptionsItemSelected(item);

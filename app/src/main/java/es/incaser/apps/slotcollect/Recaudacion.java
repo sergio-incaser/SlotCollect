@@ -436,6 +436,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
                 dialogoContestado = true;
+                dbAdapter.deleteRecaudacion(getRecaudacion("id"));
                 Recaudacion.this.onBackPressed();
             }
         });

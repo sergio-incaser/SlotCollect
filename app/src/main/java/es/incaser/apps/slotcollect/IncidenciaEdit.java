@@ -33,7 +33,7 @@ public class IncidenciaEdit extends Activity {
         codigoEstablecimiento = bundle.getString("codigoEstablecimiento");
         codigoMaquina = bundle.getString("codigoMaquina");
 
-        txtFecha.setText(getToday("dd-MM-yyyy"));
+        txtFecha.setText(getToday());
 
         dbAdapter = new DbAdapter(this);
     }

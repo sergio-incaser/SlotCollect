@@ -23,17 +23,16 @@ public class RecuperacionesPrestamo extends Activity{
     ListView lvRecuperaciones;
     String codigoEmpresa;
     String codigoPrestamo;
-
+    String codigoRecaudacion;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recuperaciones_prestamo);
+
         Bundle bundle = getIntent().getExtras();
         codigoEmpresa = bundle.getString("codigoEmpresa");
         codigoPrestamo = bundle.getString("codigoPrestamo");
-
-        //curPrestamo = dbAdapter.getPrestamo(codigoPrestamo);
-        //curPrestamo.moveToFirst();
+        codigoRecaudacion = bundle.getString("codigoRecaudacion");
 
         lvRecuperaciones = (ListView) findViewById(R.id.lv_recuperacionesPrestamo);
     }
@@ -127,6 +126,7 @@ public class RecuperacionesPrestamo extends Activity{
             Intent myIntent = new Intent(this,RecuperacionPrestamoEdit.class);
             myIntent.putExtra("codigoEmpresa", codigoEmpresa);
             myIntent.putExtra("codigoPrestamo", codigoPrestamo);
+            myIntent.putExtra("codigoRecaudacion", codigoRecaudacion);
             startActivity(myIntent);
             return true;
         }

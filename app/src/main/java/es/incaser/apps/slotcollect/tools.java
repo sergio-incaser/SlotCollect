@@ -12,6 +12,8 @@ import java.util.Date;
  * Created by sergio on 2/10/14.
  */
 public class tools {
+    public static String UUID_EMPTY = "00000000-0000-0000-0000-000000000000";
+
     public static float getNumber(String text){
         if (text == null){
             return 0;

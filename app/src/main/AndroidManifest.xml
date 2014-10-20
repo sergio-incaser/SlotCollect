@@ -18,7 +18,7 @@
         </activity>
         <activity
             android:name=".Settings"
-            android:label="@string/title_activity_settings" >
+            android:label="Configuracion" >
         </activity>
         <activity
             android:name=".EstablecimientosLogic"
@@ -46,15 +46,15 @@
         </activity>
         <activity
             android:name=".Incidencias"
-            android:label="@string/title_activity_averias_maquina" >
+            android:label="Incidencias" >
         </activity>
         <activity
             android:name=".IncidenciaEdit"
-            android:label="@string/title_activity_incidencia_edit" >
+            android:label="Incidencia" >
         </activity>
         <activity
             android:name=".RecuperacionPrestamoEdit"
-            android:label="@string/title_activity_recuperacion_prestamo_edit" >
+            android:label="Recuperaciones" >
         </activity>
     </application>
 

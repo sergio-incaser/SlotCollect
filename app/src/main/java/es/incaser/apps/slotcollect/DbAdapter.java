@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 36;
+	private static final int DATABASE_VER = 39;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
@@ -194,8 +194,9 @@ public class DbAdapter extends SQLiteOpenHelper{
 //                new String[]{codigoEmpresa, codigoMaquina},"","",order,"1");
 //    }
 
-    public Cursor getPrestamosEstablecimiento(String id){
-        return db.query("Prestamos",new String[]{"*"},"id=?",new String[]{id},"","","");
+    public Cursor getPrestamosEstablecimiento(String codigoEstablecimiento){
+        return db.query("Prestamos",new String[]{"*"},"INC_CodigoEstablecimiento=?",
+                        new String[]{codigoEstablecimiento},"","","");
     }
 
     public Cursor getPrestamo(String codigoPrestamo){
@@ -318,5 +319,12 @@ public class DbAdapter extends SQLiteOpenHelper{
         String[] whereArgs = new String[]{empresa, establecimiento, maquina, fechaDesde};
 
         return  db.query("RecaudacionesAnteriores", cols, where, whereArgs,"","","INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC","1");
+    }
+    public void deleteRecaudacion(String idRecaudacion){
+        db.delete("INC_LineasRecaudacion", "id=?", new String[]{idRecaudacion});
+    }
+
+    public void deleteRecuperacion(String idRecuperacion){
+        db.delete("INC_LineasRecaudacion", "id=?", new String[]{idRecuperacion});
     }
 }

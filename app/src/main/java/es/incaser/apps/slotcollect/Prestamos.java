@@ -19,10 +19,11 @@ import static es.incaser.apps.slotcollect.tools.*;
 
 
 public class Prestamos extends Activity {
-    String idEstablecimiento = "";
+    String codigoEstablecimiento = "";
     static Cursor curPrestamos;
     DbAdapter dbAdapter;
     PrestamosAdapter prestamosAdapter;
+    String codigoRecaudacion;
 
     ListView lvPrestamos;
 
@@ -33,17 +34,19 @@ public class Prestamos extends Activity {
         lvPrestamos = (ListView) findViewById(R.id.lv_prestamos);
 
         Bundle bundle = getIntent().getExtras();
-        idEstablecimiento = bundle.getString("id");
+        codigoEstablecimiento = bundle.getString("codigoEstablecimiento");
+        codigoRecaudacion = bundle.getString("codigoRecaudacion");
         dbAdapter = new DbAdapter(this);
 
         lvPrestamos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //TODO abrir activity de las devoluciones del prestamo
-                Intent myIntent = new Intent(view.getContext(),RecuperacionesPrestamo.class);
+                Intent myIntent = new Intent(view.getContext(),RecuperacionPrestamoEdit.class);
                 //Paso solo el codigo del prestamo para cargarlo en la otra activity
                 myIntent.putExtra("codigoEmpresa", getPrestamo("CodigoEmpresa"));
                 myIntent.putExtra("codigoPrestamo", getPrestamo("INC_CodigoPrestamo"));
+                myIntent.putExtra("codigoRecaudacion", codigoRecaudacion);
                 startActivity(myIntent);
             }
         });
@@ -72,10 +75,10 @@ public class Prestamos extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        curPrestamos = dbAdapter.getPrestamosEstablecimiento(idEstablecimiento);
         bindData();
     }
     public void bindData(){
+        curPrestamos = dbAdapter.getPrestamosEstablecimiento(codigoEstablecimiento);
         curPrestamos.moveToFirst();
         prestamosAdapter= new PrestamosAdapter(this);
         lvPrestamos.setAdapter(prestamosAdapter);

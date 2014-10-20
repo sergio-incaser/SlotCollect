@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.UUID;
+
 import static es.incaser.apps.slotcollect.tools.*;
 
 
@@ -78,7 +80,14 @@ public class DetallesEstablecimiento extends Activity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(view.getContext(),Prestamos.class);
-                myIntent.putExtra("id",id);
+                myIntent.putExtra("codigoEstablecimiento",
+                                    getEstablecimiento("INC_CodigoEstablecimiento"));
+                if(curCabRecaudacion.moveToFirst()){
+                    myIntent.putExtra("codigoRecaudacion",
+                                        cabeceraRecaudacion("INC_CodigoRecaudacion"));
+                }else {
+                    myIntent.putExtra("codigoRecaudacion", UUID_EMPTY);
+                }
                 startActivity(myIntent);
             }
         });

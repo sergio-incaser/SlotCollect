@@ -32,6 +32,8 @@
                 android:layout_weight="0.5"
                 android:text="01-04-2014"
                 android:hint="dd-MM-yyyy"
+                android:enabled="false"
+                style=""
                 />
         </LinearLayout>
         <LinearLayout
@@ -50,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:inputType="numberDecimal"
-                android:text="200.80"
+                android:text="0.00"
+                android:selectAllOnFocus="true"
                 android:layout_weight="0.5"
                 />
         </LinearLayout>
@@ -69,7 +72,7 @@
                 android:id="@+id/txt_descripcionRecuperacion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="La maquina se ha roto"
+                android:hint="Escribe un comentario ..."
                 />
         </LinearLayout>
     </LinearLayout>
