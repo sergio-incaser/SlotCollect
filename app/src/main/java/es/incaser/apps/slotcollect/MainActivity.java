@@ -81,8 +81,6 @@ public class MainActivity extends Activity{
 
     public static void ReadPreferences(Activity act){
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(act);
-        //String prefAppName = getApplication().getPackageName() + "_preferences";
-        //SharedPreferences pref = getSharedPreferences(prefAppName,Context.MODE_PRIVATE);
         SQLConnection.host = pref.getString("pref_sql_host","");
         SQLConnection.port = pref.getString("pref_sql_port","");
         SQLConnection.user = pref.getString("pref_sql_user","");

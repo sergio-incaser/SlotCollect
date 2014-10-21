@@ -27,6 +27,7 @@ public class SettingsFragment extends PreferenceFragment {
         bindPreferenceSummaryToValue(findPreference("pref_sql_user"));
         bindPreferenceSummaryToValue(findPreference("pref_sql_password"));
         bindPreferenceSummaryToValue(findPreference("pref_sql_database"));
+        bindPreferenceSummaryToValue(findPreference("pref_recaudador"));
     }
 
     /**

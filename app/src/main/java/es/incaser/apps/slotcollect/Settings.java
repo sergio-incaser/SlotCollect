@@ -16,9 +16,4 @@ public class Settings extends Activity {
                 .commit();
     }
 
-    @Override
-    protected void onDestroy() {
-        //MainActivity.ReadPreferences(this);
-        super.onDestroy();
-    }
 }

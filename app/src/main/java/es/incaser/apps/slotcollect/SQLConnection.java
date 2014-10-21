@@ -115,4 +115,13 @@ public class SQLConnection {
         return rs;
 
     }
+    public int updateSQL(String query){
+        try {
+            return statementWrite.executeUpdate(query);
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
 }

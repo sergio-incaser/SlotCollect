@@ -2,8 +2,10 @@ package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -23,6 +25,7 @@ public class RecuperacionPrestamoEdit extends Activity {
     EditText txtImporte;
     EditText txtFecha;
     EditText txtComentario;
+    private static String codigoRecaudador;
 
 
     @Override
@@ -37,6 +40,9 @@ public class RecuperacionPrestamoEdit extends Activity {
         codigoEmpresa = bundle.getString("codigoEmpresa");
         codigoPrestamo = bundle.getString("codigoPrestamo");
         codigoRecaudacion = bundle.getString("codigoRecaudacion");
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        codigoRecaudador = pref.getString("pref_recaudador","");
 
         txtFecha.setText(getToday());
 
@@ -66,7 +72,7 @@ public class RecuperacionPrestamoEdit extends Activity {
         cv.put("'INC_CodigoRecuperacion'", 0);
         cv.put("'INC_CodigoPrestamo'", codigoPrestamo);
         cv.put("INC_FechaRecuperacion", txtFecha.getText().toString());
-        cv.put("CodigoCliente", getPrestamo("CodigoCliente"));
+        cv.put("CodigoCliente", codigoRecaudador);
         cv.put("ImporteLiquido", txtImporte.getText().toString());
         cv.put("INC_ComentarioRecuperacion", txtComentario.getText().toString());
         cv.put("IdDelegacion", getPrestamo("IdDelegacion"));

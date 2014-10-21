@@ -2,7 +2,9 @@ package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -19,6 +21,8 @@ public class IncidenciaEdit extends Activity {
     EditText txtTipo;
     EditText txtFecha;
     EditText txtDescricion;
+    private static String codigoRecaudador;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +36,9 @@ public class IncidenciaEdit extends Activity {
         codigoEmpresa = bundle.getString("codigoEmpresa");
         codigoEstablecimiento = bundle.getString("codigoEstablecimiento");
         codigoMaquina = bundle.getString("codigoMaquina");
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        codigoRecaudador = pref.getString("pref_recaudador","");
 
         txtFecha.setText(getToday());
 
@@ -65,6 +72,8 @@ public class IncidenciaEdit extends Activity {
         cv.put("INC_TipoIncidencia", txtTipo.getText().toString());
         cv.put("Fecha", txtFecha.getText().toString());
         cv.put("Descripcion", txtDescricion.getText().toString());
+        cv.put("INC_CodigoRecaudador", codigoRecaudador);
+        cv.put("INC_PendienteSync", -1);
 
         if (dbAdapter.insertRecord("INC_Incidencias", cv) != -1){
             Toast.makeText(this, "Se ha guardado la incidencia", Toast.LENGTH_LONG).show();

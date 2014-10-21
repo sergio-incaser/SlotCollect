@@ -33,6 +33,7 @@ public class Incidencias extends Activity {
         codigoEstablecimiento = bundle.getString("codigoEstablecimiento");
         codigoMaquina = bundle.getString("codigoMaquina");
 
+
         lvIncidencias = (ListView) findViewById(R.id.lv_incidencias);
     }
 

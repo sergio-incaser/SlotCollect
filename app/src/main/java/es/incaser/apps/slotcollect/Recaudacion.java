@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Criteria;
 import android.location.Location;
@@ -12,6 +13,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -49,6 +51,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public static float valorUltimoArqueo = 0;
     public static Date fechaUltimaRecaudacion;
     public static String fechaUltimoArqueo;
+    public static String codigoRecaudador;
 
     public AlertDialog alertDialog;
     private boolean dialogoContestado = false;
@@ -73,6 +76,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         idMaquina = bundle.getString("id");
         dbAdapter = new DbAdapter(this);
         codigoRecaudacion = UUID.randomUUID().toString();
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        codigoRecaudador = pref.getString("pref_recaudador","");
 
         initCursors();
 
@@ -206,6 +212,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
 
         values.put("INC_CodigoInstalacion", getColMaquina("INC_CodigoInstalacion"));
         values.put("INC_CodigoRecaudacion",codigoRecaudacion);
+        values.put("INC_CodigoRecaudador",codigoRecaudador);
 
         //Date now = Calendar.getInstance().getTime();
         Date now = str2date(getToday(),"yyyy-MM-dd");

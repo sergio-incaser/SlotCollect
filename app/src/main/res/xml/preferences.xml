@@ -26,4 +26,8 @@
         android:key="pref_sql_database"
         android:title="@string/pref_sql_database"
         />
+    <EditTextPreference
+        android:key="pref_recaudador"
+        android:title="@string/pref_recaudador"
+        />
 </PreferenceScreen>

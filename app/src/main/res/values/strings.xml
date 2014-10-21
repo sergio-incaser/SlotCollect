@@ -28,5 +28,6 @@
     <string name="title_activity_incidencia_edit">IncidenciaEdit</string>
     <string name="title_activity_recuperacion_prestamo_edit">RecuperacionPrestamoEdit</string>
     <string name="action_delete">Eliminar</string>
+    <string name="pref_recaudador">Recaudador</string>
 
 </resources>

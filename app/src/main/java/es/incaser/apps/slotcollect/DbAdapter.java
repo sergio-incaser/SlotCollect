@@ -21,24 +21,24 @@ import java.util.Map;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-	private static final int DATABASE_VER = 39;
+	private static final int DATABASE_VER = 41;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
     public static String[][] QUERY_LIST = {
             //Tablas a importar
-            {"Establecimientos","SELECT * FROM VIS_INC_EstablecARecaudar"},
-            {"Maquinas","SELECT * FROM VIS_INC_MaquinasInstaladas"},
-            {"Prestamos","SELECT * FROM INC_PrestamosEstablecimiento"},
-            {"RecaudacionesAnteriores","SELECT * FROM VIS_INC_RecaudaInstalaActivas"},
-            {"Recaudadores","SELECT * FROM VIS_INC_Recaudadores"},
-            {"Zonas","SELECT * FROM VIS_INC_Zonas"},
-            {"INC_Incidencias","SELECT * FROM INC_Incidencias"},
+            {"Establecimientos","SELECT * FROM VIS_INC_EstablecARecaudar", ""},
+            {"Maquinas","SELECT * FROM VIS_INC_MaquinasInstaladas", ""},
+            {"Prestamos","SELECT * FROM INC_PrestamosEstablecimiento", ""},
+            {"RecaudacionesAnteriores","SELECT * FROM VIS_INC_RecaudaInstalaActivas", ""},
+            {"Recaudadores","SELECT * FROM VIS_INC_Recaudadores", ""},
+            {"Zonas","SELECT * FROM VIS_INC_Zonas", ""},
+            {"INC_Incidencias","SELECT * FROM INC_Incidencias","INC_PendienteSync <> 0"},
             //Fin Tablas a importar
-            {"INC_CabeceraRecaudacion","SELECT * FROM INC_CabeceraRecaudacion"},
-            {"INC_LineasRecaudacion","SELECT * FROM INC_LineasRecaudacion"},
-            {"INC_RecuperacionesPrestamo","SELECT * FROM INC_RecuperacionesPrestamo"},
-            {"INC_Localizaciones","SELECT * FROM INC_Localizaciones"},
+            {"INC_CabeceraRecaudacion","SELECT * FROM INC_CabeceraRecaudacion", ""},
+            {"INC_LineasRecaudacion","SELECT * FROM INC_LineasRecaudacion", ""},
+            {"INC_RecuperacionesPrestamo","SELECT * FROM INC_RecuperacionesPrestamo", ""},
+            {"INC_Localizaciones","SELECT * FROM INC_Localizaciones", ""},
     };
     public static int tablesToImport = 7; // Modificar en caso de añadir mas tablas
     public static int tablesToExport = 7; // Exportar tablas a partir de este indice
@@ -161,11 +161,15 @@ public class DbAdapter extends SQLiteOpenHelper{
     public Cursor getTable(String tableName){
         return db.query(tableName,new String[]{"*"},"",new String[]{},"","","");
     }
-    public Cursor getTableToExport(String tableName){
-        return db.query(tableName,new String[]{"*"},"printable=?",new String[]{"-1"},"","","");
-    }
     public Cursor getTable(String tableName, Integer limit){
         return db.query(tableName,new String[]{"*"},"",new String[]{},"","","",limit.toString());
+    }
+    public Cursor getTable(String tableName, String where){
+        return db.query(tableName,new String[]{"*"},"",new String[]{},where,"","");
+    }
+
+    public Cursor getTableToExport(String tableName){
+        return db.query(tableName,new String[]{"*"},"printable=?",new String[]{"-1"},"","","");
     }
     public Cursor getEstablecimiento(String id){
         Cursor cur = db.query("Establecimientos",new String[]{"*"},"id=?",new String[]{id},"","","");

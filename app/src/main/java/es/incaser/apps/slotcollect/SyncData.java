@@ -54,7 +54,7 @@ public class SyncData{
         int numReg = 0;
 
         for (int i = DbAdapter.tablesToExport; i < DbAdapter.QUERY_LIST.length + 1; i++){
-            cursor = dbAdapter.getTable(DbAdapter.QUERY_LIST[i-1][0]);
+            cursor = dbAdapter.getTable(DbAdapter.QUERY_LIST[i-1][0], DbAdapter.QUERY_LIST[i-1][2]);
             //cursor = dbAdapter.getTableToExport(DbAdapter.QUERY_LIST[i-1][0]);
             resultSet = conSQL.getResultset("Select * FROM "+ DbAdapter.QUERY_LIST[i-1][0] + " WHERE 1=2", true);
             if (resultSet != null) {
@@ -67,6 +67,8 @@ public class SyncData{
                 numReg += x;
             }
         }
+        //Consultas de postprocesado
+        conSQL.updateSQL("UPDATE INC_Incidencias SET INC_PendienteSync=0 WHERE INC_PendienteSync<>0");
         return numReg;
     }
 
