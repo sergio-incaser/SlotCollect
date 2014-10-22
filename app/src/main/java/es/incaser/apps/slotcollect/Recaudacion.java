@@ -58,9 +58,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     String codigoEmpresa;
     String codigoEstablecimiento;
     String codigoMaquina;
-    FragmentContadoresMaquina fragmentContadoresMaquina;
-    FragmentImportesMaquina fragmentImportesMaquina;
-    FragmentArqueoMaquina fragmentArqueoMaquina;
+    static FragmentContadoresMaquina fragmentContadoresMaquina;
+    static FragmentImportesMaquina fragmentImportesMaquina;
+    static FragmentArqueoMaquina fragmentArqueoMaquina;
     public static boolean isModified = false;
     public static int oldPagePosition = -1;
     String idMaquina;
