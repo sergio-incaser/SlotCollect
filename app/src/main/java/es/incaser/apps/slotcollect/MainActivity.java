@@ -131,25 +131,15 @@ public class MainActivity extends Activity{
             startActivity(intent);
             return true;
         }
-        if (id == R.id.action_filtrar_estableciemtos) {
-            //new ImportSqlData().execute(1);
-            Intent intent = new Intent(this, EstablecimientosLogic.class);
-            startActivity(intent);
-            return true;
-        }
+//        if (id == R.id.action_filtrar_estableciemtos) {
+//            Intent intent = new Intent(this, EstablecimientosLogic.class);
+//            startActivity(intent);
+//            return true;
+//        }
         if (id == R.id.action_sync_data) {
-//            SyncData syncData = new SyncData(this);
-//            syncData.SincronizarDatos();
             sincronizarDatos();
             return true;
         }
-        if (id == R.id.action_test) {
-            //new ImportSqlData().execute(1);
-            SyncData syncData = new SyncData(this);
-            syncData.test();
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
     private void getDataSql(){

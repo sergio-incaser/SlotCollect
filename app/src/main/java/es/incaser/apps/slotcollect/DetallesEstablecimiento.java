@@ -30,7 +30,6 @@ public class DetallesEstablecimiento extends Activity {
     DbAdapter dbAdapter;
     ListView lvMaquinas;
     DetallesAdapter detallesAdapter;
-    Button btnPrestamos;
     String codEstablecimiento;
     String codEmpresa;
     TextView txtTotalRecaudacion;
@@ -42,7 +41,6 @@ public class DetallesEstablecimiento extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles_establecimiento);
         lvMaquinas = (ListView) findViewById(R.id.lv_maquinas);
-        btnPrestamos = (Button) findViewById(R.id.btn_prestamos);
 
         txtTotalRecaudacion = (TextView) findViewById(R.id.tv_totalRecaudacion);
         txtTotalEstablecimiento = (TextView) findViewById(R.id.tv_totalEstablecimiento);
@@ -74,24 +72,6 @@ public class DetallesEstablecimiento extends Activity {
                 return true;
             }
         });
-
-
-        btnPrestamos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent myIntent = new Intent(view.getContext(),Prestamos.class);
-                myIntent.putExtra("codigoEstablecimiento",
-                                    getEstablecimiento("INC_CodigoEstablecimiento"));
-                if(curCabRecaudacion.moveToFirst()){
-                    myIntent.putExtra("codigoRecaudacion",
-                                        cabeceraRecaudacion("INC_CodigoRecaudacion"));
-                }else {
-                    myIntent.putExtra("codigoRecaudacion", UUID_EMPTY);
-                }
-                startActivity(myIntent);
-            }
-        });
-
     }
 
     @Override
@@ -209,7 +189,18 @@ public class DetallesEstablecimiento extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_prestamos) {
+            Intent myIntent = new Intent(this,Prestamos.class);
+            myIntent.putExtra("codigoEstablecimiento",
+                    getEstablecimiento("INC_CodigoEstablecimiento"));
+            if(curCabRecaudacion.moveToFirst()){
+                myIntent.putExtra("codigoRecaudacion",
+                        cabeceraRecaudacion("INC_CodigoRecaudacion"));
+            }else {
+                myIntent.putExtra("codigoRecaudacion", UUID_EMPTY);
+            }
+            startActivity(myIntent);
+
             return true;
         }
         return super.onOptionsItemSelected(item);

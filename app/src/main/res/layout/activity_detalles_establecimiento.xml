@@ -66,11 +66,11 @@
                         android:text="0.00"/>
                 </LinearLayout>
                 </LinearLayout>
-            <Button
-                android:id="@+id/btn_prestamos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PRESTAMOS" />
+            <!--<Button-->
+                <!--android:id="@+id/btn_prestamos"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="PRESTAMOS" />-->
             </LinearLayout>
         <TextView
             style="@style/EtiquetaSeparador"
