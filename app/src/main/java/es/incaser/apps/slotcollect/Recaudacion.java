@@ -58,9 +58,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     String codigoEmpresa;
     String codigoEstablecimiento;
     String codigoMaquina;
-    static FragmentContadoresMaquina fragmentContadoresMaquina;
-    static FragmentImportesMaquina fragmentImportesMaquina;
-    static FragmentArqueoMaquina fragmentArqueoMaquina;
+    FragmentContadoresMaquina fragmentContadoresMaquina;
+    FragmentImportesMaquina fragmentImportesMaquina;
+    FragmentArqueoMaquina fragmentArqueoMaquina;
     public static boolean isModified = false;
     public static int oldPagePosition = -1;
     String idMaquina;
@@ -91,6 +91,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         }
 
         vPager.setAdapter(tAdapter);
+
         vPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
@@ -98,14 +99,22 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
 
                 aBar.setSelectedNavigationItem(position);
                 if (Recaudacion.isModified) {
-                    fragmentContadoresMaquina.saveRecaudacion();
-                    fragmentImportesMaquina.saveRecaudacion();
-                    fragmentArqueoMaquina.saveRecaudacion();
-
+                    if (fragmentContadoresMaquina != null) {
+                        fragmentContadoresMaquina.saveRecaudacion();
+                    };
+                    if (fragmentImportesMaquina != null) {
+                        fragmentImportesMaquina.saveRecaudacion();
+                    };
+                    if (fragmentArqueoMaquina != null) {
+                        fragmentArqueoMaquina.saveRecaudacion();
+                    };
                     curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
                     curRecaudacion.moveToFirst();
 
-                    fragmentArqueoMaquina.calculaArqueo();
+                    if (fragmentArqueoMaquina != null) {
+                        fragmentArqueoMaquina.calculaArqueo();
+                    };
+
 
                     switch (position) {
                         case 0:
@@ -444,6 +453,16 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                 // User cancelled the dialog
                 dialogoContestado = true;
                 dbAdapter.deleteRecaudacion(getRecaudacion("id"));
+                if (curCabRecaudacion.moveToFirst()) {
+                    ContentValues cv = computedValuesCabRecaudacion();
+                    if (cv.size()>0) {
+                        dbAdapter.updateRecord("INC_CabeceraRecaudacion",
+                                cv, "id=?",
+                                new String[]{getCabeceraRecaudacion("id")});
+                    }else{
+                        dbAdapter.deleteCabRecaudacion(getCabeceraRecaudacion("id"));
+                    };
+                };
                 Recaudacion.this.onBackPressed();
             }
         });

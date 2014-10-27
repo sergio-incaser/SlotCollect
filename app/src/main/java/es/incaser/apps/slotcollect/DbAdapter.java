@@ -327,8 +327,11 @@ public class DbAdapter extends SQLiteOpenHelper{
     public void deleteRecaudacion(String idRecaudacion){
         db.delete("INC_LineasRecaudacion", "id=?", new String[]{idRecaudacion});
     }
+    public void deleteCabRecaudacion(String idCabRecaudacion){
+        db.delete("INC_CabeceraRecaudacion", "id=?", new String[]{idCabRecaudacion});
+    }
 
     public void deleteRecuperacion(String idRecuperacion){
-        db.delete("INC_LineasRecaudacion", "id=?", new String[]{idRecuperacion});
+        db.delete("INC_RecuperacionesPrestamo", "id=?", new String[]{idRecuperacion});
     }
 }

@@ -167,6 +167,7 @@ public class FragmentContadoresMaquina extends Fragment {
         int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
                 "id=?",
                 new String[]{getRecaudacion("id")});
+        Recaudacion.isModified = false;
     }
 
     @Override
