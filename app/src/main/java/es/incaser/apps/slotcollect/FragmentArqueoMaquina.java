@@ -41,7 +41,7 @@ public class FragmentArqueoMaquina extends Fragment {
     private EditText txtDiasNaturalesUR;
     private EditText txtMediaDiaria;
 
-    private void bindRecaudacionData(View rootView) {
+    private void bindArqueoData(View rootView) {
         chkArqueoRealizado = (CheckBox) rootView.findViewById(R.id.chArqueoRealizado);
         txtTipoArqueo = (EditText)rootView.findViewById(R.id.txtTipoArqueo);
         txtArqueoTeorico = (EditText)rootView.findViewById(R.id.txtArqueoTeorico);
@@ -57,7 +57,9 @@ public class FragmentArqueoMaquina extends Fragment {
         txtDiasEfectivosUR = (EditText)rootView.findViewById(R.id.txtDiasEfectivosUR);
         txtDiasNaturalesUR = (EditText)rootView.findViewById(R.id.txtDiasNaturalesUR);
         txtMediaDiaria = (EditText)rootView.findViewById(R.id.txtMediaDiaria);
+    }
 
+    private void setArqueoData(){
         chkArqueoRealizado.setChecked(curRecaudacion.getInt(curRecaudacion.getColumnIndex("INC_ArqueoRealizado"))!= 0);
         txtTipoArqueo.setText(Recaudacion.getRecaudacion("INC_TipoArqueo"));
         txtArqueoTeorico.setText(Recaudacion.getRecaudacionImporte("INC_ValorArqueoTeorico"));
@@ -74,17 +76,7 @@ public class FragmentArqueoMaquina extends Fragment {
         txtDiasEfectivosUR.setText(Recaudacion.getRecaudacionImporte("INC_DiasEfectivosUR"));
         txtDiasNaturalesUR.setText(Recaudacion.getRecaudacionImporte("INC_DiasNaturalesUR"));
         txtMediaDiaria.setText(Recaudacion.getRecaudacionImporte("INC_MediaDiaria"));
-
-//        txtBruto.setOnFocusChangeListener(new CustomOnFocusChange());
-//        txtFallos.setOnFocusChangeListener(new CustomOnFocusChange());
-//        txtRecCargaEmpresa.setOnFocusChangeListener(new CustomOnFocusChange());
-//        txtRecCargaEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
-//        txtImporteVarios.setOnFocusChangeListener(new CustomOnFocusChange());
-//        txtImporteRetencion.setOnFocusChangeListener(new CustomOnFocusChange());
-//        txtPorcentajeDistribucion.setOnFocusChangeListener(new CustomOnFocusChange());
-//        txtImporteEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
-//        txtImporteEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
-    }
+    };
 
     protected void saveRecaudacion(){
         ContentValues values = new ContentValues();
@@ -114,18 +106,25 @@ public class FragmentArqueoMaquina extends Fragment {
         // Inflamos la Vista que se debe mostrar en pantalla.
         View rootView = inflater.inflate(R.layout.fragment_slide_page_arqueo, container,
                 false);
-        curMaquina = Recaudacion.curMaquina;
-        curRecaudacion = Recaudacion.curRecaudacion;
-        dbAdapter = Recaudacion.dbAdapter;
-        bindRecaudacionData(rootView);
+        bindArqueoData(rootView);
         return rootView;
     }
 
     @Override
-    public void onDestroy() {
-        saveRecaudacion();
-        super.onDestroy();
+    public void onStart() {
+        super.onStart();
+        curMaquina = Recaudacion.curMaquina;
+        curRecaudacion = Recaudacion.curRecaudacion;
+        dbAdapter = Recaudacion.dbAdapter;
+        setArqueoData();
     }
+
+    @Override
+    public void onPause() {
+        saveRecaudacion();
+        super.onPause();
+    }
+
     protected void calculaArqueo() {
         long diasNaturales = 0;
         float valorArqueoteorico = 0;

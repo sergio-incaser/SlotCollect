@@ -42,6 +42,17 @@ public class FragmentImportesMaquina extends Fragment{
         txtImporteEstablecimiento = (EditText)rootView.findViewById(R.id.txtImporteEstablecimiento);
         txtImporteNeto = (EditText)rootView.findViewById(R.id.txtImporteNeto);
 
+        txtBruto.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtFallos.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtRecCargaEmpresa.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtRecCargaEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtImporteVarios.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtImporteRetencion.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtPorcentajeDistribucion.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtImporteEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
+    }
+
+    private void setRecaudacionData(){
         txtBruto.setText(getRecaudacionImporte("INC_Bruto"));
         txtFallos.setText(getRecaudacionImporte("INC_Fallos"));
         txtRecCargaEmpresa.setText(getRecaudacionImporte("INC_RecuperaCargaEmpresa"));
@@ -52,16 +63,7 @@ public class FragmentImportesMaquina extends Fragment{
         txtPorcentajeDistribucion.setText(getRecaudacionImporte("INC_PorcentajeDistribucion"));
         txtImporteEstablecimiento.setText(getRecaudacionImporte("INC_ImporteEstablecimiento"));
         txtImporteNeto.setText(getRecaudacionImporte("INC_ImporteNeto"));
-
-        txtBruto.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtFallos.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtRecCargaEmpresa.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtRecCargaEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtImporteVarios.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtImporteRetencion.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtPorcentajeDistribucion.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtImporteEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
-    }
+    };
 
     public void saveRecaudacion(){
         ContentValues values = new ContentValues();
@@ -84,9 +86,17 @@ public class FragmentImportesMaquina extends Fragment{
     }
 
     @Override
-    public void onDestroy() {
+    public void onPause() {
         saveRecaudacion();
-        super.onDestroy();
+        super.onPause();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        curMaquina = Recaudacion.curMaquina;
+        curRecaudacion = Recaudacion.curRecaudacion;
+        setRecaudacionData();
     }
 
     private String getRecaudacion(String columna){
@@ -100,8 +110,6 @@ public class FragmentImportesMaquina extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_slide_page_importes, container,false);
-        curMaquina = Recaudacion.curMaquina;
-        curRecaudacion = Recaudacion.curRecaudacion;
         bindRecaudacionData(rootView);
         return rootView;
     }
@@ -119,36 +127,6 @@ public class FragmentImportesMaquina extends Fragment{
             }
         }
     }
-
-//    private float getNumber(String text){
-//        if (text == null){
-//            return 0;
-//        }else if (text.length() == 0){
-//            return 0;
-//        }else if (text.matches(".*\\\\D+.*")){
-//            return 0;
-//        }else {
-//            //TODO Controlar separador de miles
-//            return Float.valueOf(text.replace(",","."));
-//        }
-//    }
-//    private float getNumber(EditText txt){
-//        return getNumber(txt.getText().toString());
-//    }
-
-//    private String importeStr(Float importe){
-//        DecimalFormat nf = new DecimalFormat();
-//        nf.applyPattern("#0.00");
-//        return nf.format(importe);
-//    }
-//
-//    private String importeStr(String importe){
-//        return importeStr(getNumber(importe));
-//    }
-//
-//    private String importeStr(EditText txt){
-//        return importeStr(txt.getText().toString());
-//    }
 
     private void calcImportes(){
         //TODO Leer de cursor instalacion

@@ -20,6 +20,7 @@ public class FragmentContadoresMaquina extends Fragment {
     private static Cursor curRecaudacion;
     private static DbAdapter dbAdapter;
 
+    //Contadores Anteriores
     EditText txtSal010Ant;
     EditText txtEnt010Ant;
     EditText txtEnt020Ant;
@@ -59,7 +60,9 @@ public class FragmentContadoresMaquina extends Fragment {
         txtEnt200Ant = (EditText)rootView.findViewById(R.id.txtEnt200Ant);
         txtEnt500Ant = (EditText)rootView.findViewById(R.id.txtEnt500Ant);
         txtEnt1000Ant = (EditText)rootView.findViewById(R.id.txtEnt1000Ant);
+    }
 
+    private void setAndData(){
         txtEnt010Ant.setText(getRecaudacion("INC_Entrada010ANT"));
         txtSal010Ant.setText(getRecaudacion("INC_Salida010ANT"));
         txtEnt020Ant.setText(getRecaudacion("INC_Entrada020ANT"));
@@ -88,6 +91,19 @@ public class FragmentContadoresMaquina extends Fragment {
         txtPremioTeorico = (EditText)rootView.findViewById(R.id.txtPremioTeorico);
         txtPartidas = (EditText)rootView.findViewById(R.id.txtPartidas);
 
+        txtEnt010.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtSal010.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt020.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtSal020.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt050.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt100.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtSal100.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt200.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt500.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtEnt1000.setOnFocusChangeListener(new CustomOnFocusChange());
+    }
+
+    private void setActualData(){
         txtEnt010.setText(getRecaudacion("INC_Entrada010"));
         txtSal010.setText(getRecaudacion("INC_Salida010"));
         txtEnt020.setText(getRecaudacion("INC_Entrada020"));
@@ -102,18 +118,7 @@ public class FragmentContadoresMaquina extends Fragment {
         txtJugadoTeorico.setText(getRecaudacion("INC_JugadoTeorico"));
         txtPremioTeorico.setText(getRecaudacion("INC_PremioTeorico"));
         txtPartidas.setText(getRecaudacion("INC_Partidas"));
-
-        txtEnt010.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtSal010.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtEnt020.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtSal020.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtEnt050.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtEnt100.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtSal100.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtEnt200.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtEnt500.setOnFocusChangeListener(new CustomOnFocusChange());
-        txtEnt1000.setOnFocusChangeListener(new CustomOnFocusChange());
-    }
+    };
     
     private String getMaquina(String columna){
         return curMaquina.getString(curMaquina.getColumnIndex((columna)));
@@ -127,13 +132,24 @@ public class FragmentContadoresMaquina extends Fragment {
         // Inflamos la Vista que se debe mostrar en pantalla.
         View rootView = inflater.inflate(R.layout.fragment_slide_page_contadores, container,
                 false);
-
-        curMaquina = Recaudacion.curMaquina;
-
-        curRecaudacion = Recaudacion.curRecaudacion;
         bindAntData(rootView);
         bindActualData(rootView);
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        curMaquina = Recaudacion.curMaquina;
+        curRecaudacion = Recaudacion.curRecaudacion;
+        setAndData();
+        setActualData();
+    }
+
+    @Override
+    public void onPause() {
+        saveRecaudacion();
+        super.onPause();
     }
 
     protected void saveRecaudacion(){
@@ -168,12 +184,6 @@ public class FragmentContadoresMaquina extends Fragment {
                 "id=?",
                 new String[]{getRecaudacion("id")});
         Recaudacion.isModified = false;
-    }
-
-    @Override
-    public void onDestroy() {
-        saveRecaudacion();
-        super.onDestroy();
     }
 
     private void calcTeoricos(){
