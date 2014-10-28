@@ -165,7 +165,11 @@ public class DbAdapter extends SQLiteOpenHelper{
         return db.query(tableName,new String[]{"*"},"",new String[]{},"","","",limit.toString());
     }
     public Cursor getTable(String tableName, String where){
-        return db.query(tableName,new String[]{"*"},"",new String[]{},where,"","");
+        if (where == "") {
+            return db.query(tableName, new String[]{"*"}, "?", new String[]{where}, "", "", "");
+        }else{
+            return db.rawQuery("SELECT * FROM " + tableName+ " WHERE " + where,null);
+        }
     }
 
     public Cursor getTableToExport(String tableName){
