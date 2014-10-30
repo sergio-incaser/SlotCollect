@@ -132,7 +132,7 @@ public class Prestamos extends Activity {
 
             tvConcepto.setText(getPrestamo("INC_CodigoConceptoPrestamo"));
             tvCodigoPrestamo.setText(" ("+getPrestamo("INC_CodigoPrestamo")+") ");
-            tvFecha.setText(dateStr2str(getPrestamo("INC_FechaPrestamo")));
+            tvFecha.setText(getPrestamo("INC_FechaPrestamo"));
             tvImporteLiquido.setText(importeStr(getPrestamo("ImporteLiquido")));
             tvSaldoResto.setText(importeStr(getPrestamo("INC_SaldoResto")));
 

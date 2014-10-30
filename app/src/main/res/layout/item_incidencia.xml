@@ -14,7 +14,8 @@
             android:id="@+id/tv_fechaIncidencia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12/05/2014"/>
+            style="@style/TxtDate"
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

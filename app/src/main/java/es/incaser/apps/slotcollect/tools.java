@@ -111,6 +111,6 @@ public class tools {
     }
 
     public static String dateStr2str(String date){
-        return date2str(str2date(date),"dd-MM-yyyy");
+        return date2str(str2date(date),"dd/MM/yyyy");
     }
 }
