@@ -165,11 +165,12 @@ public class DbAdapter extends SQLiteOpenHelper{
         return db.query(tableName,new String[]{"*"},"",new String[]{},"","","",limit.toString());
     }
     public Cursor getTable(String tableName, String where){
-        if (where == "") {
-            return db.query(tableName, new String[]{"*"}, "?", new String[]{where}, "", "", "");
-        }else{
-            return db.rawQuery("SELECT * FROM " + tableName+ " WHERE " + where,null);
-        }
+        return db.query(tableName, new String[]{"*"}, where, null, "", "", "");
+//        if (where == "") {
+//            return db.query(tableName, new String[]{"*"}, "?", new String[]{where}, "", "", "");
+//        }else{
+//            return db.rawQuery("SELECT * FROM " + tableName+ " WHERE " + where,null);
+//        }
     }
 
     public Cursor getTableToExport(String tableName){
@@ -298,12 +299,27 @@ public class DbAdapter extends SQLiteOpenHelper{
         return  db.query("RecaudacionesAnteriores", cols, where, whereArgs,"","","INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC","1");
     }
     public Cursor getIncidencias(String empresa, String establecimiento, String maquina){
+        return  getIncidencias(empresa, establecimiento, maquina, false);
+    }
+
+    public Cursor getIncidencias(String empresa, String establecimiento, String maquina, boolean onlyPendingSync){
         String[] cols = new String[]{"*"};
-        String where = "CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?";
+        String where = "CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=? ";
+        if (onlyPendingSync){
+            where += " AND INC_PendienteSync = -1";
+        }
         String[] whereArgs = new String[]{empresa, establecimiento, maquina};
 
         return  db.query("INC_Incidencias", cols, where, whereArgs,"","","Fecha DESC");
     }
+    public Cursor getIncidencia(long idIncidencia){
+        String[] cols = new String[]{"*"};
+        String where = "id=? ";
+        String[] whereArgs = new String[]{idIncidencia+""};
+
+        return  db.query("INC_Incidencias", cols, where, whereArgs,"","","");
+    }
+
 
     public Cursor getRecuperacionesPrestamo(String empresa, String codigoPrestamo){
         String[] cols = new String[]{"*"};

@@ -3,6 +3,7 @@ package es.incaser.apps.slotcollect;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -22,15 +23,12 @@ public class IncidenciaEdit extends Activity {
     EditText txtFecha;
     EditText txtDescricion;
     private static String codigoRecaudador;
+    private Cursor curIncidencia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incidencia_edit);
-
-        txtTipo = (EditText) findViewById(R.id.txt_TipoIncidencia);
-        txtFecha = (EditText) findViewById(R.id.txt_FechaIncidencia);
-        txtDescricion = (EditText) findViewById(R.id.txt_DescripcionIncidencia);
 
         Bundle bundle = getIntent().getExtras();
         codigoEmpresa = bundle.getString("codigoEmpresa");
@@ -39,10 +37,37 @@ public class IncidenciaEdit extends Activity {
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         codigoRecaudador = pref.getString("pref_recaudador","");
-
-        txtFecha.setText(getToday());
-
         dbAdapter = new DbAdapter(this);
+
+        bindData();
+        getData();
+        setData();
+    }
+
+    private void getData(){
+        curIncidencia = dbAdapter.getIncidencias(codigoEmpresa,
+                                    codigoEstablecimiento, codigoMaquina, true);
+        if (!curIncidencia.moveToFirst()){
+            long id = dbAdapter.insertRecord("INC_Incidencias", initialValues());
+            curIncidencia = dbAdapter.getIncidencia(id);
+            curIncidencia.moveToFirst();
+        }
+    }
+
+    private String getIncidencia(String columna){
+        return curIncidencia.getString(curIncidencia.getColumnIndex(columna));
+    }
+
+    private void bindData(){
+        txtTipo = (EditText) findViewById(R.id.txt_TipoIncidencia);
+        txtFecha = (EditText) findViewById(R.id.txt_FechaIncidencia);
+        txtDescricion = (EditText) findViewById(R.id.txt_DescripcionIncidencia);
+    }
+
+    private void setData(){
+        txtTipo.setText(getIncidencia("INC_TipoIncidencia"));
+        txtFecha.setText(getIncidencia("Fecha"));
+        txtDescricion.setText(getIncidencia("Descripcion"));
     }
 
     @Override
@@ -64,27 +89,33 @@ public class IncidenciaEdit extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void createIncidencia(){
+    private ContentValues initialValues(){
         ContentValues cv = new ContentValues();
         cv.put("CodigoEmpresa", codigoEmpresa);
         cv.put("INC_CodigoEstablecimiento", codigoEstablecimiento);
         cv.put("INC_CodigoMaquina", codigoMaquina);
-        cv.put("INC_TipoIncidencia", txtTipo.getText().toString());
-        cv.put("Fecha", txtFecha.getText().toString());
-        cv.put("Descripcion", txtDescricion.getText().toString());
+        cv.put("INC_TipoIncidencia", "AV");
+        cv.put("Fecha", getToday());
+        cv.put("Descripcion", "");
         cv.put("INC_CodigoRecaudador", codigoRecaudador);
         cv.put("INC_PendienteSync", -1);
+        return cv;
+    }
 
-        if (dbAdapter.insertRecord("INC_Incidencias", cv) != -1){
-            Toast.makeText(this, "Se ha guardado la incidencia", Toast.LENGTH_LONG).show();
-        }else {
-            Toast.makeText(this, "Error al guardar",Toast.LENGTH_LONG).show();
-        }
+    private void saveIncidencia(){
+        ContentValues cv = new ContentValues();
+        cv.put("INC_TipoIncidencia", txtTipo.getText().toString());
+        //cv.put("Fecha", txtFecha.getText().toString());
+        cv.put("Descripcion", txtDescricion.getText().toString());
+
+        int numRecords = dbAdapter.updateRecord("INC_Incidencias", cv,
+                "id=?",
+                new String[]{getIncidencia("id")});
     }
 
     @Override
     protected void onPause() {
-        createIncidencia();
+        saveIncidencia();
         super.onPause();
     }
 }
