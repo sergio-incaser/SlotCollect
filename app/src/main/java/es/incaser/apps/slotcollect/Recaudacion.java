@@ -75,12 +75,16 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         Bundle bundle = getIntent().getExtras();
         idMaquina = bundle.getString("id");
         dbAdapter = new DbAdapter(this);
-        codigoRecaudacion = UUID.randomUUID().toString();
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         codigoRecaudador = pref.getString("pref_recaudador","");
 
         initCursors();
+        if (curCabRecaudacion.moveToFirst()){
+            codigoRecaudacion = getCabeceraRecaudacion("INC_CodigoRecaudacion");
+        }else{
+            codigoRecaudacion = UUID.randomUUID().toString();
+        }
 
         vPager = (ViewPager)findViewById(R.id.recaudacion_pager);
         tAdapter = new TabsAdapter(getSupportFragmentManager());

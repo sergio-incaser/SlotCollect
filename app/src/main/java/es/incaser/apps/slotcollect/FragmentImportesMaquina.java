@@ -53,7 +53,11 @@ public class FragmentImportesMaquina extends Fragment{
     }
 
     private void setRecaudacionData(){
-        txtBruto.setText(getRecaudacionImporte("INC_Bruto"));
+        if (getNumber(getRecaudacion("INC_Bruto")) == 0){
+            float brutoTeorico = getNumber(getRecaudacion("INC_JugadoTeorico")) - getNumber(getRecaudacion("INC_PremioTeorico"));
+            txtBruto.setText(importeStr(brutoTeorico));
+        }
+        //txtBruto.setText(getRecaudacionImporte("INC_Bruto"));
         txtFallos.setText(getRecaudacionImporte("INC_Fallos"));
         txtRecCargaEmpresa.setText(getRecaudacionImporte("INC_RecuperaCargaEmpresa"));
         txtRecCargaEstablecimiento.setText(getRecaudacionImporte("INC_RecuperaCargaEstablecimiento"));

@@ -19,6 +19,7 @@ public class FragmentContadoresMaquina extends Fragment {
     private static Cursor curMaquina;
     private static Cursor curRecaudacion;
     private static DbAdapter dbAdapter;
+//    private static float importeBruto = 0;
 
     //Contadores Anteriores
     EditText txtSal010Ant;
@@ -179,7 +180,9 @@ public class FragmentContadoresMaquina extends Fragment {
         values.put("INC_JugadoTeorico", txtJugadoTeorico.getText().toString());
         values.put("INC_PremioTeorico", txtPremioTeorico.getText().toString());
         values.put("INC_Partidas", txtPartidas.getText().toString());
-
+//        if (getNumber(getRecaudacion("INC_Bruto")) == 0){
+//            values.put("INC_Bruto", importeBruto);
+//        }
         int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
                 "id=?",
                 new String[]{getRecaudacion("id")});
@@ -210,6 +213,7 @@ public class FragmentContadoresMaquina extends Fragment {
         partidas = Math.round(jugadoTeorico / precioPartida);
         txtPartidas.setText(partidas.toString());
 
+//        importeBruto = jugadoTeorico - premioTeorico;
         Recaudacion.isModified = true;
     }
 
