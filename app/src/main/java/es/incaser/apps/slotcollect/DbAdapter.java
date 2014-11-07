@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class DbAdapter extends SQLiteOpenHelper{
 	private static final String DATABASE_NAME = "SlotCollect";
-    private static final int DATABASE_VER = 2;
+    private static final int DATABASE_VER = 3;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;

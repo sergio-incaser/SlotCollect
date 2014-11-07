@@ -79,8 +79,12 @@ public class tools {
 
     public static double getActualHour(){
         Date date = Calendar.getInstance().getTime();
+        return getHourFractionDay(date.getTime());
+    }
+
+    public static double getHourFractionDay(long timelong){
         double milisecondsDay = 86400000.00;
-        return (date.getTime() % (milisecondsDay))/milisecondsDay;
+        return (timelong % (milisecondsDay))/milisecondsDay;
     }
 
     public static String getTimeStamp(){

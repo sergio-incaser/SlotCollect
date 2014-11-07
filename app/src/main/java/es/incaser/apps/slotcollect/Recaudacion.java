@@ -386,6 +386,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             cv.put("INC_FechaRecaudacion",getRecaudacion("INC_FechaRecaudacion"));
             cv.put("INC_HoraRecaudacion",getRecaudacion("INC_HoraRecaudacion"));
             cv.put("INC_FechaLocalizacion",millis2String(location.getTime()));
+            cv.put("INC_HoraLocalizacion",getHourFractionDay(location.getTime()));
             cv.put("INC_Latitud",location.getLatitude());
             cv.put("INC_Longitud",location.getLongitude());
 
