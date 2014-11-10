@@ -21,10 +21,6 @@ import static es.incaser.apps.slotcollect.tools.importeStr;
  * Created by sergio on 28/09/14.
  */
 public class FragmentArqueoMaquina extends Fragment {
-    //private Cursor curRecaudacion;
-    private static Cursor curMaquina;
-    private static DbAdapter dbAdapter;
-
     private CheckBox chkArqueoRealizado;
     private EditText txtTipoArqueo;
     private EditText txtArqueoTeorico;
@@ -60,7 +56,7 @@ public class FragmentArqueoMaquina extends Fragment {
     }
 
     public void setData(){
-        chkArqueoRealizado.setChecked(Recaudacion.getIntRecaudacion("INC_ArqueoRealizado")!= 0);
+        chkArqueoRealizado.setChecked(Recaudacion.getBoolRecaudacion("INC_ArqueoRealizado"));
         txtTipoArqueo.setText(Recaudacion.getRecaudacion("INC_TipoArqueo"));
         txtArqueoTeorico.setText(Recaudacion.getRecaudacionImporte("INC_ValorArqueoTeorico"));
         txtCargaHopper.setText(Recaudacion.getRecaudacionImporte("INC_IntroducidoHopper"));
@@ -78,25 +74,19 @@ public class FragmentArqueoMaquina extends Fragment {
         txtMediaDiaria.setText(Recaudacion.getRecaudacionImporte("INC_MediaDiaria"));
     };
 
-    protected void saveRecaudacion(){
-        ContentValues values = new ContentValues();
-
-        values.put("INC_ArqueoRealizado", chkArqueoRealizado.isChecked());
-        values.put("INC_TipoArqueo", txtTipoArqueo.getText().toString());
-        values.put("INC_ValorArqueoTeorico", getNumber(txtArqueoTeorico));
-        values.put("INC_IntroducidoHopper", getNumber(txtCargaHopper));
-        values.put("INC_CargaHopperEmpresa", getNumber(txtCargaRecEmpresa));
-        values.put("INC_CargaHopperEstablecimiento", getNumber(txtCargaRecEstablecimiento));
-        values.put("INC_DiferenciaRecaudacion", getNumber(txtDiferenciaRecaudacion));
-        values.put("INC_DiferenciaArqueo", getNumber(txtDiferenciaArqueo));
-        values.put("INC_DiferenciaInstalacion", getNumber(txtDiferenciaInstalacion));
-        values.put("INC_DiasEfectivosUR", getNumber(txtDiasEfectivosUR));
-        values.put("INC_DiasNaturalesUR", getNumber(txtDiasNaturalesUR));
-        values.put("INC_MediaDiaria", getNumber(txtMediaDiaria));
-
-        int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
-                "id=?",
-                new String[]{Recaudacion.getRecaudacion("id")});
+    protected void save(ContentValues cv){
+        cv.put("INC_ArqueoRealizado", chkArqueoRealizado.isChecked());
+        cv.put("INC_TipoArqueo", txtTipoArqueo.getText().toString());
+        cv.put("INC_ValorArqueoTeorico", getNumber(txtArqueoTeorico));
+        cv.put("INC_IntroducidoHopper", getNumber(txtCargaHopper));
+        cv.put("INC_CargaHopperEmpresa", getNumber(txtCargaRecEmpresa));
+        cv.put("INC_CargaHopperEstablecimiento", getNumber(txtCargaRecEstablecimiento));
+        cv.put("INC_DiferenciaRecaudacion", getNumber(txtDiferenciaRecaudacion));
+        cv.put("INC_DiferenciaArqueo", getNumber(txtDiferenciaArqueo));
+        cv.put("INC_DiferenciaInstalacion", getNumber(txtDiferenciaInstalacion));
+        cv.put("INC_DiasEfectivosUR", getNumber(txtDiasEfectivosUR));
+        cv.put("INC_DiasNaturalesUR", getNumber(txtDiasNaturalesUR));
+        cv.put("INC_MediaDiaria", getNumber(txtMediaDiaria));
     }
 
     @Override
@@ -111,118 +101,22 @@ public class FragmentArqueoMaquina extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        curMaquina = Recaudacion.curMaquina;
-        //curRecaudacion = Recaudacion.curRecaudacion;
-        //dbAdapter = Recaudacion.dbAdapter;
-        //setArqueoData();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         setData();
+        calculaPorcentajes();
     }
 
-    @Override
-    public void onPause() {
-        saveRecaudacion();
-        super.onPause();
-    }
-
-    protected void calculaArqueo() {
-        long diasNaturales = 0;
-        float valorArqueoteorico = 0;
-        float diferenciaRecaudacion = 0;
-        float diferenciaArqueo = 0;
-        float diferenciaInstalacion = 0;
-        float porcentajeRecaudacion = 0;
-        float porcentajeArqueo = 0;
-        float porcentajeInstalacion = 0;
-
-        //curRecaudacion = Recaudacion.curRecaudacion;
-
-        if (chkArqueoRealizado.isChecked()){
-            diferenciaRecaudacion = (getRecaudacionFloat("INC_Bruto")
-                    - getRecaudacionFloat("INC_JugadoTeorico")
-                    + getRecaudacionFloat("INC_PremioTeorico")
-                    + getNumber(txtArqueoTeorico)
-                    - Recaudacion.valorUltimoArqueo);
-        } else {
-            diferenciaRecaudacion = (getRecaudacionFloat("INC_Bruto")
-                    - getRecaudacionFloat("INC_JugadoTeorico")
-                    + getRecaudacionFloat("INC_PremioTeorico"));
-        }
-
-        txtDiferenciaRecaudacion.setText(importeStr(diferenciaRecaudacion));
-
-        porcentajeRecaudacion = (getRecaudacionFloat("INC_PremioTeorico")
-                / getRecaudacionFloat("INC_JugadoTeorico") * 100);
-        txtPorcPremio.setText(importeStr(porcentajeRecaudacion));
-
-        if (Recaudacion.curUltimaRecaudacion.moveToFirst()){
-            Recaudacion.fechaUltimaRecaudacion = str2date(Recaudacion.curUltimaRecaudacion.getString(
-                    Recaudacion.curUltimaRecaudacion.getColumnIndex("INC_FechaRecaudacion")));
-        }else{
-            Recaudacion.fechaUltimaRecaudacion = str2date(curMaquina.getString(curMaquina.getColumnIndex("INC_FechaInstalacion")));
-        }
-        Date now = str2date(getToday(),"yyyy-MM-dd");
-        diasNaturales = now.getTime() - Recaudacion.fechaUltimaRecaudacion.getTime();
-        diasNaturales = diasNaturales / 86400000;
-        if (diasNaturales == 0){
-            diasNaturales += 1;
-        };
-
-        txtDiasNaturalesUR.setText(enteroStr(Math.round(diasNaturales)));
-        txtDiasEfectivosUR.setText(txtDiasNaturalesUR.getText().toString());
-        txtMediaDiaria.setText(importeStr(getRecaudacionFloat("INC_Bruto") / diasNaturales));
-
-        if (Recaudacion.curSumasDesdeI.moveToFirst()) {
-            diferenciaInstalacion = diferenciaRecaudacion
-                    + Recaudacion.curSumasDesdeI.getFloat(Recaudacion.curSumasDesdeI.getColumnIndex("SumaBruto"))
-                    - Recaudacion.curSumasDesdeI.getFloat(Recaudacion.curSumasDesdeI.getColumnIndex("SumaJugadoTeorico"))
-                    + Recaudacion.curSumasDesdeI.getFloat(Recaudacion.curSumasDesdeI.getColumnIndex("SumaPremioTeorico"));
-
-            porcentajeInstalacion = (Recaudacion.curSumasDesdeI.getFloat(Recaudacion.curSumasDesdeI.getColumnIndex("SumaPremioTeorico"))
-                    + getRecaudacionFloat("INC_PremioTeorico"))
-                    / (Recaudacion.curSumasDesdeI.getFloat(Recaudacion.curSumasDesdeI.getColumnIndex("SumaJugadoTeorico"))
-                    + getRecaudacionFloat("INC_JugadoTeorico")) * 100;
-        }else{
-            diferenciaInstalacion = diferenciaRecaudacion;
-            porcentajeInstalacion = porcentajeRecaudacion;
-        }
-        txtDiferenciaInstalacion.setText(importeStr(diferenciaInstalacion));
-        txtPorcInstalacion.setText(importeStr(porcentajeInstalacion));
-
-
-
-        if (Recaudacion.curSumasDesdeA.moveToFirst()){
-            diferenciaArqueo = diferenciaRecaudacion
-                    + Recaudacion.curSumasDesdeA.getFloat(Recaudacion.curSumasDesdeA.getColumnIndex("SumaBruto"))
-                    - Recaudacion.curSumasDesdeA.getFloat(Recaudacion.curSumasDesdeA.getColumnIndex("SumaJugadoTeorico"))
-                    + Recaudacion.curSumasDesdeA.getFloat(Recaudacion.curSumasDesdeA.getColumnIndex("SumaPremioTeorico"));
-
-            porcentajeArqueo = (Recaudacion.curSumasDesdeA.getFloat(Recaudacion.curSumasDesdeA.getColumnIndex("SumaPremioTeorico"))
-                    + getRecaudacionFloat("INC_PremioTeorico"))
-                    / (Recaudacion.curSumasDesdeA.getFloat(Recaudacion.curSumasDesdeA.getColumnIndex("SumaJugadoTeorico"))
-                    + getRecaudacionFloat("INC_JugadoTeorico")) * 100;
-        }else {
-            diferenciaArqueo = diferenciaInstalacion;
-            porcentajeArqueo = porcentajeInstalacion;
-        }
-
-        txtDiferenciaArqueo.setText(importeStr(diferenciaArqueo));
-        txtPorcArqueo.setText(importeStr(porcentajeArqueo));
-
-        if (! chkArqueoRealizado.isChecked()){
-            valorArqueoteorico = Recaudacion.valorUltimoArqueo - diferenciaArqueo;
-            txtArqueoTeorico.setText(importeStr(valorArqueoteorico));
-        }
-    }
     private String getRecaudacion(String col){
         return Recaudacion.getRecaudacion(col);
     }
 
-    private Float getRecaudacionFloat(String col){
+    private Float getFloatRecaudacion(String col){
         return getNumber(getRecaudacion(col));
     }
+
+    private void calculaPorcentajes(){
+        txtPorcPremio.setText(importeStr(Recaudacion.porcentajeRecaudacion));
+        txtPorcArqueo.setText(importeStr(Recaudacion.porcentajeArqueo));
+        txtPorcInstalacion.setText(importeStr(Recaudacion.porcentajeInstalacion));
+    }
+
 }

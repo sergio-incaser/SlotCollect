@@ -34,6 +34,7 @@ import static es.incaser.apps.slotcollect.tools.*;
 import static es.incaser.apps.slotcollect.tools.getInt;
 import static es.incaser.apps.slotcollect.tools.getNumber;
 import static es.incaser.apps.slotcollect.tools.importeStr;
+import static java.util.EnumSet.range;
 
 /**
  * Created by sergio on 28/09/14.
@@ -55,7 +56,10 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public static Date fechaUltimaRecaudacion;
     public static String fechaUltimoArqueo;
     public static String codigoRecaudador;
-    public static ContentValues cvRecaudacion = new ContentValues();
+    public static ContentValues cvRecaudacion;
+    public static float porcentajeRecaudacion = 0;
+    public static float porcentajeArqueo = 0;
+    public static float porcentajeInstalacion = 0;
 
 
     public AlertDialog alertDialog;
@@ -66,11 +70,8 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     static FragmentContadoresMaquina fragmentContadoresMaquina;
     static FragmentImportesMaquina fragmentImportesMaquina;
     static FragmentArqueoMaquina fragmentArqueoMaquina;
-    //public static boolean isModified = true;
-    private int oldPagePosition = 0;
     String idMaquina;
     LocationManager locManager;
-//    static byte[] codigoRecaudacion;
     static String codigoRecaudacion;
 
     @Override
@@ -80,7 +81,8 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         Bundle bundle = getIntent().getExtras();
         idMaquina = bundle.getString("id");
         dbAdapter = new DbAdapter(this);
-        oldPagePosition = 0;
+
+        cvRecaudacion = new ContentValues();
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         codigoRecaudador = pref.getString("pref_recaudador","");
@@ -107,37 +109,15 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             @Override
             public void onPageSelected(int position) {
                 aBar.setSelectedNavigationItem(position);
-                if ((fragmentContadoresMaquina != null) & (oldPagePosition == 0)) {
-                    fragmentContadoresMaquina.saveRecaudacion();
-                };
-                if ((fragmentImportesMaquina != null) & (oldPagePosition == 1)) {
-                    fragmentImportesMaquina.saveRecaudacion();
-                };
-                if ((fragmentArqueoMaquina != null) & (oldPagePosition == 2)) {
-                    fragmentArqueoMaquina.saveRecaudacion();
-                };
-                curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
-                curRecaudacion.moveToFirst();
-
-                if (fragmentArqueoMaquina != null) {
-                    fragmentArqueoMaquina.calculaArqueo();
-                };
-
-                switch (position) {
-                    case 0:
-                        break;
-                    case 1:
-                        if ((fragmentImportesMaquina != null) & (oldPagePosition == 0)) {
-                            fragmentImportesMaquina.setData();
-                        };
-                        break;
-                    case 2:
-                        if (fragmentArqueoMaquina != null) {
-                            fragmentArqueoMaquina.setData();
-                        };
-                        break;
+//                if ((fragmentContadoresMaquina!= null) & (position == 0)){
+//                    fragmentContadoresMaquina.setData();
+//                }
+                if ((fragmentImportesMaquina != null) & (position == 1)){
+                    fragmentImportesMaquina.setData();
                 }
-                oldPagePosition = position;
+                if ((fragmentArqueoMaquina != null) & (position == 2)){
+                    fragmentArqueoMaquina.setData();
+                }
             }
 
             @Override
@@ -148,6 +128,12 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             public void onPageScrollStateChanged(int arg0) {
             }
         });
+    }
+
+    public static void calcData(){
+        calcTeoricos();
+        calcImportes();
+        calculaArqueo();
     }
 
     private void initCursors(){
@@ -175,62 +161,75 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codigoEmpresa,codigoEstablecimiento);
         curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
         if (!curRecaudacion.moveToFirst()){
-            dbAdapter.insertRecord("INC_LineasRecaudacion",initialValues());
-            curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
-            curRecaudacion.moveToFirst();
-            getPositionGPS(getRecaudacion("id"));
+            initialValues();
+            //dbAdapter.insertRecord("INC_LineasRecaudacion",initialValues());
+            //curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
+            //curRecaudacion.moveToFirst();
+
+            getPositionGPS();
+        }else {
+            loadCvRecaudacion();
         }
     }
-    private ContentValues initialValues(){
-        ContentValues values = new ContentValues();
-        values.put("CodigoEmpresa", getColMaquina("CodigoEmpresa"));
-        values.put("INC_CodigoMaquina", getColMaquina("INC_CodigoMaquina"));
-        values.put("INC_CodigoEstablecimiento", getColMaquina("INC_CodigoEstablecimiento"));
-        values.put("IdDelegacion", getColMaquina("IdDelegacion"));
-        //values.put("INC_CodigoModelo", getColMaquina("INC_CodigoModelo"));
-        values.put("INC_FechaRecaudacion", getToday());
-        values.put("INC_HoraRecaudacion", getActualHour());
-        values.put("CodigoCanal", getColMaquina("CodigoCanal"));
-        values.put("INC_PorcentajeDistribucion", getColMaquina("INC_PorcentajeDistribucion"));
+
+    private void loadCvRecaudacion() {
+        String col;
+        for (int i = 0; i < curRecaudacion.getColumnCount(); i++){
+            col = curRecaudacion.getColumnName(i);
+            cvRecaudacion.put(col, curRecaudacion.getString(i));
+        }
+    }
+
+    private void initialValues(){
+        //ContentValues values = new ContentValues();
+        cvRecaudacion.put("CodigoEmpresa", getColMaquina("CodigoEmpresa"));
+        cvRecaudacion.put("INC_CodigoMaquina", getColMaquina("INC_CodigoMaquina"));
+        cvRecaudacion.put("INC_CodigoEstablecimiento", getColMaquina("INC_CodigoEstablecimiento"));
+        cvRecaudacion.put("IdDelegacion", getColMaquina("IdDelegacion"));
+        //cvRecaudacion.put("INC_CodigoModelo", getColMaquina("INC_CodigoModelo"));
+        cvRecaudacion.put("INC_FechaRecaudacion", getToday());
+        cvRecaudacion.put("INC_HoraRecaudacion", getActualHour());
+        cvRecaudacion.put("CodigoCanal", getColMaquina("CodigoCanal"));
+        cvRecaudacion.put("INC_PorcentajeDistribucion", getColMaquina("INC_PorcentajeDistribucion"));
 
         if (curUltimaRecaudacion.moveToFirst()) {
-            values.put("INC_Entrada010ANT", getUltRecaudacion("INC_Entrada010"));
-            values.put("INC_Salida010ANT", getUltRecaudacion("INC_Salida010"));
-            values.put("INC_Entrada020ANT", getUltRecaudacion("INC_Entrada020"));
-            values.put("INC_Salida020ANT", getUltRecaudacion("INC_Salida020"));
-            values.put("INC_Entrada050ANT", getUltRecaudacion("INC_Entrada050"));
-            values.put("INC_Entrada100ANT", getUltRecaudacion("INC_Entrada100"));
-            values.put("INC_Salida100ANT", getUltRecaudacion("INC_Salida100"));
-            values.put("INC_Entrada200ANT", getUltRecaudacion("INC_Entrada200"));
-            values.put("INC_Entrada500ANT", getUltRecaudacion("INC_Entrada500"));
-            values.put("INC_Entrada1000ANT", getUltRecaudacion("INC_Entrada1000"));
+            cvRecaudacion.put("INC_Entrada010ANT", getUltRecaudacion("INC_Entrada010"));
+            cvRecaudacion.put("INC_Salida010ANT", getUltRecaudacion("INC_Salida010"));
+            cvRecaudacion.put("INC_Entrada020ANT", getUltRecaudacion("INC_Entrada020"));
+            cvRecaudacion.put("INC_Salida020ANT", getUltRecaudacion("INC_Salida020"));
+            cvRecaudacion.put("INC_Entrada050ANT", getUltRecaudacion("INC_Entrada050"));
+            cvRecaudacion.put("INC_Entrada100ANT", getUltRecaudacion("INC_Entrada100"));
+            cvRecaudacion.put("INC_Salida100ANT", getUltRecaudacion("INC_Salida100"));
+            cvRecaudacion.put("INC_Entrada200ANT", getUltRecaudacion("INC_Entrada200"));
+            cvRecaudacion.put("INC_Entrada500ANT", getUltRecaudacion("INC_Entrada500"));
+            cvRecaudacion.put("INC_Entrada1000ANT", getUltRecaudacion("INC_Entrada1000"));
         }else {
-            values.put("INC_Entrada010ANT", getColMaquina("INC_Entrada010"));
-            values.put("INC_Salida010ANT", getColMaquina("INC_Salida010"));
-            values.put("INC_Entrada020ANT", getColMaquina("INC_Entrada020"));
-            values.put("INC_Salida020ANT", getColMaquina("INC_Salida020"));
-            values.put("INC_Entrada050ANT", getColMaquina("INC_Entrada050"));
-            values.put("INC_Entrada100ANT", getColMaquina("INC_Entrada100"));
-            values.put("INC_Salida100ANT", getColMaquina("INC_Salida100"));
-            values.put("INC_Entrada200ANT", getColMaquina("INC_Entrada200"));
-            values.put("INC_Entrada500ANT", getColMaquina("INC_Entrada500"));
-            values.put("INC_Entrada1000ANT", getColMaquina("INC_Entrada1000"));
+            cvRecaudacion.put("INC_Entrada010ANT", getColMaquina("INC_Entrada010"));
+            cvRecaudacion.put("INC_Salida010ANT", getColMaquina("INC_Salida010"));
+            cvRecaudacion.put("INC_Entrada020ANT", getColMaquina("INC_Entrada020"));
+            cvRecaudacion.put("INC_Salida020ANT", getColMaquina("INC_Salida020"));
+            cvRecaudacion.put("INC_Entrada050ANT", getColMaquina("INC_Entrada050"));
+            cvRecaudacion.put("INC_Entrada100ANT", getColMaquina("INC_Entrada100"));
+            cvRecaudacion.put("INC_Salida100ANT", getColMaquina("INC_Salida100"));
+            cvRecaudacion.put("INC_Entrada200ANT", getColMaquina("INC_Entrada200"));
+            cvRecaudacion.put("INC_Entrada500ANT", getColMaquina("INC_Entrada500"));
+            cvRecaudacion.put("INC_Entrada1000ANT", getColMaquina("INC_Entrada1000"));
         }
 
-        values.put("INC_Entrada010", values.getAsString("INC_Entrada010ANT"));
-        values.put("INC_Salida010", values.getAsString("INC_Salida010ANT"));
-        values.put("INC_Entrada020", values.getAsString("INC_Entrada020ANT"));
-        values.put("INC_Salida020", values.getAsString("INC_Salida020ANT"));
-        values.put("INC_Entrada050", values.getAsString("INC_Entrada050ANT"));
-        values.put("INC_Entrada100", values.getAsString("INC_Entrada100ANT"));
-        values.put("INC_Salida100", values.getAsString("INC_Salida100ANT"));
-        values.put("INC_Entrada200", values.getAsString("INC_Entrada200ANT"));
-        values.put("INC_Entrada500", values.getAsString("INC_Entrada500ANT"));
-        values.put("INC_Entrada1000", values.getAsString("INC_Entrada1000ANT"));
+        cvRecaudacion.put("INC_Entrada010", cvRecaudacion.getAsString("INC_Entrada010ANT"));
+        cvRecaudacion.put("INC_Salida010", cvRecaudacion.getAsString("INC_Salida010ANT"));
+        cvRecaudacion.put("INC_Entrada020", cvRecaudacion.getAsString("INC_Entrada020ANT"));
+        cvRecaudacion.put("INC_Salida020", cvRecaudacion.getAsString("INC_Salida020ANT"));
+        cvRecaudacion.put("INC_Entrada050", cvRecaudacion.getAsString("INC_Entrada050ANT"));
+        cvRecaudacion.put("INC_Entrada100", cvRecaudacion.getAsString("INC_Entrada100ANT"));
+        cvRecaudacion.put("INC_Salida100", cvRecaudacion.getAsString("INC_Salida100ANT"));
+        cvRecaudacion.put("INC_Entrada200", cvRecaudacion.getAsString("INC_Entrada200ANT"));
+        cvRecaudacion.put("INC_Entrada500", cvRecaudacion.getAsString("INC_Entrada500ANT"));
+        cvRecaudacion.put("INC_Entrada1000", cvRecaudacion.getAsString("INC_Entrada1000ANT"));
 
-        values.put("INC_CodigoInstalacion", getColMaquina("INC_CodigoInstalacion"));
-        values.put("INC_CodigoRecaudacion",codigoRecaudacion);
-        values.put("INC_CodigoRecaudador",codigoRecaudador);
+        cvRecaudacion.put("INC_CodigoInstalacion", getColMaquina("INC_CodigoInstalacion"));
+        cvRecaudacion.put("INC_CodigoRecaudacion",codigoRecaudacion);
+        cvRecaudacion.put("INC_CodigoRecaudador",codigoRecaudador);
 
         //Date now = Calendar.getInstance().getTime();
         Date now = str2date(getToday(),"yyyy-MM-dd");
@@ -258,11 +257,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             recuperaEmpresa = (getFloatMaquina("INC_CargeHopperEmpresa"));
             recuperaEstablecimiento = (getFloatMaquina("INC_CargeHopperEstablecimiento"));
         }
-        values.put("INC_ImporteRetencion", importeRetencion);
-        values.put("INC_RecuperaCargaEmpresa", recuperaEmpresa);
-        values.put("INC_RecuperaCargaEstablecimiento", recuperaEstablecimiento);
-
-        return values;
+        cvRecaudacion.put("INC_ImporteRetencion", importeRetencion);
+        cvRecaudacion.put("INC_RecuperaCargaEmpresa", recuperaEmpresa);
+        cvRecaudacion.put("INC_RecuperaCargaEstablecimiento", recuperaEstablecimiento);
     }
 
     private String getColMaquina(String col){
@@ -273,7 +270,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         return curUltimaRecaudacion.getString(curUltimaRecaudacion.getColumnIndex(col));
     };
 
-    private float getFloatMaquina(String col){
+    private static float getFloatMaquina(String col){
         return curMaquina.getFloat(curMaquina.getColumnIndex(col));
     };
 
@@ -323,21 +320,40 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
 
     }
 
-    public static String getRecaudacion(String columna){
-        return curRecaudacion.getString(curRecaudacion.getColumnIndex(columna));
+    public static String getRecaudacion(String col){
+        String res = cvRecaudacion.getAsString(col);
+        if (res == null){
+            res = "";
+        }
+        return res;
     }
 
-    public static Integer getIntRecaudacion(String columna){
-        return curRecaudacion.getInt(curRecaudacion.getColumnIndex(columna));
+    public static Integer getIntRecaudacion(String col){
+        return cvRecaudacion.getAsInteger(col);
     }
 
-
-    public static String getRecaudacionImporte(String columna){
-        return importeStr(getRecaudacion(columna));
+    public static boolean getBoolRecaudacion(String col){
+        Boolean res = cvRecaudacion.getAsBoolean(col);
+        if (res == null){
+            res = false;
+        }
+        return res;
     }
 
-    public static String getCabeceraRecaudacion(String columna){
-        return curCabRecaudacion.getString(curCabRecaudacion.getColumnIndex(columna));
+    public static Float getFloatRecaudacion(String col){
+        Float res = cvRecaudacion.getAsFloat(col);
+        if (res == null){
+            res = (float) 0;
+        }
+        return res;
+    }
+
+    public static String getRecaudacionImporte(String col){
+        return importeStr(getRecaudacion(col));
+    }
+
+    public static String getCabeceraRecaudacion(String col){
+        return curCabRecaudacion.getString(curCabRecaudacion.getColumnIndex(col));
     }
 
 
@@ -369,12 +385,19 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         return cv;
     }
 
-    public void validarRecaudacion(){
+    public void guardarRecaudacion(boolean printable){
         //Modificamos el campo printable a true en las lineas y si no hay cabecera la creamos
-        ContentValues cvLineas = new ContentValues();
-        cvLineas.put("printable", true);
-        int res = dbAdapter.updateRecord("INC_LineasRecaudacion",cvLineas,"id=?",
-                new String[]{getRecaudacion("id")});
+        cvRecaudacion.put("printable", printable);
+
+        if (curRecaudacion.moveToFirst()){
+            int res = dbAdapter.updateRecord("INC_LineasRecaudacion",cvRecaudacion,"id=?",
+                    new String[]{curRecaudacion.getString(curRecaudacion.getColumnIndex("id"))});
+        }else {
+            dbAdapter.insertRecord("INC_LineasRecaudacion",cvRecaudacion);
+        }
+        curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
+        curRecaudacion.moveToFirst();
+
         if (!curCabRecaudacion.moveToFirst()){
             //Si no existe la cabcera de recaudacion la creamos
             Long id = dbAdapter.insertRecord("INC_CabeceraRecaudacion",computedValuesCabRecaudacion());
@@ -417,7 +440,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         }
     };
 
-    private ContentValues getPositionGPS(String id){
+    private ContentValues getPositionGPS(){
         ContentValues cv = new ContentValues();
 
         locManager = (LocationManager)getSystemService(LOCATION_SERVICE);
@@ -451,15 +474,15 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public void mostrarDialogo(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        fragmentContadoresMaquina.saveRecaudacion();
-        fragmentImportesMaquina.saveRecaudacion();
+        //fragmentContadoresMaquina.saveRecaudacion();
+        //fragmentImportesMaquina.saveRecaudacion();
         //fragmentArqueoMaquina.saveRecaudacion();
 
         builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
                 dialogoContestado = true;
-                validarRecaudacion();
+                guardarRecaudacion(true);
                 Recaudacion.this.onBackPressed();
             }
         });
@@ -500,5 +523,155 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         }
     }
 
+    public static void calcTeoricos(){
+        float precioPartida = getFloatMaquina("INC_PrecioPartida");
+        float jugadoTeorico = 0;
+        float premioTeorico = 0;
+        float importeBruto = 0;
+        Integer partidas = 0;
 
+        //Calculo jugado teorico
+
+        jugadoTeorico += 0.10 * (getIntRecaudacion("INC_Entrada010") - getIntRecaudacion("INC_Entrada010ANT"));
+        jugadoTeorico += 0.20 * (getIntRecaudacion("INC_Entrada020") - getIntRecaudacion("INC_Entrada020ANT"));
+        jugadoTeorico += 0.50 * (getIntRecaudacion("INC_Entrada050") - getIntRecaudacion("INC_Entrada050ANT"));
+        jugadoTeorico += 1.00 * (getIntRecaudacion("INC_Entrada100") - getIntRecaudacion("INC_Entrada100ANT"));
+        jugadoTeorico += 2.00 * (getIntRecaudacion("INC_Entrada200") - getIntRecaudacion("INC_Entrada200ANT"));
+        cvRecaudacion.put("INC_JugadoTeorico", jugadoTeorico);
+
+        //Calculo premio teorico
+        premioTeorico += 0.10 * (getIntRecaudacion("INC_Salida010") - getIntRecaudacion("INC_Salida010ANT"));
+        premioTeorico += 0.20 * (getIntRecaudacion("INC_Salida020") - getIntRecaudacion("INC_Salida020ANT"));
+        premioTeorico += 1.00 * (getIntRecaudacion("INC_Salida100") - getIntRecaudacion("INC_Salida100ANT"));
+        cvRecaudacion.put("INC_PremioTeorico", premioTeorico);
+
+        //Calculo partidas
+        partidas = Math.round(jugadoTeorico / precioPartida);
+        cvRecaudacion.put("INC_Partidas", partidas);
+
+        if(getNumber(getRecaudacion("INC_Bruto")) == 0) {
+            importeBruto = jugadoTeorico - premioTeorico;
+            cvRecaudacion.put("INC_Bruto", importeBruto);
+        }
+//        calculaArqueo();
+    }
+
+    public static void calcImportes(){
+        //TODO Leer de cursor instalacion
+        float redondeo = (float) getNumber(curMaquina.getString(
+                curMaquina.getColumnIndex("INC_Redondeo")));
+        boolean aFavorEmpresa = (curMaquina.getInt(
+                curMaquina.getColumnIndex("INC_AFavorEmpresa")) != 0);
+        float importeRecaudacion = (getFloatRecaudacion("INC_Bruto")
+                - getFloatRecaudacion("INC_Fallos")
+                - getFloatRecaudacion("INC_RecuperaCargaEmpresa")
+                - getFloatRecaudacion("INC_RecuperaCargaEstablecimiento"));
+        cvRecaudacion.put("INC_ImporteRecaudacion", importeRecaudacion);
+
+        float importeReparto = (importeRecaudacion
+                - getFloatRecaudacion("INC_ImporteVarios")
+                - getFloatRecaudacion("INC_ImporteRetencion"));
+
+        float monedas = importeReparto / redondeo;
+        float monedasEst = monedas * getFloatRecaudacion("INC_PorcentajeDistribucion")/100;
+        if (aFavorEmpresa){
+            monedasEst = (int) monedasEst;
+        }else{
+            // Restamos a las monedas totales, las monedas que corresponderian a la empresa truncadas
+            monedasEst = monedas - ((int) (monedas - monedasEst));
+        }
+        float estab = monedasEst * redondeo;
+        cvRecaudacion.put("INC_ImporteEstablecimiento", estab);
+        cvRecaudacion.put("INC_ImporteNeto", (importeReparto - estab));
+        //calculaArqueo();
+    }
+
+    public static void calculaArqueo() {
+        long diasNaturales = 0;
+        float valorArqueoteorico = 0;
+        float diferenciaRecaudacion = 0;
+        float diferenciaArqueo = 0;
+        float diferenciaInstalacion = 0;
+
+        if (getBoolRecaudacion("INC_ArqueoRealizado")){
+            diferenciaRecaudacion = (getFloatRecaudacion("INC_Bruto")
+                    - getFloatRecaudacion("INC_JugadoTeorico")
+                    + getFloatRecaudacion("INC_PremioTeorico")
+                    + getFloatRecaudacion("INC_ValorArqueoTeorico")
+                    - valorUltimoArqueo);
+        } else {
+            diferenciaRecaudacion = (getFloatRecaudacion("INC_Bruto")
+                    - getFloatRecaudacion("INC_JugadoTeorico")
+                    + getFloatRecaudacion("INC_PremioTeorico"));
+        }
+        cvRecaudacion.put("INC_DiferenciaRecaudacion", diferenciaRecaudacion);
+
+        porcentajeRecaudacion = (getFloatRecaudacion("INC_PremioTeorico")
+                / getFloatRecaudacion("INC_JugadoTeorico") * 100);
+//        fragmentArqueoMaquina.txtPorcPremio.setText(importeStr(porcentajeRecaudacion));
+
+        if (curUltimaRecaudacion.moveToFirst()){
+            fechaUltimaRecaudacion = str2date(curUltimaRecaudacion.getString(
+                    curUltimaRecaudacion.getColumnIndex("INC_FechaRecaudacion")));
+        }else{
+            fechaUltimaRecaudacion = str2date(curMaquina.getString(curMaquina.getColumnIndex("INC_FechaInstalacion")));
+        }
+        Date now = str2date(getToday(),"yyyy-MM-dd");
+        diasNaturales = now.getTime() - fechaUltimaRecaudacion.getTime();
+        diasNaturales = diasNaturales / 86400000;
+        if (diasNaturales == 0){
+            diasNaturales += 1;
+        };
+
+        cvRecaudacion.put("INC_DiasNaturalesUR", Math.round(diasNaturales));
+        cvRecaudacion.put("INC_DiasEfectivosUR", Math.round(diasNaturales));
+        cvRecaudacion.put("INC_MediaDiaria", getFloatRecaudacion("INC_Bruto") / diasNaturales);
+
+        if (curSumasDesdeI.moveToFirst()) {
+            diferenciaInstalacion = diferenciaRecaudacion
+                    + curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaBruto"))
+                    - curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaJugadoTeorico"))
+                    + curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaPremioTeorico"));
+
+            porcentajeInstalacion = (curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaPremioTeorico"))
+                    + getFloatRecaudacion("INC_PremioTeorico"))
+                    / (curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaJugadoTeorico"))
+                    + getFloatRecaudacion("INC_JugadoTeorico")) * 100;
+        }else{
+            diferenciaInstalacion = diferenciaRecaudacion;
+            porcentajeInstalacion = porcentajeRecaudacion;
+        }
+        cvRecaudacion.put("INC_DiferenciaInstalacion", diferenciaInstalacion);
+//        fragmentArqueoMaquina.txtPorcInstalacion.setText(importeStr(porcentajeInstalacion));
+
+
+
+        if (Recaudacion.curSumasDesdeA.moveToFirst()){
+            diferenciaArqueo = diferenciaRecaudacion
+                    + curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaBruto"))
+                    - curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaJugadoTeorico"))
+                    + curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaPremioTeorico"));
+
+            porcentajeArqueo = (curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaPremioTeorico"))
+                    + getFloatRecaudacion("INC_PremioTeorico"))
+                    / (curSumasDesdeA.getFloat(curSumasDesdeA.getColumnIndex("SumaJugadoTeorico"))
+                    + getFloatRecaudacion("INC_JugadoTeorico")) * 100;
+        }else {
+            diferenciaArqueo = diferenciaInstalacion;
+            porcentajeArqueo = porcentajeInstalacion;
+        }
+        cvRecaudacion.put("INC_DiferenciaArqueo", diferenciaArqueo);
+//        fragmentArqueoMaquina.txtPorcArqueo.setText(importeStr(porcentajeArqueo));
+
+        if (!getBoolRecaudacion("INC_ArqueoRealizado")){
+            valorArqueoteorico = valorUltimoArqueo - diferenciaArqueo;
+            cvRecaudacion.put("INC_ValorArqueoTeorico", valorArqueoteorico);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        guardarRecaudacion(false);
+    }
 }

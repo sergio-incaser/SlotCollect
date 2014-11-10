@@ -16,10 +16,6 @@ import static es.incaser.apps.slotcollect.tools.*;
  * Created by sergio on 28/09/14.
  */
 public class FragmentContadoresMaquina extends Fragment {
-    private static Cursor curMaquina;
-    //private Cursor curRecaudacion;
-    private static DbAdapter dbAdapter;
-    private static float importeBruto = 0;
 
     //Contadores Anteriores
     EditText txtSal010Ant;
@@ -49,7 +45,6 @@ public class FragmentContadoresMaquina extends Fragment {
     EditText txtJugadoTeorico;
     EditText txtPremioTeorico;
     EditText txtPartidas;
-    EditText txtImporteBruto;
 
     private void bindAntData(View rootView){
         txtSal010Ant = (EditText)rootView.findViewById(R.id.txtSal010Ant);
@@ -62,11 +57,9 @@ public class FragmentContadoresMaquina extends Fragment {
         txtEnt200Ant = (EditText)rootView.findViewById(R.id.txtEnt200Ant);
         txtEnt500Ant = (EditText)rootView.findViewById(R.id.txtEnt500Ant);
         txtEnt1000Ant = (EditText)rootView.findViewById(R.id.txtEnt1000Ant);
-
-        txtImporteBruto = (EditText)rootView.findViewById(R.id.txtBruto);
     }
 
-    private void setAndData(){
+    private void setAntData(){
         txtEnt010Ant.setText(getRecaudacion("INC_Entrada010ANT"));
         txtSal010Ant.setText(getRecaudacion("INC_Salida010ANT"));
         txtEnt020Ant.setText(getRecaudacion("INC_Entrada020ANT"));
@@ -122,15 +115,10 @@ public class FragmentContadoresMaquina extends Fragment {
         txtJugadoTeorico.setText(getRecaudacion("INC_JugadoTeorico"));
         txtPremioTeorico.setText(getRecaudacion("INC_PremioTeorico"));
         txtPartidas.setText(getRecaudacion("INC_Partidas"));
-
-        txtImporteBruto.setText(getRecaudacion("INC_Bruto"));
     };
     
-    private String getMaquina(String columna){
-        return curMaquina.getString(curMaquina.getColumnIndex((columna)));
-    }
     private String getRecaudacion(String columna){
-        return Recaudacion.curRecaudacion.getString(Recaudacion.curRecaudacion.getColumnIndex(columna));
+        return Recaudacion.cvRecaudacion.getAsString(columna);
     }
 
     @Override
@@ -146,84 +134,38 @@ public class FragmentContadoresMaquina extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        curMaquina = Recaudacion.curMaquina;
-        //curRecaudacion = Recaudacion.curRecaudacion;
-        setAndData();
+        setAntData();
         setData();
     }
 
-    @Override
-    public void onPause() {
-        saveRecaudacion();
-        super.onPause();
-    }
+    protected void save(ContentValues cv){
 
-    protected void saveRecaudacion(){
-        ContentValues values = new ContentValues();
 
-        calcTeoricos();
+        cv.put("INC_Entrada010Ant", txtEnt010Ant.getText().toString());
+        cv.put("INC_Entrada020Ant", txtEnt020Ant.getText().toString());
+        cv.put("INC_Entrada050Ant", txtEnt050Ant.getText().toString());
+        cv.put("INC_Entrada100Ant", txtEnt100Ant.getText().toString());
+        cv.put("INC_Entrada200Ant", txtEnt200Ant.getText().toString());
+        cv.put("INC_Entrada500Ant", txtEnt500Ant.getText().toString());
+        cv.put("INC_Entrada1000Ant", txtEnt1000Ant.getText().toString());
+        cv.put("INC_Salida010Ant", txtSal010Ant.getText().toString());
+        cv.put("INC_Salida020Ant", txtSal020Ant.getText().toString());
+        cv.put("INC_Salida100Ant", txtSal100Ant.getText().toString());
 
-        values.put("INC_Entrada010Ant", txtEnt010Ant.getText().toString());
-        values.put("INC_Entrada020Ant", txtEnt020Ant.getText().toString());
-        values.put("INC_Entrada050Ant", txtEnt050Ant.getText().toString());
-        values.put("INC_Entrada100Ant", txtEnt100Ant.getText().toString());
-        values.put("INC_Entrada200Ant", txtEnt200Ant.getText().toString());
-        values.put("INC_Entrada500Ant", txtEnt500Ant.getText().toString());
-        values.put("INC_Entrada1000Ant", txtEnt1000Ant.getText().toString());
-        values.put("INC_Salida010Ant", txtSal010Ant.getText().toString());
-        values.put("INC_Salida020Ant", txtSal020Ant.getText().toString());
-        values.put("INC_Salida100Ant", txtSal100Ant.getText().toString());
+        cv.put("INC_Entrada010", txtEnt010.getText().toString());
+        cv.put("INC_Entrada020", txtEnt020.getText().toString());
+        cv.put("INC_Entrada050", txtEnt050.getText().toString());
+        cv.put("INC_Entrada100", txtEnt100.getText().toString());
+        cv.put("INC_Entrada200", txtEnt200.getText().toString());
+        cv.put("INC_Entrada500", txtEnt500.getText().toString());
+        cv.put("INC_Entrada1000", txtEnt1000.getText().toString());
+        cv.put("INC_Salida010", txtSal010.getText().toString());
+        cv.put("INC_Salida020", txtSal020.getText().toString());
+        cv.put("INC_Salida100", txtSal100.getText().toString());
 
-        values.put("INC_Entrada010", txtEnt010.getText().toString());
-        values.put("INC_Entrada020", txtEnt020.getText().toString());
-        values.put("INC_Entrada050", txtEnt050.getText().toString());
-        values.put("INC_Entrada100", txtEnt100.getText().toString());
-        values.put("INC_Entrada200", txtEnt200.getText().toString());
-        values.put("INC_Entrada500", txtEnt500.getText().toString());
-        values.put("INC_Entrada1000", txtEnt1000.getText().toString());
-        values.put("INC_Salida010", txtSal010.getText().toString());
-        values.put("INC_Salida020", txtSal020.getText().toString());
-        values.put("INC_Salida100", txtSal100.getText().toString());
-
-        values.put("INC_JugadoTeorico", txtJugadoTeorico.getText().toString());
-        values.put("INC_PremioTeorico", txtPremioTeorico.getText().toString());
-        values.put("INC_Partidas", txtPartidas.getText().toString());
-
-        if (getNumber(getRecaudacion("INC_Bruto")) == 0){
-            values.put("INC_Bruto", importeBruto);
-        }
-
-        int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
-                "id=?",
-                new String[]{getRecaudacion("id")});
-    }
-
-    private void calcTeoricos(){
-        float precioPartida = getNumber(getMaquina("INC_PrecioPartida"));
-        float jugadoTeorico = 0;
-        float premioTeorico = 0;
-        Integer partidas = 0;
-
-        //Calculo jugado teorico
-        jugadoTeorico += 0.10 * (getInt(txtEnt010) - getInt(txtEnt010Ant));
-        jugadoTeorico += 0.20 * (getInt(txtEnt020) - getInt(txtEnt020Ant));
-        jugadoTeorico += 0.50 * (getInt(txtEnt050) - getInt(txtEnt050Ant));
-        jugadoTeorico += 1.00 * (getInt(txtEnt100) - getInt(txtEnt100Ant));
-        jugadoTeorico += 2.00 * (getInt(txtEnt200) - getInt(txtEnt200Ant));
-        txtJugadoTeorico.setText(importeStr(jugadoTeorico));
-
-        //Calculo premio teorico
-        premioTeorico += 0.10 * (getInt(txtSal010) - getInt(txtSal010Ant));
-        premioTeorico += 0.20 * (getInt(txtSal020) - getInt(txtSal020Ant));
-        premioTeorico += 1.00 * (getInt(txtSal100) - getInt(txtSal100Ant));
-        txtPremioTeorico.setText(importeStr(premioTeorico));
-
-        //Calculo partidas
-        partidas = Math.round(jugadoTeorico / precioPartida);
-        txtPartidas.setText(partidas.toString());
-
-        importeBruto = jugadoTeorico - premioTeorico;
-        txtImporteBruto.setText(importeStr(importeBruto));
+        cv.put("INC_JugadoTeorico", txtJugadoTeorico.getText().toString());
+        cv.put("INC_PremioTeorico", txtPremioTeorico.getText().toString());
+        cv.put("INC_Partidas", txtPartidas.getText().toString());
     }
 
     private class CustomOnFocusChange implements View.OnFocusChangeListener {
@@ -231,7 +173,10 @@ public class FragmentContadoresMaquina extends Fragment {
         @Override
         public void onFocusChange(View view, boolean b) {
             if (! b){
-                calcTeoricos();
+                save(Recaudacion.cvRecaudacion);
+                Recaudacion.calcData();
+                //Recaudacion.calcTeoricos();
+                setData();
             }
         }
     }
