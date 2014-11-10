@@ -31,6 +31,9 @@ import java.util.Random;
 import java.util.UUID;
 
 import static es.incaser.apps.slotcollect.tools.*;
+import static es.incaser.apps.slotcollect.tools.getInt;
+import static es.incaser.apps.slotcollect.tools.getNumber;
+import static es.incaser.apps.slotcollect.tools.importeStr;
 
 /**
  * Created by sergio on 28/09/14.
@@ -52,6 +55,8 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public static Date fechaUltimaRecaudacion;
     public static String fechaUltimoArqueo;
     public static String codigoRecaudador;
+    public static ContentValues cvRecaudacion = new ContentValues();
+
 
     public AlertDialog alertDialog;
     private boolean dialogoContestado = false;
@@ -61,8 +66,8 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     static FragmentContadoresMaquina fragmentContadoresMaquina;
     static FragmentImportesMaquina fragmentImportesMaquina;
     static FragmentArqueoMaquina fragmentArqueoMaquina;
-    public static boolean isModified = false;
-    public static int oldPagePosition = 0;
+    //public static boolean isModified = true;
+    private int oldPagePosition = 0;
     String idMaquina;
     LocationManager locManager;
 //    static byte[] codigoRecaudacion;
@@ -75,6 +80,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         Bundle bundle = getIntent().getExtras();
         idMaquina = bundle.getString("id");
         dbAdapter = new DbAdapter(this);
+        oldPagePosition = 0;
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         codigoRecaudador = pref.getString("pref_recaudador","");
@@ -100,50 +106,46 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
 
             @Override
             public void onPageSelected(int position) {
-
                 aBar.setSelectedNavigationItem(position);
-                if (Recaudacion.isModified) {
-                    if ((fragmentContadoresMaquina != null) & (oldPagePosition == 0)) {
-                        fragmentContadoresMaquina.saveRecaudacion();
-                    };
-                    if ((fragmentImportesMaquina != null) & (oldPagePosition == 1)) {
-                        fragmentImportesMaquina.saveRecaudacion();
-                    };
-                    if ((fragmentArqueoMaquina != null) & (oldPagePosition == 2)) {
-                        fragmentArqueoMaquina.saveRecaudacion();
-                    };
-                    curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
-                    curRecaudacion.moveToFirst();
+                if ((fragmentContadoresMaquina != null) & (oldPagePosition == 0)) {
+                    fragmentContadoresMaquina.saveRecaudacion();
+                };
+                if ((fragmentImportesMaquina != null) & (oldPagePosition == 1)) {
+                    fragmentImportesMaquina.saveRecaudacion();
+                };
+                if ((fragmentArqueoMaquina != null) & (oldPagePosition == 2)) {
+                    fragmentArqueoMaquina.saveRecaudacion();
+                };
+                curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
+                curRecaudacion.moveToFirst();
 
-                    if (fragmentArqueoMaquina != null) {
-                        fragmentArqueoMaquina.calculaArqueo();
-                    };
+                if (fragmentArqueoMaquina != null) {
+                    fragmentArqueoMaquina.calculaArqueo();
+                };
 
-
-                    switch (position) {
-                        case 0:
-                            break;
-                        case 1:
-                            if ((fragmentImportesMaquina != null) & (oldPagePosition == 0)) {
-                                fragmentImportesMaquina.setRecaudacionData();
-                            };
-                            break;
-                        case 2:
-                            break;
-                    }
+                switch (position) {
+                    case 0:
+                        break;
+                    case 1:
+                        if ((fragmentImportesMaquina != null) & (oldPagePosition == 0)) {
+                            fragmentImportesMaquina.setData();
+                        };
+                        break;
+                    case 2:
+                        if (fragmentArqueoMaquina != null) {
+                            fragmentArqueoMaquina.setData();
+                        };
+                        break;
                 }
-                Recaudacion.isModified = false;
                 oldPagePosition = position;
             }
 
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
-                String a="2";
             }
 
             @Override
             public void onPageScrollStateChanged(int arg0) {
-                String a="2";
             }
         });
     }
@@ -325,6 +327,11 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         return curRecaudacion.getString(curRecaudacion.getColumnIndex(columna));
     }
 
+    public static Integer getIntRecaudacion(String columna){
+        return curRecaudacion.getInt(curRecaudacion.getColumnIndex(columna));
+    }
+
+
     public static String getRecaudacionImporte(String columna){
         return importeStr(getRecaudacion(columna));
     }
@@ -492,4 +499,6 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             super.onBackPressed();
         }
     }
+
+
 }

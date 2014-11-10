@@ -17,7 +17,7 @@ import static es.incaser.apps.slotcollect.tools.*;
  */
 public class FragmentContadoresMaquina extends Fragment {
     private static Cursor curMaquina;
-    private static Cursor curRecaudacion;
+    //private Cursor curRecaudacion;
     private static DbAdapter dbAdapter;
     private static float importeBruto = 0;
 
@@ -107,7 +107,7 @@ public class FragmentContadoresMaquina extends Fragment {
         txtEnt1000.setOnFocusChangeListener(new CustomOnFocusChange());
     }
 
-    private void setActualData(){
+    private void setData(){
         txtEnt010.setText(getRecaudacion("INC_Entrada010"));
         txtSal010.setText(getRecaudacion("INC_Salida010"));
         txtEnt020.setText(getRecaudacion("INC_Entrada020"));
@@ -130,7 +130,7 @@ public class FragmentContadoresMaquina extends Fragment {
         return curMaquina.getString(curMaquina.getColumnIndex((columna)));
     }
     private String getRecaudacion(String columna){
-        return curRecaudacion.getString(curRecaudacion.getColumnIndex(columna));
+        return Recaudacion.curRecaudacion.getString(Recaudacion.curRecaudacion.getColumnIndex(columna));
     }
 
     @Override
@@ -147,9 +147,9 @@ public class FragmentContadoresMaquina extends Fragment {
     public void onStart() {
         super.onStart();
         curMaquina = Recaudacion.curMaquina;
-        curRecaudacion = Recaudacion.curRecaudacion;
+        //curRecaudacion = Recaudacion.curRecaudacion;
         setAndData();
-        setActualData();
+        setData();
     }
 
     @Override
@@ -160,6 +160,9 @@ public class FragmentContadoresMaquina extends Fragment {
 
     protected void saveRecaudacion(){
         ContentValues values = new ContentValues();
+
+        calcTeoricos();
+
         values.put("INC_Entrada010Ant", txtEnt010Ant.getText().toString());
         values.put("INC_Entrada020Ant", txtEnt020Ant.getText().toString());
         values.put("INC_Entrada050Ant", txtEnt050Ant.getText().toString());
@@ -189,10 +192,10 @@ public class FragmentContadoresMaquina extends Fragment {
         if (getNumber(getRecaudacion("INC_Bruto")) == 0){
             values.put("INC_Bruto", importeBruto);
         }
+
         int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
                 "id=?",
                 new String[]{getRecaudacion("id")});
-        Recaudacion.isModified = false;
     }
 
     private void calcTeoricos(){
@@ -221,8 +224,6 @@ public class FragmentContadoresMaquina extends Fragment {
 
         importeBruto = jugadoTeorico - premioTeorico;
         txtImporteBruto.setText(importeStr(importeBruto));
-
-        Recaudacion.isModified = true;
     }
 
     private class CustomOnFocusChange implements View.OnFocusChangeListener {

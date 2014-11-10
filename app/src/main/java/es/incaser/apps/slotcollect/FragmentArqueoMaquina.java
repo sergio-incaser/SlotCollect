@@ -21,7 +21,7 @@ import static es.incaser.apps.slotcollect.tools.importeStr;
  * Created by sergio on 28/09/14.
  */
 public class FragmentArqueoMaquina extends Fragment {
-    private static Cursor curRecaudacion;
+    //private Cursor curRecaudacion;
     private static Cursor curMaquina;
     private static DbAdapter dbAdapter;
 
@@ -59,8 +59,8 @@ public class FragmentArqueoMaquina extends Fragment {
         txtMediaDiaria = (EditText)rootView.findViewById(R.id.txtMediaDiaria);
     }
 
-    private void setArqueoData(){
-        chkArqueoRealizado.setChecked(curRecaudacion.getInt(curRecaudacion.getColumnIndex("INC_ArqueoRealizado"))!= 0);
+    public void setData(){
+        chkArqueoRealizado.setChecked(Recaudacion.getIntRecaudacion("INC_ArqueoRealizado")!= 0);
         txtTipoArqueo.setText(Recaudacion.getRecaudacion("INC_TipoArqueo"));
         txtArqueoTeorico.setText(Recaudacion.getRecaudacionImporte("INC_ValorArqueoTeorico"));
         txtCargaHopper.setText(Recaudacion.getRecaudacionImporte("INC_IntroducidoHopper"));
@@ -97,9 +97,7 @@ public class FragmentArqueoMaquina extends Fragment {
         int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
                 "id=?",
                 new String[]{Recaudacion.getRecaudacion("id")});
-        Recaudacion.isModified = false;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -114,9 +112,15 @@ public class FragmentArqueoMaquina extends Fragment {
     public void onStart() {
         super.onStart();
         curMaquina = Recaudacion.curMaquina;
-        curRecaudacion = Recaudacion.curRecaudacion;
-        dbAdapter = Recaudacion.dbAdapter;
-        setArqueoData();
+        //curRecaudacion = Recaudacion.curRecaudacion;
+        //dbAdapter = Recaudacion.dbAdapter;
+        //setArqueoData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setData();
     }
 
     @Override
@@ -135,7 +139,7 @@ public class FragmentArqueoMaquina extends Fragment {
         float porcentajeArqueo = 0;
         float porcentajeInstalacion = 0;
 
-        curRecaudacion = Recaudacion.curRecaudacion;
+        //curRecaudacion = Recaudacion.curRecaudacion;
 
         if (chkArqueoRealizado.isChecked()){
             diferenciaRecaudacion = (getRecaudacionFloat("INC_Bruto")
@@ -213,11 +217,9 @@ public class FragmentArqueoMaquina extends Fragment {
             valorArqueoteorico = Recaudacion.valorUltimoArqueo - diferenciaArqueo;
             txtArqueoTeorico.setText(importeStr(valorArqueoteorico));
         }
-
-        Recaudacion.isModified = true;
     }
     private String getRecaudacion(String col){
-        return curRecaudacion.getString(curRecaudacion.getColumnIndex(col));
+        return Recaudacion.getRecaudacion(col);
     }
 
     private Float getRecaudacionFloat(String col){

@@ -1,5 +1,6 @@
 package es.incaser.apps.slotcollect;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import static es.incaser.apps.slotcollect.tools.*;
  */
 public class FragmentImportesMaquina extends Fragment{
     private static Cursor curMaquina;
-    private static Cursor curRecaudacion;
+    //private Cursor curRecaudacion = Recaudacion.curRecaudacion;
     private static DbAdapter dbAdapter;
 
     private EditText txtBruto;
@@ -52,12 +53,13 @@ public class FragmentImportesMaquina extends Fragment{
         txtImporteEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
     }
 
-    public void setRecaudacionData(){
-//        if (getNumber(getRecaudacion("INC_Bruto")) == 0){
-//            float brutoTeorico = getNumber(getRecaudacion("INC_JugadoTeorico")) - getNumber(getRecaudacion("INC_PremioTeorico"));
-//            txtBruto.setText(importeStr(brutoTeorico));
-//        }
-        txtBruto.setText(getRecaudacionImporte("INC_Bruto"));
+    public void setData(){
+        if (getNumber(getRecaudacion("INC_Bruto")) == 0){
+            float brutoTeorico = getNumber(getRecaudacion("INC_JugadoTeorico")) - getNumber(getRecaudacion("INC_PremioTeorico"));
+            txtBruto.setText(importeStr(brutoTeorico));
+        }else {
+            txtBruto.setText(getRecaudacionImporte("INC_Bruto"));
+        }
         txtFallos.setText(getRecaudacionImporte("INC_Fallos"));
         txtRecCargaEmpresa.setText(getRecaudacionImporte("INC_RecuperaCargaEmpresa"));
         txtRecCargaEstablecimiento.setText(getRecaudacionImporte("INC_RecuperaCargaEstablecimiento"));
@@ -86,7 +88,41 @@ public class FragmentImportesMaquina extends Fragment{
         int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
                 "id=?",
                 new String[]{getRecaudacion("id")});
-        Recaudacion.isModified = false;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //curRecaudacion = Recaudacion.curRecaudacion;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_slide_page_importes, container,false);
+        bindRecaudacionData(rootView);
+        curMaquina = Recaudacion.curMaquina;
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setData();
     }
 
     @Override
@@ -96,26 +132,31 @@ public class FragmentImportesMaquina extends Fragment{
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        curMaquina = Recaudacion.curMaquina;
-        curRecaudacion = Recaudacion.curRecaudacion;
-        setRecaudacionData();
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     private String getRecaudacion(String columna){
-        return curRecaudacion.getString(curRecaudacion.getColumnIndex(columna));
+        return Recaudacion.curRecaudacion.getString(Recaudacion.curRecaudacion.getColumnIndex(columna));
     }
 
     private String getRecaudacionImporte(String columna){
         return importeStr(getRecaudacion(columna));
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_slide_page_importes, container,false);
-        bindRecaudacionData(rootView);
-        return rootView;
     }
 
     private class CustomOnFocusChange implements View.OnFocusChangeListener {
@@ -158,8 +199,6 @@ public class FragmentImportesMaquina extends Fragment{
         float estab = monedasEst * redondeo;
         txtImporteEstablecimiento.setText(importeStr(estab));
         txtImporteNeto.setText(importeStr(importeReparto - estab));
-
-        Recaudacion.isModified = true;
     }
 
     public static float val(String str) {
