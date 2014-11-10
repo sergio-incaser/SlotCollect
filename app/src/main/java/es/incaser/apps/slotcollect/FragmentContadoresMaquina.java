@@ -19,7 +19,7 @@ public class FragmentContadoresMaquina extends Fragment {
     private static Cursor curMaquina;
     private static Cursor curRecaudacion;
     private static DbAdapter dbAdapter;
-//    private static float importeBruto = 0;
+    private static float importeBruto = 0;
 
     //Contadores Anteriores
     EditText txtSal010Ant;
@@ -49,6 +49,7 @@ public class FragmentContadoresMaquina extends Fragment {
     EditText txtJugadoTeorico;
     EditText txtPremioTeorico;
     EditText txtPartidas;
+    EditText txtImporteBruto;
 
     private void bindAntData(View rootView){
         txtSal010Ant = (EditText)rootView.findViewById(R.id.txtSal010Ant);
@@ -61,6 +62,8 @@ public class FragmentContadoresMaquina extends Fragment {
         txtEnt200Ant = (EditText)rootView.findViewById(R.id.txtEnt200Ant);
         txtEnt500Ant = (EditText)rootView.findViewById(R.id.txtEnt500Ant);
         txtEnt1000Ant = (EditText)rootView.findViewById(R.id.txtEnt1000Ant);
+
+        txtImporteBruto = (EditText)rootView.findViewById(R.id.txtBruto);
     }
 
     private void setAndData(){
@@ -119,6 +122,8 @@ public class FragmentContadoresMaquina extends Fragment {
         txtJugadoTeorico.setText(getRecaudacion("INC_JugadoTeorico"));
         txtPremioTeorico.setText(getRecaudacion("INC_PremioTeorico"));
         txtPartidas.setText(getRecaudacion("INC_Partidas"));
+
+        txtImporteBruto.setText(getRecaudacion("INC_Bruto"));
     };
     
     private String getMaquina(String columna){
@@ -180,9 +185,10 @@ public class FragmentContadoresMaquina extends Fragment {
         values.put("INC_JugadoTeorico", txtJugadoTeorico.getText().toString());
         values.put("INC_PremioTeorico", txtPremioTeorico.getText().toString());
         values.put("INC_Partidas", txtPartidas.getText().toString());
-//        if (getNumber(getRecaudacion("INC_Bruto")) == 0){
-//            values.put("INC_Bruto", importeBruto);
-//        }
+
+        if (getNumber(getRecaudacion("INC_Bruto")) == 0){
+            values.put("INC_Bruto", importeBruto);
+        }
         int numRecords = Recaudacion.dbAdapter.updateRecord("INC_LineasRecaudacion", values,
                 "id=?",
                 new String[]{getRecaudacion("id")});
@@ -213,7 +219,9 @@ public class FragmentContadoresMaquina extends Fragment {
         partidas = Math.round(jugadoTeorico / precioPartida);
         txtPartidas.setText(partidas.toString());
 
-//        importeBruto = jugadoTeorico - premioTeorico;
+        importeBruto = jugadoTeorico - premioTeorico;
+        txtImporteBruto.setText(importeStr(importeBruto));
+
         Recaudacion.isModified = true;
     }
 

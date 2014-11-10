@@ -62,7 +62,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     static FragmentImportesMaquina fragmentImportesMaquina;
     static FragmentArqueoMaquina fragmentArqueoMaquina;
     public static boolean isModified = false;
-    public static int oldPagePosition = -1;
+    public static int oldPagePosition = 0;
     String idMaquina;
     LocationManager locManager;
 //    static byte[] codigoRecaudacion;
@@ -103,13 +103,13 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
 
                 aBar.setSelectedNavigationItem(position);
                 if (Recaudacion.isModified) {
-                    if (fragmentContadoresMaquina != null) {
+                    if ((fragmentContadoresMaquina != null) & (oldPagePosition == 0)) {
                         fragmentContadoresMaquina.saveRecaudacion();
                     };
-                    if (fragmentImportesMaquina != null) {
+                    if ((fragmentImportesMaquina != null) & (oldPagePosition == 1)) {
                         fragmentImportesMaquina.saveRecaudacion();
                     };
-                    if (fragmentArqueoMaquina != null) {
+                    if ((fragmentArqueoMaquina != null) & (oldPagePosition == 2)) {
                         fragmentArqueoMaquina.saveRecaudacion();
                     };
                     curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
@@ -124,6 +124,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                         case 0:
                             break;
                         case 1:
+                            if ((fragmentImportesMaquina != null) & (oldPagePosition == 0)) {
+                                fragmentImportesMaquina.setRecaudacionData();
+                            };
                             break;
                         case 2:
                             break;

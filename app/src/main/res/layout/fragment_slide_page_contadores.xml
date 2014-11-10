@@ -237,6 +237,19 @@
                 android:text="4564897"/>
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/EtiquetaContadores"
+                android:text="Bruto"/>
+            <EditText
+                android:id="@+id/txtBruto"
+                style="@style/TxtImportes"
+                android:text="4564897"/>
+        </LinearLayout>
+
     </LinearLayout>
     </ScrollView>
 </RelativeLayout>
