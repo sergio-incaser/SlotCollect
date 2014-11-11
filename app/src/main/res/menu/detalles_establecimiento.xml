@@ -1,7 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="es.incaser.apps.slotcollect.DetallesEstablecimiento" >
-    <item android:id="@+id/action_prestamos"
+    tools:context="es.incaser.apps.slotcollect.DetallesEstablecimiento">
+    <item
+        android:id="@+id/action_prestamos"
         android:title="@string/action_prestamos"
         android:orderInCategory="100"
         android:showAsAction="never" />

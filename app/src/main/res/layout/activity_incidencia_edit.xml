@@ -7,59 +7,64 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="es.incaser.apps.slotcollect.IncidenciaEdit">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/linearLayout">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:text="Fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
             <EditText
                 android:id="@+id/txt_FechaIncidencia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TxtDate"
-                />
+                style="@style/TxtDate" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:text="Tipo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
+
             <EditText
                 android:id="@+id/txt_TipoIncidencia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="AV"
-                android:maxLength="2"
-                />
+                android:maxLength="2" />
         </LinearLayout>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Descripción"
-                />
+                android:text="Descripción" />
+
             <EditText
                 android:id="@+id/txt_DescripcionIncidencia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="La maquina se ha roto"
-                />
+                android:text="La maquina se ha roto" />
 
-            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

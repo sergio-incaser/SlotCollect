@@ -1,9 +1,7 @@
 package es.incaser.apps.slotcollect;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,19 +10,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.sql.ResultSet;
 import java.sql.RowId;
 import java.sql.SQLException;
-import java.text.ChoiceFormat;
 
 
 public class EstablecimientosLogic extends ListActivity {
-    static ResultSet resultSet= null;
+    static ResultSet resultSet = null;
     static SQLConnection sqlConnection = SQLConnection.getInstance();
     static EstabLogicAdapter estabLogicAdapter;
     static int rowCount = 0;
@@ -62,7 +57,7 @@ public class EstablecimientosLogic extends ListActivity {
         protected String doInBackground(Integer... params) {
             resultSet = sqlConnection.getEstablecimientos();
             try {
-                if (resultSet.last()){
+                if (resultSet.last()) {
                     rowCount = resultSet.getRow();
                 }
             } catch (SQLException e) {
@@ -72,8 +67,9 @@ public class EstablecimientosLogic extends ListActivity {
 
             return "Datos importados";
         }
+
         @Override
-        protected void onPostExecute(String result){
+        protected void onPostExecute(String result) {
             Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
             if (resultSet != null) {
                 setListAdapter(estabLogicAdapter);
@@ -99,10 +95,11 @@ public class EstablecimientosLogic extends ListActivity {
         }
         return 0;
     }
-    public static class EstabLogicAdapter extends BaseAdapter{
+
+    public static class EstabLogicAdapter extends BaseAdapter {
         private Context myContext;
 
-        public EstabLogicAdapter (Context ctx){
+        public EstabLogicAdapter(Context ctx) {
             myContext = ctx;
         }
 
@@ -116,7 +113,7 @@ public class EstablecimientosLogic extends ListActivity {
             try {
                 //return resultSet.getRowId(i);
                 resultSet.absolute(i);
-                return  resultSet.getRow();
+                return resultSet.getRow();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

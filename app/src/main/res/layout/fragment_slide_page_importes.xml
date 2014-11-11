@@ -12,138 +12,171 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="fill_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaSeparador"
-                android:text="Importes"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Bruto"/>
-            <EditText
-                android:id="@+id/txtBruto"
-                style="@style/TxtImportes"
-                android:text="4564897"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Fallos"/>
-            <EditText
-                android:id="@+id/txtFallos"
-                style="@style/TxtImportes"
-                android:text="4564897"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Rec. carga empresa"/>
-            <EditText
-                android:id="@+id/txtRecCargaEmpresa"
-                style="@style/TxtImportes"
-                android:text="4564897" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Rec. carga establecimiento"/>
-            <EditText
-                android:id="@+id/txtRecCargaEstablecimiento"
-                style="@style/TxtImportes"
-                android:text="4564897"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaSeparador"
-                android:text="Reparto"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Importe recaudacion"/>
-            <EditText
-                android:id="@+id/txtImporteRecaudacion"
-                style="@style/TxtImportesBloq"
-                android:text="4564897"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Importe varios"/>
-            <EditText
-                android:id="@+id/txtImporteVarios"
-                style="@style/TxtImportes"
-                android:text="4564897"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Importe retencion"/>
-            <EditText
-                android:id="@+id/txtImporteRetencion"
-                style="@style/TxtImportes"
-                android:text="4564897"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <EditText
-                android:id="@+id/txtPorcentajeDistribucion"
-                style="@style/TxtImportes"
-                android:text="50"/>
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="% establecimiento"/>
-            <EditText
-                android:id="@+id/txtImporteEstablecimiento"
-                style="@style/TxtImportes"
-                android:text="4564897"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaContadores"
-                android:text="Importe neto"/>
-            <EditText
-                android:id="@+id/txtImporteNeto"
-                style="@style/TxtImportesBloq"/>
-        </LinearLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaSeparador"
+                    android:text="Importes" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaContadores"
+                    android:text="Bruto" />
+
+                <EditText
+                    android:id="@+id/txtBruto"
+                    style="@style/TxtImportes"
+                    android:text="4564897" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaContadores"
+                    android:text="Fallos" />
+
+                <EditText
+                    android:id="@+id/txtFallos"
+                    style="@style/TxtImportes"
+                    android:text="4564897" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaContadores"
+                    android:text="Rec. carga empresa" />
+
+                <EditText
+                    android:id="@+id/txtRecCargaEmpresa"
+                    style="@style/TxtImportes"
+                    android:text="4564897" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaContadores"
+                    android:text="Rec. carga establecimiento" />
+
+                <EditText
+                    android:id="@+id/txtRecCargaEstablecimiento"
+                    style="@style/TxtImportes"
+                    android:text="4564897" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaSeparador"
+                    android:text="Reparto" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaContadores"
+                    android:text="Importe recaudacion" />
+
+                <EditText
+                    android:id="@+id/txtImporteRecaudacion"
+                    style="@style/TxtImportesBloq"
+                    android:text="4564897" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaContadores"
+                    android:text="Importe varios" />
+
+                <EditText
+                    android:id="@+id/txtImporteVarios"
+                    style="@style/TxtImportes"
+                    android:text="4564897" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaContadores"
+                    android:text="Importe retencion" />
+
+                <EditText
+                    android:id="@+id/txtImporteRetencion"
+                    style="@style/TxtImportes"
+                    android:text="4564897" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/txtPorcentajeDistribucion"
+                    style="@style/TxtImportes"
+                    android:text="50" />
+
+                <TextView
+                    style="@style/EtiquetaContadores"
+                    android:text="% establecimiento" />
+
+                <EditText
+                    android:id="@+id/txtImporteEstablecimiento"
+                    style="@style/TxtImportes"
+                    android:text="4564897" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaContadores"
+                    android:text="Importe neto" />
+
+                <EditText
+                    android:id="@+id/txtImporteNeto"
+                    style="@style/TxtImportesBloq" />
+            </LinearLayout>
+
+        </LinearLayout>
     </ScrollView>
 </RelativeLayout>

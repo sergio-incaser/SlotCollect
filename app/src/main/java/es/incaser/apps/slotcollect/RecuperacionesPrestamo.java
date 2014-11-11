@@ -15,7 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
-public class RecuperacionesPrestamo extends Activity{
+public class RecuperacionesPrestamo extends Activity {
     static Cursor cur;
     static Cursor curPrestamo;
     DbAdapter dbAdapter;
@@ -24,6 +24,7 @@ public class RecuperacionesPrestamo extends Activity{
     String codigoEmpresa;
     String codigoPrestamo;
     String codigoRecaudacion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,20 +44,21 @@ public class RecuperacionesPrestamo extends Activity{
         bindData();
     }
 
-    public void bindData(){
+    public void bindData() {
         dbAdapter = new DbAdapter(this);
         cur = dbAdapter.getRecuperacionesPrestamo(codigoEmpresa, codigoPrestamo);
         if (cur.moveToFirst()) {
             recuperacionesAdapter = new RecuperacionesAdapter(this);
             lvRecuperaciones.setAdapter(recuperacionesAdapter);
-        };
+        }
+        ;
     }
 
 
     public static class RecuperacionesAdapter extends BaseAdapter {
         private Context myContext;
 
-        public RecuperacionesAdapter(Context ctx){
+        public RecuperacionesAdapter(Context ctx) {
             myContext = ctx;
         }
 
@@ -101,11 +103,11 @@ public class RecuperacionesPrestamo extends Activity{
         }
     }
 
-    private static String getRecuperacion(String columna){
+    private static String getRecuperacion(String columna) {
         return cur.getString(cur.getColumnIndex(columna));
     }
 
-    private static String getPrestamo(String columna){
+    private static String getPrestamo(String columna) {
         return curPrestamo.getString(curPrestamo.getColumnIndex(columna));
     }
 
@@ -123,7 +125,7 @@ public class RecuperacionesPrestamo extends Activity{
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_add) {
-            Intent myIntent = new Intent(this,RecuperacionPrestamoEdit.class);
+            Intent myIntent = new Intent(this, RecuperacionPrestamoEdit.class);
             myIntent.putExtra("codigoEmpresa", codigoEmpresa);
             myIntent.putExtra("codigoPrestamo", codigoPrestamo);
             myIntent.putExtra("codigoRecaudacion", codigoRecaudacion);

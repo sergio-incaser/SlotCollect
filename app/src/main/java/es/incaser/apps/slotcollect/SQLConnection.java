@@ -1,17 +1,11 @@
 package es.incaser.apps.slotcollect;
 
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.preference.PreferenceManager;
+import net.sourceforge.jtds.jdbc.Driver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import net.sourceforge.jtds.jdbc.CachedResultSet;
-import net.sourceforge.jtds.jdbc.Driver;
 
 
 /**
@@ -29,12 +23,12 @@ public class SQLConnection {
     public static Statement statement;
     public static Statement statementWrite;
 
-    public SQLConnection(){
-        if(connection == null)
+    public SQLConnection() {
+        if (connection == null)
             connection = connectSQL();
     }
 
-    public static SQLConnection getInstance(){
+    public static SQLConnection getInstance() {
         if (instance == null)
             instance = new SQLConnection();
         return instance;
@@ -61,18 +55,18 @@ public class SQLConnection {
 //        }
 //    }
 
-    public Connection getConnection(){
-        if(connection == null)
+    public Connection getConnection() {
+        if (connection == null)
             connection = connectSQL();
         return connection;
     }
 
-    private Connection connectSQL(){
+    private Connection connectSQL() {
         Connection conn = null;
         (new Driver()).getClass();
         try {
-            String uri = "jdbc:jtds:sqlserver://" + host + ":"+ port +"/"+ database +";";
-            conn = DriverManager.getConnection(uri,user,password);
+            String uri = "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + database + ";";
+            conn = DriverManager.getConnection(uri, user, password);
             statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             statementWrite = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         } catch (java.sql.SQLException e) {
@@ -81,8 +75,8 @@ public class SQLConnection {
         return conn;
     }
 
-    public ResultSet getEstablecimientos(){
-        if(connection == null)
+    public ResultSet getEstablecimientos() {
+        if (connection == null)
             connection = connectSQL();
         String sql = "Select INC_CodigoEstablecimiento as id, * From INC_Establecimientos";
         ResultSet rs = null;
@@ -97,16 +91,16 @@ public class SQLConnection {
         return rs;
     }
 
-    public ResultSet getResultset(String query){
+    public ResultSet getResultset(String query) {
         return getResultset(query, false);
     }
 
-    public ResultSet getResultset(String query, boolean writable){
+    public ResultSet getResultset(String query, boolean writable) {
         ResultSet rs = null;
         try {
             if (writable) {
                 rs = statementWrite.executeQuery(query);
-            }else {
+            } else {
                 rs = statement.executeQuery(query);
             }
         } catch (java.sql.SQLException e) {
@@ -115,7 +109,8 @@ public class SQLConnection {
         return rs;
 
     }
-    public int updateSQL(String query){
+
+    public int updateSQL(String query) {
         try {
             return statementWrite.executeUpdate(query);
         } catch (java.sql.SQLException e) {

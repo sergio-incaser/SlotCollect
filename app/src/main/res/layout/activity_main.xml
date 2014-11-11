@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="es.incaser.apps.slotcollect.MainActivity"
-    >
+    tools:context="es.incaser.apps.slotcollect.MainActivity">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -12,11 +12,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:background="#ddd">
+
         <ListView
             android:id="@+id/lv_establecimientos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            </ListView>
-        </LinearLayout>
+            android:layout_height="match_parent"></ListView>
+    </LinearLayout>
 
 </RelativeLayout>

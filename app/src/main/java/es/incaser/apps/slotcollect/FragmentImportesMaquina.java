@@ -1,8 +1,6 @@
 package es.incaser.apps.slotcollect;
 
-import android.app.Activity;
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,11 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import static es.incaser.apps.slotcollect.tools.*;
+import static es.incaser.apps.slotcollect.tools.getNumber;
+import static es.incaser.apps.slotcollect.tools.importeStr;
+
 /**
  * Created by sergio on 28/09/14.
  */
-public class FragmentImportesMaquina extends Fragment{
+public class FragmentImportesMaquina extends Fragment {
     private EditText txtBruto;
     private EditText txtFallos;
     private EditText txtRecCargaEmpresa;
@@ -28,16 +28,16 @@ public class FragmentImportesMaquina extends Fragment{
     private EditText txtImporteNeto;
 
     private void bindRecaudacionData(View rootView) {
-        txtBruto = (EditText)rootView.findViewById(R.id.txtBruto);
-        txtFallos = (EditText)rootView.findViewById(R.id.txtFallos);
-        txtRecCargaEmpresa = (EditText)rootView.findViewById(R.id.txtRecCargaEmpresa);
-        txtRecCargaEstablecimiento = (EditText)rootView.findViewById(R.id.txtRecCargaEstablecimiento);
-        txtImporteRecaudacion = (EditText)rootView.findViewById(R.id.txtImporteRecaudacion);
-        txtImporteVarios = (EditText)rootView.findViewById(R.id.txtImporteVarios);
-        txtImporteRetencion = (EditText)rootView.findViewById(R.id.txtImporteRetencion);
-        txtPorcentajeDistribucion = (EditText)rootView.findViewById(R.id.txtPorcentajeDistribucion);
-        txtImporteEstablecimiento = (EditText)rootView.findViewById(R.id.txtImporteEstablecimiento);
-        txtImporteNeto = (EditText)rootView.findViewById(R.id.txtImporteNeto);
+        txtBruto = (EditText) rootView.findViewById(R.id.txtBruto);
+        txtFallos = (EditText) rootView.findViewById(R.id.txtFallos);
+        txtRecCargaEmpresa = (EditText) rootView.findViewById(R.id.txtRecCargaEmpresa);
+        txtRecCargaEstablecimiento = (EditText) rootView.findViewById(R.id.txtRecCargaEstablecimiento);
+        txtImporteRecaudacion = (EditText) rootView.findViewById(R.id.txtImporteRecaudacion);
+        txtImporteVarios = (EditText) rootView.findViewById(R.id.txtImporteVarios);
+        txtImporteRetencion = (EditText) rootView.findViewById(R.id.txtImporteRetencion);
+        txtPorcentajeDistribucion = (EditText) rootView.findViewById(R.id.txtPorcentajeDistribucion);
+        txtImporteEstablecimiento = (EditText) rootView.findViewById(R.id.txtImporteEstablecimiento);
+        txtImporteNeto = (EditText) rootView.findViewById(R.id.txtImporteNeto);
 
         txtBruto.setOnFocusChangeListener(new CustomOnFocusChange());
         txtFallos.setOnFocusChangeListener(new CustomOnFocusChange());
@@ -49,7 +49,7 @@ public class FragmentImportesMaquina extends Fragment{
         txtImporteEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
     }
 
-    public void setData(){
+    public void setData() {
         txtBruto.setText(getRecaudacionImporte("INC_Bruto"));
         txtFallos.setText(getRecaudacionImporte("INC_Fallos"));
         txtRecCargaEmpresa.setText(getRecaudacionImporte("INC_RecuperaCargaEmpresa"));
@@ -60,9 +60,11 @@ public class FragmentImportesMaquina extends Fragment{
         txtPorcentajeDistribucion.setText(getRecaudacionImporte("INC_PorcentajeDistribucion"));
         txtImporteEstablecimiento.setText(getRecaudacionImporte("INC_ImporteEstablecimiento"));
         txtImporteNeto.setText(getRecaudacionImporte("INC_ImporteNeto"));
-    };
+    }
 
-    public void save(ContentValues cv){
+    ;
+
+    public void save(ContentValues cv) {
         cv.put("INC_Bruto", getNumber(txtBruto));
         cv.put("INC_Fallos", getNumber(txtFallos));
         cv.put("INC_RecuperaCargaEmpresa", getNumber(txtRecCargaEmpresa));
@@ -77,10 +79,12 @@ public class FragmentImportesMaquina extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_slide_page_importes, container,false);
+        View rootView = inflater.inflate(R.layout.fragment_slide_page_importes, container, false);
         bindRecaudacionData(rootView);
         return rootView;
     }
+
+
 
     @Override
     public void onStart() {
@@ -88,11 +92,11 @@ public class FragmentImportesMaquina extends Fragment{
         setData();
     }
 
-    private String getRecaudacion(String col){
+    private String getRecaudacion(String col) {
         return Recaudacion.cvRecaudacion.getAsString(col);
     }
 
-    private String getRecaudacionImporte(String col){
+    private String getRecaudacionImporte(String col) {
         return importeStr(getRecaudacion(col));
     }
 
@@ -100,9 +104,9 @@ public class FragmentImportesMaquina extends Fragment{
 
         @Override
         public void onFocusChange(View view, boolean b) {
-            if (! b){
+            if (!b) {
                 save(Recaudacion.cvRecaudacion);
-                Recaudacion.calcData();
+                Recaudacion.calcData(false);
                 //Recaudacion.calcImportes();
                 setData();
             }

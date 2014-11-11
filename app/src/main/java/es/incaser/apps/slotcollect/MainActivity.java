@@ -1,19 +1,15 @@
 package es.incaser.apps.slotcollect;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,21 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
-import static android.provider.Settings.Global.getString;
-
-
-public class MainActivity extends Activity{
+public class MainActivity extends Activity {
     private static Cursor cur = null;
     private static EstablecimientosAdapter estabAdapter;
     DbAdapter dbAdapter;
@@ -51,7 +39,7 @@ public class MainActivity extends Activity{
         lvEstablecimientos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent myIntent = new Intent(view.getContext(),DetallesEstablecimiento.class);
+                Intent myIntent = new Intent(view.getContext(), DetallesEstablecimiento.class);
                 cur.moveToPosition(position);
                 myIntent.putExtra("id", cur.getString(cur.getColumnIndex("id")));
                 startActivity(myIntent);
@@ -64,28 +52,30 @@ public class MainActivity extends Activity{
     protected void onStart() {
         super.onStart();
         ReadPreferences(this);
-        if (SQLConnection.host != ""){
+        if (SQLConnection.host != "") {
             bindData();
         }
     }
-    public void bindData(){
+
+    public void bindData() {
         dbAdapter = new DbAdapter(this);
         Cursor curtmp = dbAdapter.getCursor("Select * from sqlite_master WHERE name = 'Establecimientos'");
-        if (curtmp.getCount() > 0 ) {
+        if (curtmp.getCount() > 0) {
             getDataSql();
             estabAdapter = new EstablecimientosAdapter(this);
             lvEstablecimientos.setAdapter(estabAdapter);
             //setListAdapter(estabAdapter);
-        };
+        }
+        ;
     }
 
-    public static void ReadPreferences(Activity act){
+    public static void ReadPreferences(Activity act) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(act);
-        SQLConnection.host = pref.getString("pref_sql_host","");
-        SQLConnection.port = pref.getString("pref_sql_port","");
-        SQLConnection.user = pref.getString("pref_sql_user","");
-        SQLConnection.password = pref.getString("pref_sql_password","");
-        SQLConnection.database = pref.getString("pref_sql_database","");
+        SQLConnection.host = pref.getString("pref_sql_host", "");
+        SQLConnection.port = pref.getString("pref_sql_port", "");
+        SQLConnection.user = pref.getString("pref_sql_user", "");
+        SQLConnection.password = pref.getString("pref_sql_password", "");
+        SQLConnection.database = pref.getString("pref_sql_database", "");
     }
 
     @Override
@@ -107,10 +97,10 @@ public class MainActivity extends Activity{
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.length() >= 3){
+                if (newText.length() >= 3) {
                     getDataSql(newText.toString());
                     estabAdapter.notifyDataSetChanged();
-                }else if(newText.length()==0){
+                } else if (newText.length() == 0) {
                     getDataSql();
                     estabAdapter.notifyDataSetChanged();
                 }
@@ -142,17 +132,19 @@ public class MainActivity extends Activity{
         }
         return super.onOptionsItemSelected(item);
     }
-    private void getDataSql(){
-        cur = dbAdapter.getCursorBuscador("","Establecimientos","");
+
+    private void getDataSql() {
+        cur = dbAdapter.getCursorBuscador("", "Establecimientos", "");
     }
 
-    private void getDataSql(String text){
-        cur = dbAdapter.getCursorBuscador(text,"Establecimientos","");
+    private void getDataSql(String text) {
+        cur = dbAdapter.getCursorBuscador(text, "Establecimientos", "");
     }
 
     public static class EstablecimientosAdapter extends BaseAdapter {
         private Context myContext;
-        public EstablecimientosAdapter (Context ctx){
+
+        public EstablecimientosAdapter(Context ctx) {
             myContext = ctx;
         }
 
@@ -192,7 +184,7 @@ public class MainActivity extends Activity{
             TextView txtTelefono = (TextView) myView.findViewById(R.id.telefonoEstablecimiento);
 
             txtEstablecimiento.setText(getEstablecimiento("RazonSocial"));
-            txtCodigoEstablecimiento.setText("("+getEstablecimiento("INC_CodigoEstablecimiento")+")");
+            txtCodigoEstablecimiento.setText("(" + getEstablecimiento("INC_CodigoEstablecimiento") + ")");
             txtDireccion.setText(getEstablecimiento("Domicilio"));
             txtMunicipio.setText(getEstablecimiento("Municipio"));
             txtTelefono.setText(getEstablecimiento("Telefono"));
@@ -201,23 +193,24 @@ public class MainActivity extends Activity{
     }
 
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Intent myIntent = new Intent(this,DetallesEstablecimiento.class);
+        Intent myIntent = new Intent(this, DetallesEstablecimiento.class);
 
         cur.moveToPosition(position);
         myIntent.putExtra("id", cur.getString(cur.getColumnIndex("id")));
         startActivity(myIntent);
     }
 
-    private static String getEstablecimiento(String column){
+    private static String getEstablecimiento(String column) {
         return cur.getString(cur.getColumnIndex(column));
     }
-    public void sincronizarDatos(){
+
+    public void sincronizarDatos() {
         new Synchronize().execute(1);
     }
 
     private class Synchronize extends AsyncTask<Integer, Void, String> {
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             progressDialog = new ProgressDialog(MainActivity.this);
             progressDialog.setIndeterminate(false);
             progressDialog.setTitle("Proceso de sincronización");
@@ -225,6 +218,7 @@ public class MainActivity extends Activity{
             progressDialog.show();
             progressDialog.setMessage("Sincronizando datos");
         }
+
         @Override
         protected String doInBackground(Integer... params) {
             SyncData syncData = new SyncData(MainActivity.this);
@@ -232,17 +226,17 @@ public class MainActivity extends Activity{
             if (SQLConnection.connection == null) {
                 return "errorSQLconnection";
             }
-            if (syncData.exportRecords() >= 0){
+            if (syncData.exportRecords() >= 0) {
                 syncData.importRecords();
                 return "Datos Sincronizados";
-            }else {
+            } else {
                 return "ERROR EN LA SINCRONIZACION";
             }
         }
 
         @Override
-        protected void onPostExecute(String result){
-            if (result == "errorSQLconnection"){
+        protected void onPostExecute(String result) {
+            if (result == "errorSQLconnection") {
                 result = MainActivity.this.getString(R.string.errorSQLconnection);
             }
             Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();

@@ -1,7 +1,6 @@
 package es.incaser.apps.slotcollect;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,10 +10,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import java.util.Calendar;
-import java.util.Date;
 
-import static es.incaser.apps.slotcollect.tools.*;
+import static es.incaser.apps.slotcollect.tools.getNumber;
 import static es.incaser.apps.slotcollect.tools.importeStr;
 
 /**
@@ -39,23 +36,28 @@ public class FragmentArqueoMaquina extends Fragment {
 
     private void bindArqueoData(View rootView) {
         chkArqueoRealizado = (CheckBox) rootView.findViewById(R.id.chArqueoRealizado);
-        txtTipoArqueo = (EditText)rootView.findViewById(R.id.txtTipoArqueo);
-        txtArqueoTeorico = (EditText)rootView.findViewById(R.id.txtArqueoTeorico);
-        txtCargaHopper = (EditText)rootView.findViewById(R.id.txtCargaHopper);
-        txtCargaRecEmpresa = (EditText)rootView.findViewById(R.id.txtCargaRecEmpresa);
-        txtCargaRecEstablecimiento = (EditText)rootView.findViewById(R.id.txtCargaRecEstablecimiento);
-        txtDiferenciaRecaudacion = (EditText)rootView.findViewById(R.id.txtDiferenciaRecaudacion);
-        txtPorcPremio = (EditText)rootView.findViewById(R.id.txtPorcPremio);
-        txtDiferenciaArqueo = (EditText)rootView.findViewById(R.id.txtDiferenciaArqueo);
-        txtPorcArqueo = (EditText)rootView.findViewById(R.id.txtPorcArqueo);
-        txtDiferenciaInstalacion = (EditText)rootView.findViewById(R.id.txtDiferenciaInstalacion);
-        txtPorcInstalacion = (EditText)rootView.findViewById(R.id.txtPorcInstalacion);
-        txtDiasEfectivosUR = (EditText)rootView.findViewById(R.id.txtDiasEfectivosUR);
-        txtDiasNaturalesUR = (EditText)rootView.findViewById(R.id.txtDiasNaturalesUR);
-        txtMediaDiaria = (EditText)rootView.findViewById(R.id.txtMediaDiaria);
+        txtTipoArqueo = (EditText) rootView.findViewById(R.id.txtTipoArqueo);
+        txtArqueoTeorico = (EditText) rootView.findViewById(R.id.txtArqueoTeorico);
+        txtCargaHopper = (EditText) rootView.findViewById(R.id.txtCargaHopper);
+        txtCargaRecEmpresa = (EditText) rootView.findViewById(R.id.txtCargaRecEmpresa);
+        txtCargaRecEstablecimiento = (EditText) rootView.findViewById(R.id.txtCargaRecEstablecimiento);
+        txtDiferenciaRecaudacion = (EditText) rootView.findViewById(R.id.txtDiferenciaRecaudacion);
+        txtPorcPremio = (EditText) rootView.findViewById(R.id.txtPorcPremio);
+        txtDiferenciaArqueo = (EditText) rootView.findViewById(R.id.txtDiferenciaArqueo);
+        txtPorcArqueo = (EditText) rootView.findViewById(R.id.txtPorcArqueo);
+        txtDiferenciaInstalacion = (EditText) rootView.findViewById(R.id.txtDiferenciaInstalacion);
+        txtPorcInstalacion = (EditText) rootView.findViewById(R.id.txtPorcInstalacion);
+        txtDiasEfectivosUR = (EditText) rootView.findViewById(R.id.txtDiasEfectivosUR);
+        txtDiasNaturalesUR = (EditText) rootView.findViewById(R.id.txtDiasNaturalesUR);
+        txtMediaDiaria = (EditText) rootView.findViewById(R.id.txtMediaDiaria);
+
+        txtArqueoTeorico.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtCargaHopper.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtCargaRecEmpresa.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtCargaRecEstablecimiento.setOnFocusChangeListener(new CustomOnFocusChange());
     }
 
-    public void setData(){
+    public void setData() {
         chkArqueoRealizado.setChecked(Recaudacion.getBoolRecaudacion("INC_ArqueoRealizado"));
         txtTipoArqueo.setText(Recaudacion.getRecaudacion("INC_TipoArqueo"));
         txtArqueoTeorico.setText(Recaudacion.getRecaudacionImporte("INC_ValorArqueoTeorico"));
@@ -72,9 +74,11 @@ public class FragmentArqueoMaquina extends Fragment {
         txtDiasEfectivosUR.setText(Recaudacion.getRecaudacionImporte("INC_DiasEfectivosUR"));
         txtDiasNaturalesUR.setText(Recaudacion.getRecaudacionImporte("INC_DiasNaturalesUR"));
         txtMediaDiaria.setText(Recaudacion.getRecaudacionImporte("INC_MediaDiaria"));
-    };
+    }
 
-    protected void save(ContentValues cv){
+    ;
+
+    protected void save(ContentValues cv) {
         cv.put("INC_ArqueoRealizado", chkArqueoRealizado.isChecked());
         cv.put("INC_TipoArqueo", txtTipoArqueo.getText().toString());
         cv.put("INC_ValorArqueoTeorico", getNumber(txtArqueoTeorico));
@@ -105,18 +109,29 @@ public class FragmentArqueoMaquina extends Fragment {
         calculaPorcentajes();
     }
 
-    private String getRecaudacion(String col){
+    private String getRecaudacion(String col) {
         return Recaudacion.getRecaudacion(col);
     }
 
-    private Float getFloatRecaudacion(String col){
+    private Float getFloatRecaudacion(String col) {
         return getNumber(getRecaudacion(col));
     }
 
-    private void calculaPorcentajes(){
+    private void calculaPorcentajes() {
         txtPorcPremio.setText(importeStr(Recaudacion.porcentajeRecaudacion));
         txtPorcArqueo.setText(importeStr(Recaudacion.porcentajeArqueo));
         txtPorcInstalacion.setText(importeStr(Recaudacion.porcentajeInstalacion));
     }
 
+    private class CustomOnFocusChange implements View.OnFocusChangeListener {
+
+        @Override
+        public void onFocusChange(View view, boolean b) {
+            if (!b) {
+                save(Recaudacion.cvRecaudacion);
+                Recaudacion.calcData(false);
+                setData();
+            }
+        }
+    }
 }

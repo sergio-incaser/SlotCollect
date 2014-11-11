@@ -5,29 +5,23 @@
         android:key="pref_sql_host"
         android:title="@string/pref_sql_host"
         android:summary="@string/pref_sql_host_summ"
-        android:defaultValue="@string/pref_sql_host"
-        />
+        android:defaultValue="@string/pref_sql_host" />
     <EditTextPreference
         android:key="pref_sql_port"
         android:title="@string/pref_sql_port"
         android:inputType="number"
-        android:defaultValue="1433"
-        />
+        android:defaultValue="1433" />
     <EditTextPreference
         android:key="pref_sql_user"
-        android:title="@string/pref_sql_user"
-        />
+        android:title="@string/pref_sql_user" />
     <EditTextPreference
         android:key="pref_sql_password"
         android:title="@string/pref_sql_password"
-        android:inputType="textPassword"
-        />
+        android:inputType="textPassword" />
     <EditTextPreference
         android:key="pref_sql_database"
-        android:title="@string/pref_sql_database"
-        />
+        android:title="@string/pref_sql_database" />
     <EditTextPreference
         android:key="pref_recaudador"
-        android:title="@string/pref_recaudador"
-        />
+        android:title="@string/pref_recaudador" />
 </PreferenceScreen>

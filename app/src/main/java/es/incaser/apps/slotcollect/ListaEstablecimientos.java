@@ -8,10 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import es.incaser.apps.slotcollect.DbAdapter;
 
 /**
  * Created by sergio on 23/09/14.
@@ -32,13 +29,14 @@ public class ListaEstablecimientos extends ListActivity {
         setListAdapter(estabAdapter);
     }
 
-    private void getDataSql(){
-        cursorEstablecimientos = new DbAdapter(this).getCursorBuscador("","Establecimientos","");
+    private void getDataSql() {
+        cursorEstablecimientos = new DbAdapter(this).getCursorBuscador("", "Establecimientos", "");
     }
 
-    public static class EstablecimientosAdapter extends BaseAdapter{
+    public static class EstablecimientosAdapter extends BaseAdapter {
         private Context myContext;
-        public EstablecimientosAdapter (Context ctx){
+
+        public EstablecimientosAdapter(Context ctx) {
             myContext = ctx;
         }
 

@@ -13,16 +13,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/linearLayout">
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 style="@style/EtiquetaLeft"
                 android:text="Fecha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"/>
+                android:layout_weight="0.5" />
+
             <EditText
                 android:id="@+id/txt_fechaRecuperacion"
                 android:layout_width="match_parent"
@@ -33,19 +36,21 @@
                 android:text="01-04-2014"
                 android:hint="dd-MM-yyyy"
                 android:enabled="false"
-                style=""
-                />
+                style="" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 style="@style/EtiquetaLeft"
                 android:text="Importe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"/>
+                android:layout_weight="0.5" />
+
             <EditText
                 android:id="@+id/txt_importeRecuperacion"
                 android:layout_width="match_parent"
@@ -54,26 +59,25 @@
                 android:inputType="numberDecimal"
                 android:text="0.00"
                 android:selectAllOnFocus="true"
-                android:layout_weight="0.5"
-                />
+                android:layout_weight="0.5" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 style="@style/EtiquetaLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Descripción"
-                />
+                android:text="Descripción" />
+
             <EditText
                 android:id="@+id/txt_descripcionRecuperacion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Escribe un comentario ..."
-                />
+                android:hint="Escribe un comentario ..." />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

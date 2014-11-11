@@ -1,7 +1,6 @@
 package es.incaser.apps.slotcollect;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import static es.incaser.apps.slotcollect.tools.*;
 
 /**
  * Created by sergio on 28/09/14.
@@ -46,20 +44,20 @@ public class FragmentContadoresMaquina extends Fragment {
     EditText txtPremioTeorico;
     EditText txtPartidas;
 
-    private void bindAntData(View rootView){
-        txtSal010Ant = (EditText)rootView.findViewById(R.id.txtSal010Ant);
-        txtEnt010Ant = (EditText)rootView.findViewById(R.id.txtEnt010Ant);
-        txtEnt020Ant = (EditText)rootView.findViewById(R.id.txtEnt020Ant);
-        txtSal020Ant = (EditText)rootView.findViewById(R.id.txtSal020Ant);
-        txtEnt050Ant = (EditText)rootView.findViewById(R.id.txtEnt050Ant);
-        txtEnt100Ant = (EditText)rootView.findViewById(R.id.txtEnt100Ant);
-        txtSal100Ant = (EditText)rootView.findViewById(R.id.txtSal100Ant);
-        txtEnt200Ant = (EditText)rootView.findViewById(R.id.txtEnt200Ant);
-        txtEnt500Ant = (EditText)rootView.findViewById(R.id.txtEnt500Ant);
-        txtEnt1000Ant = (EditText)rootView.findViewById(R.id.txtEnt1000Ant);
+    private void bindAntData(View rootView) {
+        txtSal010Ant = (EditText) rootView.findViewById(R.id.txtSal010Ant);
+        txtEnt010Ant = (EditText) rootView.findViewById(R.id.txtEnt010Ant);
+        txtEnt020Ant = (EditText) rootView.findViewById(R.id.txtEnt020Ant);
+        txtSal020Ant = (EditText) rootView.findViewById(R.id.txtSal020Ant);
+        txtEnt050Ant = (EditText) rootView.findViewById(R.id.txtEnt050Ant);
+        txtEnt100Ant = (EditText) rootView.findViewById(R.id.txtEnt100Ant);
+        txtSal100Ant = (EditText) rootView.findViewById(R.id.txtSal100Ant);
+        txtEnt200Ant = (EditText) rootView.findViewById(R.id.txtEnt200Ant);
+        txtEnt500Ant = (EditText) rootView.findViewById(R.id.txtEnt500Ant);
+        txtEnt1000Ant = (EditText) rootView.findViewById(R.id.txtEnt1000Ant);
     }
 
-    private void setAntData(){
+    private void setAntData() {
         txtEnt010Ant.setText(getRecaudacion("INC_Entrada010ANT"));
         txtSal010Ant.setText(getRecaudacion("INC_Salida010ANT"));
         txtEnt020Ant.setText(getRecaudacion("INC_Entrada020ANT"));
@@ -73,20 +71,20 @@ public class FragmentContadoresMaquina extends Fragment {
     }
 
     private void bindActualData(View rootView) {
-        txtEnt010 = (EditText)rootView.findViewById(R.id.txtEnt010);
-        txtSal010 = (EditText)rootView.findViewById(R.id.txtSal010);
-        txtEnt020 = (EditText)rootView.findViewById(R.id.txtEnt020);
-        txtSal020 = (EditText)rootView.findViewById(R.id.txtSal020);
-        txtEnt050 = (EditText)rootView.findViewById(R.id.txtEnt050);
-        txtEnt100 = (EditText)rootView.findViewById(R.id.txtEnt100);
-        txtSal100 = (EditText)rootView.findViewById(R.id.txtSal100);
-        txtEnt200 = (EditText)rootView.findViewById(R.id.txtEnt200);
-        txtEnt500 = (EditText)rootView.findViewById(R.id.txtEnt500);
-        txtEnt1000 = (EditText)rootView.findViewById(R.id.txtEnt1000);
+        txtEnt010 = (EditText) rootView.findViewById(R.id.txtEnt010);
+        txtSal010 = (EditText) rootView.findViewById(R.id.txtSal010);
+        txtEnt020 = (EditText) rootView.findViewById(R.id.txtEnt020);
+        txtSal020 = (EditText) rootView.findViewById(R.id.txtSal020);
+        txtEnt050 = (EditText) rootView.findViewById(R.id.txtEnt050);
+        txtEnt100 = (EditText) rootView.findViewById(R.id.txtEnt100);
+        txtSal100 = (EditText) rootView.findViewById(R.id.txtSal100);
+        txtEnt200 = (EditText) rootView.findViewById(R.id.txtEnt200);
+        txtEnt500 = (EditText) rootView.findViewById(R.id.txtEnt500);
+        txtEnt1000 = (EditText) rootView.findViewById(R.id.txtEnt1000);
 
-        txtJugadoTeorico = (EditText)rootView.findViewById(R.id.txtJugadoTeorico);
-        txtPremioTeorico = (EditText)rootView.findViewById(R.id.txtPremioTeorico);
-        txtPartidas = (EditText)rootView.findViewById(R.id.txtPartidas);
+        txtJugadoTeorico = (EditText) rootView.findViewById(R.id.txtJugadoTeorico);
+        txtPremioTeorico = (EditText) rootView.findViewById(R.id.txtPremioTeorico);
+        txtPartidas = (EditText) rootView.findViewById(R.id.txtPartidas);
 
         txtEnt010.setOnFocusChangeListener(new CustomOnFocusChange());
         txtSal010.setOnFocusChangeListener(new CustomOnFocusChange());
@@ -100,7 +98,7 @@ public class FragmentContadoresMaquina extends Fragment {
         txtEnt1000.setOnFocusChangeListener(new CustomOnFocusChange());
     }
 
-    private void setData(){
+    private void setData() {
         txtEnt010.setText(getRecaudacion("INC_Entrada010"));
         txtSal010.setText(getRecaudacion("INC_Salida010"));
         txtEnt020.setText(getRecaudacion("INC_Entrada020"));
@@ -115,9 +113,11 @@ public class FragmentContadoresMaquina extends Fragment {
         txtJugadoTeorico.setText(getRecaudacion("INC_JugadoTeorico"));
         txtPremioTeorico.setText(getRecaudacion("INC_PremioTeorico"));
         txtPartidas.setText(getRecaudacion("INC_Partidas"));
-    };
-    
-    private String getRecaudacion(String columna){
+    }
+
+    ;
+
+    private String getRecaudacion(String columna) {
         return Recaudacion.cvRecaudacion.getAsString(columna);
     }
 
@@ -138,7 +138,7 @@ public class FragmentContadoresMaquina extends Fragment {
         setData();
     }
 
-    protected void save(ContentValues cv){
+    protected void save(ContentValues cv) {
 
 
         cv.put("INC_Entrada010Ant", txtEnt010Ant.getText().toString());
@@ -172,10 +172,9 @@ public class FragmentContadoresMaquina extends Fragment {
 
         @Override
         public void onFocusChange(View view, boolean b) {
-            if (! b){
+            if (!b) {
                 save(Recaudacion.cvRecaudacion);
-                Recaudacion.calcData();
-                //Recaudacion.calcTeoricos();
+                Recaudacion.calcData(true);
                 setData();
             }
         }

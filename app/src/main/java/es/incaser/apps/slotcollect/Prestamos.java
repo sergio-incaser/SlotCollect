@@ -15,10 +15,11 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import static es.incaser.apps.slotcollect.tools.*;
+import static es.incaser.apps.slotcollect.tools.importeStr;
 
 
 public class Prestamos extends Activity {
+    String codigoEmpresa = "";
     String codigoEstablecimiento = "";
     static Cursor curPrestamos;
     DbAdapter dbAdapter;
@@ -34,6 +35,8 @@ public class Prestamos extends Activity {
         lvPrestamos = (ListView) findViewById(R.id.lv_prestamos);
 
         Bundle bundle = getIntent().getExtras();
+
+        codigoEmpresa = bundle.getString("codigoEmpresa");
         codigoEstablecimiento = bundle.getString("codigoEstablecimiento");
         codigoRecaudacion = bundle.getString("codigoRecaudacion");
         dbAdapter = new DbAdapter(this);
@@ -42,7 +45,7 @@ public class Prestamos extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //TODO abrir activity de las devoluciones del prestamo
-                Intent myIntent = new Intent(view.getContext(),RecuperacionPrestamoEdit.class);
+                Intent myIntent = new Intent(view.getContext(), RecuperacionPrestamoEdit.class);
                 //Paso solo el codigo del prestamo para cargarlo en la otra activity
                 myIntent.putExtra("codigoEmpresa", getPrestamo("CodigoEmpresa"));
                 myIntent.putExtra("codigoPrestamo", getPrestamo("INC_CodigoPrestamo"));
@@ -77,21 +80,22 @@ public class Prestamos extends Activity {
         super.onStart();
         bindData();
     }
-    public void bindData(){
-        curPrestamos = dbAdapter.getPrestamosEstablecimiento(codigoEstablecimiento);
+
+    public void bindData() {
+        curPrestamos = dbAdapter.getPrestamosEstablecimiento(codigoEmpresa, codigoEstablecimiento);
         curPrestamos.moveToFirst();
-        prestamosAdapter= new PrestamosAdapter(this);
+        prestamosAdapter = new PrestamosAdapter(this);
         lvPrestamos.setAdapter(prestamosAdapter);
     }
 
-    private static String getPrestamo(String columna){
+    private static String getPrestamo(String columna) {
         return curPrestamos.getString(curPrestamos.getColumnIndex(columna));
     }
 
-    public static class PrestamosAdapter extends BaseAdapter{
+    public static class PrestamosAdapter extends BaseAdapter {
         private Context myContext;
 
-        public PrestamosAdapter(Context ctx){
+        public PrestamosAdapter(Context ctx) {
             myContext = ctx;
         }
 
@@ -131,7 +135,7 @@ public class Prestamos extends Activity {
             TextView tvSaldoResto = (TextView) myView.findViewById(R.id.tv_SaldoRestoPrestamo);
 
             tvConcepto.setText(getPrestamo("INC_CodigoConceptoPrestamo"));
-            tvCodigoPrestamo.setText(" ("+getPrestamo("INC_CodigoPrestamo")+") ");
+            tvCodigoPrestamo.setText(" (" + getPrestamo("INC_CodigoPrestamo") + ") ");
             tvFecha.setText(getPrestamo("INC_FechaPrestamo"));
             tvImporteLiquido.setText(importeStr(getPrestamo("ImporteLiquido")));
             tvSaldoResto.setText(importeStr(getPrestamo("INC_SaldoResto")));

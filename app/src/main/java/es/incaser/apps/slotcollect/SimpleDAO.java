@@ -8,11 +8,11 @@ import java.sql.Statement;
  * Created by sergio on 5/09/14.
  */
 
-public class SimpleDAO{
+public class SimpleDAO {
     Connection conn = SQLConnection.getInstance().getConnection();
 
-    public ResultSet construirLector(String query){
-        ResultSet result=null;
+    public ResultSet construirLector(String query) {
+        ResultSet result = null;
         try {
             Statement statement = null;
             statement = conn.createStatement();
@@ -22,8 +22,9 @@ public class SimpleDAO{
         }
         return result;
     }
-    public ResultSet getResultQuery(String query){
-        ResultSet result=null;
+
+    public ResultSet getResultQuery(String query) {
+        ResultSet result = null;
         try {
             Statement statement = null;
             statement = conn.createStatement();

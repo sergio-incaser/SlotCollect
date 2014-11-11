@@ -1,7 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="es.incaser.apps.slotcollect.EstablecimientosLogic" >
-    <item android:id="@+id/filter_establecimientos"
+    tools:context="es.incaser.apps.slotcollect.EstablecimientosLogic">
+    <item
+        android:id="@+id/filter_establecimientos"
         android:title="@string/action_filtrar"
         android:orderInCategory="100"
         android:showAsAction="never" />

@@ -24,8 +24,7 @@ public class EditTextBind extends EditText {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.EditText);
 
         final int N = a.getIndexCount();
-        for (int i = 0; i < N; ++i)
-        {
+        for (int i = 0; i < N; ++i) {
             int attr = a.getIndex(i);
             switch (attr) {
                 case R.styleable.EditText_fieldXX: {

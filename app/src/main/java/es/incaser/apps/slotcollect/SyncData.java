@@ -1,6 +1,5 @@
 package es.incaser.apps.slotcollect;
 
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,39 +7,33 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.ViewParent;
 import android.widget.Toast;
 
-import net.sourceforge.jtds.jdbc.DateTime;
-
-import java.io.ByteArrayInputStream;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static es.incaser.apps.slotcollect.tools.str2date;
 
 /**
  * Created by sergio on 23/09/14.
  */
-public class SyncData{
+public class SyncData {
     private static DbAdapter dbAdapter;
     private Context myContext;
     public SQLConnection conSQL;
 
-    public SyncData(Context ctx){
+    public SyncData(Context ctx) {
         myContext = ctx;
         dbAdapter = new DbAdapter(myContext);
     }
 
     public int importRecords() {
         ResultSet resultSet;
-        for (int i = 0; i < DbAdapter.tablesToImport; i++){
+        for (int i = 0; i < DbAdapter.tablesToImport; i++) {
             resultSet = conSQL.getResultset(String.valueOf(DbAdapter.QUERY_LIST[i][1]));
             copyRecords(resultSet, DbAdapter.QUERY_LIST[i][0]);
         }
@@ -48,22 +41,22 @@ public class SyncData{
         return 0;
     }
 
-    public int exportRecords(){
+    public int exportRecords() {
         Cursor cursor;
         ResultSet resultSet = null;
         int numReg = 0;
 
-        for (int i = DbAdapter.tablesToExport; i < DbAdapter.QUERY_LIST.length + 1; i++){
-            cursor = dbAdapter.getTable(DbAdapter.QUERY_LIST[i-1][0], DbAdapter.QUERY_LIST[i-1][2]);
+        for (int i = DbAdapter.tablesToExport; i < DbAdapter.QUERY_LIST.length + 1; i++) {
+            cursor = dbAdapter.getTable(DbAdapter.QUERY_LIST[i - 1][0], DbAdapter.QUERY_LIST[i - 1][2]);
             //cursor = dbAdapter.getTableToExport(DbAdapter.QUERY_LIST[i-1][0]);
-            resultSet = conSQL.getResultset("Select * FROM "+ DbAdapter.QUERY_LIST[i-1][0] + " WHERE 1=2", true);
+            resultSet = conSQL.getResultset("Select * FROM " + DbAdapter.QUERY_LIST[i - 1][0] + " WHERE 1=2", true);
             if (resultSet != null) {
                 int x;
                 x = copyRecords(cursor, DbAdapter.QUERY_LIST[i - 1][0], resultSet);
-                if (x < 0){
+                if (x < 0) {
                     return -1;
                 }
-                dbAdapter.emptyTables(DbAdapter.QUERY_LIST[i-1][0]);
+                dbAdapter.emptyTables(DbAdapter.QUERY_LIST[i - 1][0]);
                 numReg += x;
             }
         }
@@ -86,7 +79,7 @@ public class SyncData{
                     columnList.add(RSmd.getColumnName(i));
                 }
             }
-            while(source.next()){
+            while (source.next()) {
                 for (String col : columnList) {
                     values.put(col, source.getString(col));
                 }
@@ -109,7 +102,7 @@ public class SyncData{
         Integer colInt;
 
         int numReg = source.getCount();
-        int progresscount=0;
+        int progresscount = 0;
         Log.w(tableSource, "A exportar: " + numReg);
         try {
             RSmd = target.getMetaData();
@@ -135,7 +128,7 @@ public class SyncData{
                     }
                 }
             }
-            while(source.moveToNext()){
+            while (source.moveToNext()) {
                 progresscount++;
                 target.moveToInsertRow();
                 for (String col : columnListDecimal) {
@@ -154,7 +147,7 @@ public class SyncData{
                 for (String col : columnListBynary) {
                     colInt = source.getColumnIndex(col);
 
-                    if (source.getBlob(colInt) != null){
+                    if (source.getBlob(colInt) != null) {
                         target.updateString(col, source.getString(colInt));
 //                        if (source.getBlob(colInt).length != 37){
 //                            target.updateBinaryStream(col, new ByteArrayInputStream(source.getBlob(colInt)), 16);
@@ -166,7 +159,7 @@ public class SyncData{
                 for (String col : columnList) {
                     colInt = source.getColumnIndex(col);
                     String val = source.getString(colInt);
-                    if (val == null){
+                    if (val == null) {
                         val = "";
                     }
                     target.updateString(col, val);
@@ -204,10 +197,10 @@ public class SyncData{
             for (int i = 1; i <= RSmd.getColumnCount(); i++) {
                 if (Arrays.asList(localColumns).contains(RSmd.getColumnName(i))) {
                     columnList.add(RSmd.getColumnName(i));
-                    if (campos == ""){
+                    if (campos == "") {
                         campos += RSmd.getColumnName(i);
                         valores += "?";
-                    }else{
+                    } else {
                         campos += ", " + RSmd.getColumnName(i);
                         valores += ", ?";
                     }
@@ -217,12 +210,12 @@ public class SyncData{
 
             db.beginTransactionNonExclusive();
             SQLiteStatement stmt = db.compileStatement(sql);
-            while(source.next()){
+            while (source.next()) {
                 numReg++;
                 int i = 1;
                 for (String col : columnList) {
                     aux = source.getString(col);
-                    if (aux == null){
+                    if (aux == null) {
                         aux = "";
                     }
                     stmt.bindString(i, aux);
@@ -252,9 +245,10 @@ public class SyncData{
             }
             return "Test Realizado N:" + testData();
         }
+
         @Override
-        protected void onPostExecute(String result){
-            if (result == "errorSQLconnection"){
+        protected void onPostExecute(String result) {
+            if (result == "errorSQLconnection") {
                 result = myContext.getString(R.string.errorSQLconnection);
             }
             Toast.makeText(myContext, result, Toast.LENGTH_SHORT).show();

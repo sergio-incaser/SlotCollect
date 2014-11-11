@@ -11,7 +11,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import static es.incaser.apps.slotcollect.tools.*;
+import static es.incaser.apps.slotcollect.tools.getToday;
+import static es.incaser.apps.slotcollect.tools.importeStr;
 
 
 public class RecuperacionPrestamoEdit extends Activity {
@@ -42,7 +43,7 @@ public class RecuperacionPrestamoEdit extends Activity {
         codigoRecaudacion = bundle.getString("codigoRecaudacion");
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        codigoRecaudador = pref.getString("pref_recaudador","");
+        codigoRecaudador = pref.getString("pref_recaudador", "");
 
         txtFecha.setText(getToday());
 
@@ -58,15 +59,15 @@ public class RecuperacionPrestamoEdit extends Activity {
         bindData();
     }
 
-    public void bindData(){
+    public void bindData() {
         curRecupera = dbAdapter.getRecuperacionesPrestamo(codigoEmpresa, codigoPrestamo);
-        if (curRecupera.moveToFirst()){
+        if (curRecupera.moveToFirst()) {
             txtImporte.setText(importeStr(getRecupera("ImporteLiquido")));
             txtComentario.setText(getRecupera("INC_ComentarioRecuperacion"));
         }
     }
 
-    private void createRecuperacion(){
+    private void createRecuperacion() {
         ContentValues cv = new ContentValues();
         cv.put("CodigoEmpresa", codigoEmpresa);
         cv.put("'INC_CodigoRecuperacion'", 0);
@@ -81,13 +82,13 @@ public class RecuperacionPrestamoEdit extends Activity {
         cv.put("Printable", true);
         cv.put("INC_IdPda", "0");
 
-        if (curRecupera.moveToFirst()){
-            dbAdapter.updateRecord("INC_RecuperacionesPrestamo", cv,"id=?",
+        if (curRecupera.moveToFirst()) {
+            dbAdapter.updateRecord("INC_RecuperacionesPrestamo", cv, "id=?",
                     new String[]{getRecupera("id")});
-        }else {
+        } else {
             dbAdapter.insertRecord("INC_RecuperacionesPrestamo", cv);
         }
-        Toast.makeText(this, "Se ha guardado la recuperación",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Se ha guardado la recuperación", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -96,11 +97,11 @@ public class RecuperacionPrestamoEdit extends Activity {
         super.onPause();
     }
 
-    private String getPrestamo(String col){
+    private String getPrestamo(String col) {
         return curPrestamo.getString(curPrestamo.getColumnIndex(col));
     }
 
-    private String getRecupera(String col){
+    private String getRecupera(String col) {
         return curRecupera.getString(curRecupera.getColumnIndex(col));
     }
 

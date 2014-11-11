@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string-array name="tabs_recaudacion">
-    <item >
+    <string-array name="tabs_recaudacion">
+    <item>
         <string name="tab_contadores">Contadores</string>
     </item>
-    <item >
+    <item>
         <string name="tab_importes">Importes</string>
     </item>
-    <item >
+    <item>
         <string name="tab_arqueo">Arqueo</string>
     </item>
-</string-array>
+    </string-array>
 </resources>

@@ -1,24 +1,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="es.incaser.apps.slotcollect.MainActivity" >
-    <item android:id="@+id/action_settings"
+    tools:context="es.incaser.apps.slotcollect.MainActivity">
+    <item
+        android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        android:orderInCategory="100"
-        />
+        android:orderInCategory="100" />
 
-    <item android:id="@+id/action_search"
+    <item
+        android:id="@+id/action_search"
         android:showAsAction="always"
-    	android:title="Search"
-    	android:icon="@android:drawable/ic_menu_search"
-    	android:actionViewClass="android.widget.SearchView" />
+        android:title="Search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:actionViewClass="android.widget.SearchView" />
 
     <!--<item android:id="@+id/action_filtrar_estableciemtos"-->
-        <!--android:title="@string/action_filtrar"-->
-        <!--android:orderInCategory="110"-->
-        <!--/>-->
+    <!--android:title="@string/action_filtrar"-->
+    <!--android:orderInCategory="110"-->
+    <!--/>-->
 
-    <item android:id="@+id/action_sync_data"
+    <item
+        android:id="@+id/action_sync_data"
         android:title="@string/action_sync_data"
-        android:orderInCategory="110"
-        />
+        android:orderInCategory="110" />
 </menu>

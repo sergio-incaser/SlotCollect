@@ -9,9 +9,8 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import static es.incaser.apps.slotcollect.tools.*;
+import static es.incaser.apps.slotcollect.tools.getToday;
 
 
 public class IncidenciaEdit extends Activity {
@@ -36,7 +35,7 @@ public class IncidenciaEdit extends Activity {
         codigoMaquina = bundle.getString("codigoMaquina");
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        codigoRecaudador = pref.getString("pref_recaudador","");
+        codigoRecaudador = pref.getString("pref_recaudador", "");
         dbAdapter = new DbAdapter(this);
 
         bindData();
@@ -44,27 +43,27 @@ public class IncidenciaEdit extends Activity {
         setData();
     }
 
-    private void getData(){
+    private void getData() {
         curIncidencia = dbAdapter.getIncidencias(codigoEmpresa,
-                                    codigoEstablecimiento, codigoMaquina, true);
-        if (!curIncidencia.moveToFirst()){
+                codigoEstablecimiento, codigoMaquina, true);
+        if (!curIncidencia.moveToFirst()) {
             long id = dbAdapter.insertRecord("INC_Incidencias", initialValues());
             curIncidencia = dbAdapter.getIncidencia(id);
             curIncidencia.moveToFirst();
         }
     }
 
-    private String getIncidencia(String columna){
+    private String getIncidencia(String columna) {
         return curIncidencia.getString(curIncidencia.getColumnIndex(columna));
     }
 
-    private void bindData(){
+    private void bindData() {
         txtTipo = (EditText) findViewById(R.id.txt_TipoIncidencia);
         txtFecha = (EditText) findViewById(R.id.txt_FechaIncidencia);
         txtDescricion = (EditText) findViewById(R.id.txt_DescripcionIncidencia);
     }
 
-    private void setData(){
+    private void setData() {
         txtTipo.setText(getIncidencia("INC_TipoIncidencia"));
         txtFecha.setText(getIncidencia("Fecha"));
         txtDescricion.setText(getIncidencia("Descripcion"));
@@ -89,7 +88,7 @@ public class IncidenciaEdit extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private ContentValues initialValues(){
+    private ContentValues initialValues() {
         ContentValues cv = new ContentValues();
         cv.put("CodigoEmpresa", codigoEmpresa);
         cv.put("INC_CodigoEstablecimiento", codigoEstablecimiento);
@@ -102,7 +101,7 @@ public class IncidenciaEdit extends Activity {
         return cv;
     }
 
-    private void saveIncidencia(){
+    private void saveIncidencia() {
         ContentValues cv = new ContentValues();
         cv.put("INC_TipoIncidencia", txtTipo.getText().toString());
         //cv.put("Fecha", txtFecha.getText().toString());

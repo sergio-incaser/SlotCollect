@@ -12,6 +12,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:background="#ddd">
+
         <ListView
             android:id="@+id/lv_recuperacionesPrestamo"
             android:layout_width="match_parent"

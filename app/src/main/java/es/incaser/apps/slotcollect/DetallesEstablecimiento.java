@@ -13,13 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.UUID;
-
-import static es.incaser.apps.slotcollect.tools.*;
+import static es.incaser.apps.slotcollect.tools.UUID_EMPTY;
+import static es.incaser.apps.slotcollect.tools.date2str;
+import static es.incaser.apps.slotcollect.tools.getActualHour;
+import static es.incaser.apps.slotcollect.tools.getToday;
+import static es.incaser.apps.slotcollect.tools.importeStr;
+import static es.incaser.apps.slotcollect.tools.str2date;
 
 
 public class DetallesEstablecimiento extends Activity {
@@ -27,14 +30,16 @@ public class DetallesEstablecimiento extends Activity {
     Cursor curEstablecimiento;
     static Cursor curMaquinas;
     static Cursor curCabRecaudacion;
-    DbAdapter dbAdapter;
+    static DbAdapter dbAdapter;
     ListView lvMaquinas;
     DetallesAdapter detallesAdapter;
-    String codEstablecimiento;
-    String codEmpresa;
+    static String codEmpresa;
+    static String codEstablecimiento;
     TextView txtTotalRecaudacion;
     TextView txtTotalEstablecimiento;
     TextView txtTotalRetencion;
+    //TextView txtTienePrestamos;
+    LinearLayout lay_TienePrestamos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,8 @@ public class DetallesEstablecimiento extends Activity {
         txtTotalRecaudacion = (TextView) findViewById(R.id.tv_totalRecaudacion);
         txtTotalEstablecimiento = (TextView) findViewById(R.id.tv_totalEstablecimiento);
         txtTotalRetencion = (TextView) findViewById(R.id.tv_totalRetencion);
+        //txtTienePrestamos = (TextView) findViewById(R.id.tv_tienePrestamos);
+        lay_TienePrestamos = (LinearLayout) findViewById(R.id.ly_tienePrestamos);
 
         Bundle bundle = getIntent().getExtras();
         id = bundle.getString("id");
@@ -53,17 +60,17 @@ public class DetallesEstablecimiento extends Activity {
         // Evento para cuando doy click en algun elemento de la lista ( ListView )
         lvMaquinas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position,long id) {
-            Intent myIntent = new Intent(arg1.getContext(),Recaudacion.class);
-            myIntent.putExtra("id", Long.toString(id));
-            startActivity(myIntent);
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
+                Intent myIntent = new Intent(arg1.getContext(), Recaudacion.class);
+                myIntent.putExtra("id", Long.toString(id));
+                startActivity(myIntent);
             }
         });
 
         lvMaquinas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent myIntent = new Intent(view.getContext(),Incidencias.class);
+                Intent myIntent = new Intent(view.getContext(), Incidencias.class);
                 myIntent.putExtra("codigoEmpresa", codEmpresa);
                 myIntent.putExtra("codigoEstablecimiento", codEstablecimiento);
                 myIntent.putExtra("codigoMaquina", detallesAdapter.getCodigoMaquina(position));
@@ -83,9 +90,21 @@ public class DetallesEstablecimiento extends Activity {
         codEstablecimiento = getEstablecimiento("INC_CodigoEstablecimiento");
         bindData();
         getCabeceraRecaudacion();
+        getInfo();
     }
 
-    public void bindData(){
+    private void getInfo() {
+        // Tiene prestamos?
+        Cursor cursor = dbAdapter.getPrestamosEstablecimiento(codEmpresa, codEstablecimiento);
+        if (cursor.getCount() > 0) {
+            lay_TienePrestamos.setVisibility(View.VISIBLE);
+        } else {
+            lay_TienePrestamos.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+    public void bindData() {
         this.setTitle(getEstablecimiento("RazonSocial"));
         curMaquinas = dbAdapter.getMaquinasEstablecimiento(codEmpresa, codEstablecimiento);
         detallesAdapter = new DetallesAdapter(this);
@@ -93,10 +112,10 @@ public class DetallesEstablecimiento extends Activity {
 
     }
 
-    private ContentValues initialValues(){
+    private ContentValues initialValues() {
         ContentValues values = new ContentValues();
         values.put("CodigoEmpresa", codEmpresa);
-        values.put("INC_CodigoEstablecimiento",codEstablecimiento);
+        values.put("INC_CodigoEstablecimiento", codEstablecimiento);
         values.put("IdDelegacion", getEstablecimiento("IdDelegacion"));
         values.put("INC_FechaRecaudacion", getToday());
         values.put("INC_HoraRecaudacion", getActualHour());
@@ -107,26 +126,28 @@ public class DetallesEstablecimiento extends Activity {
         return values;
     }
 
-    private void getCabeceraRecaudacion(){
+    private void getCabeceraRecaudacion() {
         //Intentamos obtener cursor a cabecera recaudacion. De lo contrario NO se crea
-        curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codEmpresa,codEstablecimiento);
-        if (curCabRecaudacion.moveToFirst()){
+        curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codEmpresa, codEstablecimiento);
+        if (curCabRecaudacion.moveToFirst()) {
             writeTxtFields();
-        }else{
-            //TODO Campos de la pantalla a cero
+        } else {
+            emptyTxtFields();
         }
     }
 
-    private String getEstablecimiento(String col){
+    private String getEstablecimiento(String col) {
         return curEstablecimiento.getString(curEstablecimiento.getColumnIndex(col));
     }
-    private String cabeceraRecaudacion(String col){
+
+    private String cabeceraRecaudacion(String col) {
         return curCabRecaudacion.getString(curCabRecaudacion.getColumnIndex(col));
     }
+
     public static class DetallesAdapter extends BaseAdapter {
         private Context myContext;
 
-        public DetallesAdapter (Context ctx){
+        public DetallesAdapter(Context ctx) {
             myContext = ctx;
         }
 
@@ -166,11 +187,30 @@ public class DetallesEstablecimiento extends Activity {
             TextView txtDescripcionMaquina = (TextView) myView.findViewById(R.id.tv_descripcion_maquina);
             TextView txtCodigoMaquina = (TextView) myView.findViewById(R.id.tv_codigoMaquina);
             TextView txtFechainstalacion = (TextView) myView.findViewById(R.id.tv_fechaInstalacionMaquina);
+            TextView txtMaquinaRecaudada = (TextView) myView.findViewById(R.id.tv_maquinaRecaudada);
+            TextView txtFechaUltimaRecaudacion = (TextView) myView.findViewById(R.id.tv_fechaUltimaRecaudacion);
+
+            String codigoMaquina = curMaquinas.getString(curMaquinas.getColumnIndex("INC_CodigoMaquina"));
 
             txtDescripcionMaquina.setText(curMaquinas.getString(curMaquinas.getColumnIndex("INC_DescripcionModelo")));
-            txtCodigoMaquina.setText("("+curMaquinas.getString(curMaquinas.getColumnIndex("INC_CodigoMaquina"))+")");
-            String myTimestamp = curMaquinas.getString(curMaquinas.getColumnIndex("INC_FechaInstalacion"));
-            txtFechainstalacion.setText(date2str(str2date(myTimestamp)));
+            txtCodigoMaquina.setText("(" + curMaquinas.getString(curMaquinas.getColumnIndex("INC_CodigoMaquina")) + ")");
+//            String myTimestamp = curMaquinas.getString(curMaquinas.getColumnIndex("INC_FechaInstalacion"));
+//            txtFechainstalacion.setText(date2str(str2date(myTimestamp)));
+            txtFechainstalacion.setText(curMaquinas.getString(curMaquinas.getColumnIndex("INC_FechaInstalacion")));
+
+            Cursor cursor = dbAdapter.getRecaudacion(codEmpresa, codEstablecimiento, codigoMaquina);
+            if (cursor.moveToFirst()) {
+                txtMaquinaRecaudada.setText("Recaudada");
+            } else {
+                txtMaquinaRecaudada.setText("");
+            }
+
+            cursor = dbAdapter.getUltimaRecaudacion(codEmpresa,codEstablecimiento, codigoMaquina);
+            if (cursor.moveToFirst()){
+                txtFechaUltimaRecaudacion.setText(cursor.getString(cursor.getColumnIndex("INC_FechaRecaudacion")));
+            }else {
+                txtFechaUltimaRecaudacion.setText("Nunca");
+            }
 
             return myView;
         }
@@ -190,13 +230,13 @@ public class DetallesEstablecimiento extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_prestamos) {
-            Intent myIntent = new Intent(this,Prestamos.class);
-            myIntent.putExtra("codigoEstablecimiento",
-                    getEstablecimiento("INC_CodigoEstablecimiento"));
-            if(curCabRecaudacion.moveToFirst()){
+            Intent myIntent = new Intent(this, Prestamos.class);
+            myIntent.putExtra("codigoEmpresa", codEmpresa);
+            myIntent.putExtra("codigoEstablecimiento", codEstablecimiento);
+            if (curCabRecaudacion.moveToFirst()) {
                 myIntent.putExtra("codigoRecaudacion",
                         cabeceraRecaudacion("INC_CodigoRecaudacion"));
-            }else {
+            } else {
                 myIntent.putExtra("codigoRecaudacion", UUID_EMPTY);
             }
             startActivity(myIntent);
@@ -205,9 +245,16 @@ public class DetallesEstablecimiento extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-    private void writeTxtFields(){
-        txtTotalRecaudacion.setText(cabeceraRecaudacion("INC_TotalRecaudacion"));
-        txtTotalEstablecimiento.setText(cabeceraRecaudacion("INC_TotalEstablecimiento"));
-        txtTotalRetencion.setText(cabeceraRecaudacion("INC_TotalRetencion"));
+
+    private void writeTxtFields() {
+        txtTotalRecaudacion.setText(importeStr(cabeceraRecaudacion("INC_TotalRecaudacion")));
+        txtTotalEstablecimiento.setText(importeStr(cabeceraRecaudacion("INC_TotalEstablecimiento")));
+        txtTotalRetencion.setText(importeStr(cabeceraRecaudacion("INC_TotalRetencion")));
+    }
+
+    private void emptyTxtFields() {
+        txtTotalRecaudacion.setText("0.00");
+        txtTotalEstablecimiento.setText("0.00");
+        txtTotalRetencion.setText("0.00");
     }
 }

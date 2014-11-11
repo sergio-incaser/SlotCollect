@@ -1,74 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:padding="5dp"
-    android:background="#ddd"
-    >
+    android:background="#ddd">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="2dp"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#fff">
-    <LinearLayout
-        android:padding="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:padding="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#fff">
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaSeparador"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fecha" />
-            <TextView
-                android:id="@+id/tv_FechaRecuperacion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textAlignment="gravity"
-                android:text="01-05-2012"
-                style="@style/TxtDate"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                style="@style/EtiquetaSeparador"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Importe" />
-            <TextView
-                android:id="@+id/tv_ImporteLiquidoRecuperacion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textAlignment="gravity"
-                android:text="9000" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:padding="5dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                style="@style/EtiquetaSeparador"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Comentario" />
-            <TextView
-                android:id="@+id/tv_descripcionRecuperacion"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Me paga por que si" />
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaSeparador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fecha" />
+
+                <TextView
+                    android:id="@+id/tv_FechaRecuperacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:textAlignment="gravity"
+                    android:text="01-05-2012"
+                    style="@style/TxtDate" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaSeparador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Importe" />
+
+                <TextView
+                    android:id="@+id/tv_ImporteLiquidoRecuperacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:textAlignment="gravity"
+                    android:text="9000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/EtiquetaSeparador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Comentario" />
+
+                <TextView
+                    android:id="@+id/tv_descripcionRecuperacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Me paga por que si" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 </LinearLayout>

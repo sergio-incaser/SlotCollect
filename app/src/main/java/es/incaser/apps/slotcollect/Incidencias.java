@@ -43,13 +43,14 @@ public class Incidencias extends Activity {
         bindData();
     }
 
-    public void bindData(){
+    public void bindData() {
         dbAdapter = new DbAdapter(this);
         cur = dbAdapter.getIncidencias(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
         if (cur.moveToFirst()) {
             incidenciasAdapter = new IncidenciasAdapter(this);
             lvIncidencias.setAdapter(incidenciasAdapter);
-        };
+        }
+        ;
     }
 
     @Override
@@ -66,7 +67,7 @@ public class Incidencias extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_add) {
-            Intent myIntent = new Intent(this,IncidenciaEdit.class);
+            Intent myIntent = new Intent(this, IncidenciaEdit.class);
             myIntent.putExtra("codigoEmpresa", codigoEmpresa);
             myIntent.putExtra("codigoEstablecimiento", codigoEstablecimiento);
             myIntent.putExtra("codigoMaquina", codigoMaquina);
@@ -79,7 +80,7 @@ public class Incidencias extends Activity {
     public static class IncidenciasAdapter extends BaseAdapter {
         private Context myContext;
 
-        public IncidenciasAdapter (Context ctx){
+        public IncidenciasAdapter(Context ctx) {
             myContext = ctx;
         }
 
@@ -121,7 +122,7 @@ public class Incidencias extends Activity {
         }
     }
 
-    private static String getIncidencia(String col){
+    private static String getIncidencia(String col) {
         return cur.getString(cur.getColumnIndex(col));
     }
 }
