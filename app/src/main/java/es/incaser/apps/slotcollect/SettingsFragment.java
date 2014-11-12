@@ -23,11 +23,14 @@ public class SettingsFragment extends PreferenceFragment {
         // updated to reflect the new value, per the Android Design
         // guidelines.
         bindPreferenceSummaryToValue(findPreference("pref_sql_host"));
+        bindPreferenceSummaryToValue(findPreference("pref_sql_host_remote"));
         bindPreferenceSummaryToValue(findPreference("pref_sql_port"));
         bindPreferenceSummaryToValue(findPreference("pref_sql_user"));
         bindPreferenceSummaryToValue(findPreference("pref_sql_password"));
         bindPreferenceSummaryToValue(findPreference("pref_sql_database"));
         bindPreferenceSummaryToValue(findPreference("pref_recaudador"));
+        bindPreferenceSummaryBoolToValue(findPreference("pref_out_office"));
+
     }
 
     /**
@@ -75,10 +78,24 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Trigger the listener immediately with the preference's
         // current value.
+
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
+    }
+
+    private static void bindPreferenceSummaryBoolToValue(Preference preference) {
+        // Set the listener to watch for value changes.
+        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+
+        // Trigger the listener immediately with the preference's
+        // current value.
+
+        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getBoolean(preference.getKey(), false));
     }
 
 }

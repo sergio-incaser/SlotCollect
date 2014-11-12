@@ -71,7 +71,11 @@ public class MainActivity extends Activity {
 
     public static void ReadPreferences(Activity act) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(act);
-        SQLConnection.host = pref.getString("pref_sql_host", "");
+        if (pref.getBoolean("pref_out_office",false)){
+            SQLConnection.host = pref.getString("pref_sql_host_remote", "");
+        }else {
+            SQLConnection.host = pref.getString("pref_sql_host", "");
+        }
         SQLConnection.port = pref.getString("pref_sql_port", "");
         SQLConnection.user = pref.getString("pref_sql_user", "");
         SQLConnection.password = pref.getString("pref_sql_password", "");

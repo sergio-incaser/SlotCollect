@@ -30,5 +30,7 @@
     <string name="action_delete">Eliminar</string>
     <string name="pref_recaudador">Recaudador</string>
     <string name="action_prestamos">Prestamos</string>
+    <string name="out_office">Fuera de la oficina</string>
+    <string name="pref_sql_host_remote_summ">Servidor remoto</string>
 
 </resources>

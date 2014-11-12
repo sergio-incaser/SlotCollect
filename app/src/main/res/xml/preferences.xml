@@ -7,6 +7,11 @@
         android:summary="@string/pref_sql_host_summ"
         android:defaultValue="@string/pref_sql_host" />
     <EditTextPreference
+        android:key="pref_sql_host_remote"
+        android:title="Servidor remoto"
+        android:summary="@string/pref_sql_host_remote_summ"
+        android:defaultValue="@string/pref_sql_host"/>
+    <EditTextPreference
         android:key="pref_sql_port"
         android:title="@string/pref_sql_port"
         android:inputType="number"
@@ -17,11 +22,18 @@
     <EditTextPreference
         android:key="pref_sql_password"
         android:title="@string/pref_sql_password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:password="true"/>
     <EditTextPreference
         android:key="pref_sql_database"
         android:title="@string/pref_sql_database" />
     <EditTextPreference
         android:key="pref_recaudador"
         android:title="@string/pref_recaudador" />
+    <CheckBoxPreference
+        android:key="pref_out_office"
+        android:title="Fuera de la oficina"
+        android:defaultValue="false"
+        android:summaryOff="Conecta con servidor local"
+        android:summaryOn="Conecta con servidor remoto"/>
 </PreferenceScreen>
