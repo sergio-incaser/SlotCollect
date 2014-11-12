@@ -94,6 +94,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         } else {
             codigoRecaudacion = UUID.randomUUID().toString();
         }
+        //En este punto initialValues me ha dejado a nulo codigoRecaudacion
+        //Asi que lo actualizamos
+        cvRecaudacion.put("INC_CodigoRecaudacion", codigoRecaudacion);
 
         vPager = (ViewPager) findViewById(R.id.recaudacion_pager);
         tAdapter = new TabsAdapter(getSupportFragmentManager());
@@ -434,7 +437,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                 //Si no existe la cabcera de recaudacion la creamos
                 ContentValues cv = computedValuesCabRecaudacion();
                 if (cv.size() > 0) {
-                    Long id = dbAdapter.insertRecord("INC_CabeceraRecaudacion", computedValuesCabRecaudacion());
+                    Long id = dbAdapter.insertRecord("INC_CabeceraRecaudacion", cv);
                 }
             } else {
                 dbAdapter.updateRecord("INC_CabeceraRecaudacion",
