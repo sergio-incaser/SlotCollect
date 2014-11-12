@@ -89,14 +89,6 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         codigoRecaudador = pref.getString("pref_recaudador", "");
 
         initCursors();
-        if (curCabRecaudacion.moveToFirst()) {
-            codigoRecaudacion = getCabeceraRecaudacion("INC_CodigoRecaudacion");
-        } else {
-            codigoRecaudacion = UUID.randomUUID().toString();
-        }
-        //En este punto initialValues me ha dejado a nulo codigoRecaudacion
-        //Asi que lo actualizamos
-        cvRecaudacion.put("INC_CodigoRecaudacion", codigoRecaudacion);
 
         vPager = (ViewPager) findViewById(R.id.recaudacion_pager);
         tAdapter = new TabsAdapter(getSupportFragmentManager());
@@ -182,6 +174,12 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         curSumasDesdeA = dbAdapter.getSumasDesde(codigoEmpresa, codigoEstablecimiento, codigoMaquina, fechaUltimoArqueo);
 
         curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codigoEmpresa, codigoEstablecimiento);
+        if (curCabRecaudacion.moveToFirst()) {
+            codigoRecaudacion = getCabeceraRecaudacion("INC_CodigoRecaudacion");
+        } else {
+            codigoRecaudacion = UUID.randomUUID().toString();
+        }
+
         curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
         if (!curRecaudacion.moveToFirst()) {
             initialValues();
