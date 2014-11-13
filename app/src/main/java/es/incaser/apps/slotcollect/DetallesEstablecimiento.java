@@ -35,6 +35,7 @@ public class DetallesEstablecimiento extends Activity {
     DetallesAdapter detallesAdapter;
     static String codEmpresa;
     static String codEstablecimiento;
+    static String codigoRecaudacion;
     TextView txtTotalRecaudacion;
     TextView txtTotalEstablecimiento;
     TextView txtTotalRetencion;
@@ -63,6 +64,7 @@ public class DetallesEstablecimiento extends Activity {
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
                 Intent myIntent = new Intent(arg1.getContext(), Recaudacion.class);
                 myIntent.putExtra("id", Long.toString(id));
+                myIntent.putExtra("codigoRecaudacion", codigoRecaudacion);
                 startActivity(myIntent);
             }
         });
@@ -88,6 +90,7 @@ public class DetallesEstablecimiento extends Activity {
         //curEstablecimiento.moveToFirst();
         codEmpresa = getEstablecimiento("CodigoEmpresa");
         codEstablecimiento = getEstablecimiento("INC_CodigoEstablecimiento");
+        codigoRecaudacion = getEstablecimiento("INC_CodigoRecaudacion");
         bindData();
         getCabeceraRecaudacion();
         getInfo();
@@ -233,12 +236,13 @@ public class DetallesEstablecimiento extends Activity {
             Intent myIntent = new Intent(this, Prestamos.class);
             myIntent.putExtra("codigoEmpresa", codEmpresa);
             myIntent.putExtra("codigoEstablecimiento", codEstablecimiento);
-            if (curCabRecaudacion.moveToFirst()) {
-                myIntent.putExtra("codigoRecaudacion",
-                        cabeceraRecaudacion("INC_CodigoRecaudacion"));
-            } else {
-                myIntent.putExtra("codigoRecaudacion", UUID_EMPTY);
-            }
+            myIntent.putExtra("codigoRecaudacion", codigoRecaudacion);
+//            if (curCabRecaudacion.moveToFirst()) {
+//                myIntent.putExtra("codigoRecaudacion",
+//                        cabeceraRecaudacion("INC_CodigoRecaudacion"));
+//            } else {
+//                myIntent.putExtra("codigoRecaudacion", UUID_EMPTY);
+//            }
             startActivity(myIntent);
 
             return true;

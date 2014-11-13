@@ -35,7 +35,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:textAlignment="gravity"
-                    android:text="01-05-2012"
                     style="@style/TxtDate" />
             </LinearLayout>
 

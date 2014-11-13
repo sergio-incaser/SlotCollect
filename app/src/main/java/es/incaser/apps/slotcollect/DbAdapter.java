@@ -1,5 +1,6 @@
 package es.incaser.apps.slotcollect;
 
+import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -18,15 +19,15 @@ import java.util.Map;
 
 public class DbAdapter extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "SlotCollect";
-    private static final int DATABASE_VER = 3;
+    private static final int DATABASE_VER = 4;
     private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
     public static String[][] QUERY_LIST = {
             //Tablas a importar
-            {"Establecimientos", "SELECT * FROM VIS_INC_EstablecARecaudar", ""},
+            {"Establecimientos", "SELECT *,NEWID() AS INC_CodigoRecaudacion FROM VIS_INC_EstablecARecaudar", ""},
             {"Maquinas", "SELECT * FROM VIS_INC_MaquinasInstaladas", ""},
-            {"Prestamos", "SELECT * FROM INC_PrestamosEstablecimiento", ""},
+            {"Prestamos", "SELECT * FROM Vis_INC_PrestamosPendientes", ""},
             {"RecaudacionesAnteriores", "SELECT * FROM VIS_INC_RecaudaInstalaActivas", ""},
             {"Recaudadores", "SELECT * FROM VIS_INC_Recaudadores", ""},
             {"Zonas", "SELECT * FROM VIS_INC_Zonas", ""},
@@ -112,6 +113,11 @@ public class DbAdapter extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + query[0]);
         }
         onCreate(db);
+    }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onUpgrade(db, oldVersion, newVersion);
     }
 
     public void emptyTables() {
@@ -241,7 +247,7 @@ public class DbAdapter extends SQLiteOpenHelper {
                 "0 AS INC_TotalRecuperaPrestamo",
                 "0 AS INC_TotalSaldo",
                 "0 AS INC_MaquinasInstaladas",
-                "0 AS INC_MaquinasRecaudadas",
+                "COUNT() AS INC_MaquinasRecaudadas",
                 "0 AS INC_StatusAlbaran",
                 "0 AS INC_Porcentaje",
         };
@@ -371,4 +377,18 @@ public class DbAdapter extends SQLiteOpenHelper {
     public void deleteRecuperacion(String idRecuperacion) {
         db.delete("INC_RecuperacionesPrestamo", "id=?", new String[]{idRecuperacion});
     }
+
+    public float getTotalRecuperaPrestamo(String codigoRecaudacion) {
+        String[] cols = new String[]{"SUM(ImporteLiquido) AS SumaImporteLiquido"};
+        String where = "INC_CodigoRecaudacion=?";
+        String[] whereArgs = new String[]{codigoRecaudacion};
+
+        Cursor cur = db.query( "INC_RecuperacionesPrestamo", cols, where, whereArgs, "", "", "");
+        if (cur.moveToFirst()){
+            return cur.getFloat(0);
+        }else {
+            return 0;
+        }
+    }
+
 }

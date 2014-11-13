@@ -45,9 +45,9 @@
 
             <TextView
                 android:id="@+id/tv_FechaPrestamo"
-                style="@style/TxtDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLength="10"
                 android:gravity="right"
                 android:textAlignment="gravity" />
         </LinearLayout>
