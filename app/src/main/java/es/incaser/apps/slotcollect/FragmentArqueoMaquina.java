@@ -109,7 +109,6 @@ public class FragmentArqueoMaquina extends Fragment {
     public void onStart() {
         super.onStart();
         setData();
-        calculaPorcentajes();
     }
 
     private String getRecaudacion(String col) {
@@ -118,12 +117,6 @@ public class FragmentArqueoMaquina extends Fragment {
 
     private Float getFloatRecaudacion(String col) {
         return getNumber(getRecaudacion(col));
-    }
-
-    private void calculaPorcentajes() {
-        txtPorcPremio.setText(importeStr(Recaudacion.porcentajeRecaudacion));
-        txtPorcArqueo.setText(importeStr(Recaudacion.porcentajeArqueo));
-        txtPorcInstalacion.setText(importeStr(Recaudacion.porcentajeInstalacion));
     }
 
     private class CustomOnFocusChange implements View.OnFocusChangeListener {

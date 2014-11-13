@@ -56,10 +56,6 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public static String fechaUltimoArqueo;
     public static String codigoRecaudador;
     public static ContentValues cvRecaudacion;
-    public static float porcentajeRecaudacion = 0;
-    public static float porcentajeArqueo = 0;
-    public static float porcentajeInstalacion = 0;
-
 
     public AlertDialog alertDialog;
     private boolean dialogoContestado = false;
@@ -81,6 +77,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         setContentView(R.layout.slide_screen_recaudacion);
         Bundle bundle = getIntent().getExtras();
         idMaquina = bundle.getString("id");
+        codigoRecaudacion = bundle.getString("codigoRecaudacion");
         dbAdapter = new DbAdapter(this);
 
         cvRecaudacion = new ContentValues();
@@ -174,11 +171,11 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         curSumasDesdeA = dbAdapter.getSumasDesde(codigoEmpresa, codigoEstablecimiento, codigoMaquina, fechaUltimoArqueo);
 
         curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codigoEmpresa, codigoEstablecimiento);
-        if (curCabRecaudacion.moveToFirst()) {
-            codigoRecaudacion = getCabeceraRecaudacion("INC_CodigoRecaudacion");
-        } else {
-            codigoRecaudacion = UUID.randomUUID().toString();
-        }
+//        if (curCabRecaudacion.moveToFirst()) {
+//            codigoRecaudacion = getCabeceraRecaudacion("INC_CodigoRecaudacion");
+//        } else {
+//            codigoRecaudacion = UUID.randomUUID().toString();
+//        }
 
         curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
         if (!curRecaudacion.moveToFirst()) {
@@ -413,6 +410,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                 }
             }
             cv.put("INC_MaquinasInstaladas", dbAdapter.getMaquinasEstablecimiento(codigoEmpresa, codigoEstablecimiento).getCount());
+            float totalRecuperaPrestamo = dbAdapter.getTotalRecuperaPrestamo(codigoRecaudacion);
+            cv.put("INC_TotalRecuperaPrestamo", totalRecuperaPrestamo);
+            cv.put("INC_TotalSaldo", totalRecuperaPrestamo + cv.getAsFloat("INC_TotalNetoMasRetencion"));
         }
         return cv;
     }
@@ -453,12 +453,14 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             ContentValues cv = new ContentValues();
             cv.put("CodigoEmpresa", codigoEmpresa);
             cv.put("INC_CodigoEstablecimiento", codigoEstablecimiento);
+            cv.put("INC_CodigoRecaudador", codigoRecaudador);
             cv.put("INC_FechaRecaudacion", getRecaudacion("INC_FechaRecaudacion"));
             cv.put("INC_HoraRecaudacion", getRecaudacion("INC_HoraRecaudacion"));
             cv.put("INC_FechaLocalizacion", millis2String(location.getTime()));
             cv.put("INC_HoraLocalizacion", getHourFractionDay(location.getTime()));
             cv.put("INC_Latitud", location.getLatitude());
             cv.put("INC_Longitud", location.getLongitude());
+            cv.put("INC_CodigoRecaudacion", codigoRecaudacion);
 
             dbAdapter.insertRecord("INC_Localizaciones", cv);
             locManager.removeUpdates(locListener);
@@ -510,10 +512,6 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
 
     public void mostrarDialogo() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        //fragmentContadoresMaquina.saveRecaudacion();
-        //fragmentImportesMaquina.saveRecaudacion();
-        //fragmentArqueoMaquina.saveRecaudacion();
 
         builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -634,6 +632,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         float diferenciaRecaudacion = 0;
         float diferenciaArqueo = 0;
         float diferenciaInstalacion = 0;
+        float porcentajeRecaudacion = 0;
+        float porcentajeArqueo = 0;
+        float porcentajeInstalacion = 0;
 
         if (getBoolRecaudacion("INC_ArqueoRealizado")) {
             diferenciaRecaudacion = (getFloatRecaudacion("INC_Bruto")
@@ -650,7 +651,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
 
         porcentajeRecaudacion = (getFloatRecaudacion("INC_PremioTeorico")
                 / getFloatRecaudacion("INC_JugadoTeorico") * 100);
-//        fragmentArqueoMaquina.txtPorcPremio.setText(importeStr(porcentajeRecaudacion));
+        cvRecaudacion.put("INC_PorcentajePremioR", porcentajeRecaudacion);
 
         if (curUltimaRecaudacion.moveToFirst()) {
             fechaUltimaRecaudacion = str2date(curUltimaRecaudacion.getString(
@@ -685,8 +686,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             porcentajeInstalacion = porcentajeRecaudacion;
         }
         cvRecaudacion.put("INC_DiferenciaInstalacion", diferenciaInstalacion);
-//        fragmentArqueoMaquina.txtPorcInstalacion.setText(importeStr(porcentajeInstalacion));
-
+        cvRecaudacion.put("INC_PorcentajePremioI", porcentajeInstalacion);
 
         if (Recaudacion.curSumasDesdeA.moveToFirst()) {
             diferenciaArqueo = diferenciaRecaudacion
@@ -703,7 +703,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
             porcentajeArqueo = porcentajeInstalacion;
         }
         cvRecaudacion.put("INC_DiferenciaArqueo", diferenciaArqueo);
-//        fragmentArqueoMaquina.txtPorcArqueo.setText(importeStr(porcentajeArqueo));
+        cvRecaudacion.put("INC_PorcentajePremioA", porcentajeArqueo);
 
         if (!getBoolRecaudacion("INC_ArqueoRealizado")) {
             valorArqueoteorico = valorUltimoArqueo - diferenciaArqueo;
