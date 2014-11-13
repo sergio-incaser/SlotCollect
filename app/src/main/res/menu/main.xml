@@ -22,4 +22,8 @@
         android:id="@+id/action_sync_data"
         android:title="@string/action_sync_data"
         android:orderInCategory="110" />
+    <item
+        android:id="@+id/action_totales_all"
+        android:title="@string/action_totales_all"
+        android:orderInCategory="120" />
 </menu>

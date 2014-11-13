@@ -32,5 +32,7 @@
     <string name="action_prestamos">Prestamos</string>
     <string name="out_office">Fuera de la oficina</string>
     <string name="pref_sql_host_remote_summ">Servidor remoto</string>
+    <string name="title_activity_totales_recaudacion">Totales Recaudacion</string>
+    <string name="action_totales_all">Totales</string>
 
 </resources>

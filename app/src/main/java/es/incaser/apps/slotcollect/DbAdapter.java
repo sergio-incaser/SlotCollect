@@ -391,4 +391,22 @@ public class DbAdapter extends SQLiteOpenHelper {
         }
     }
 
+    public Cursor getTotalRecaudadoAll() {
+        String[] campos = new String[]{
+                "SUM(INC_TotalRecaudacion) AS INC_TotalRecaudacion",
+                "SUM(INC_TotalRetencion) AS INC_TotalRetencion",
+                "SUM(INC_TotalNeto) AS INC_TotalNeto",
+                "SUM(INC_TotalEstablecimiento) AS INC_TotalEstablecimiento",
+                "SUM(INC_TotalNetoMasRetencion)  AS INC_TotalNetoMasRetencion",
+                "SUM(INC_TotalRecuperaCarga) AS INC_TotalRecuperaCarga",
+                "SUM(INC_TotalRecuperaPrestamo) AS INC_TotalRecuperaPrestamo",
+                "SUM(INC_TotalSaldo) AS INC_TotalSaldo",
+                "SUM(INC_MaquinasRecaudadas) AS INC_MaquinasRecaudadas"
+        };
+        String where = "";
+        String[] whereArgs = new String[]{};
+
+        return db.query( "INC_CabeceraRecaudacion", campos, where, whereArgs, "", "", "");
+    }
+
 }

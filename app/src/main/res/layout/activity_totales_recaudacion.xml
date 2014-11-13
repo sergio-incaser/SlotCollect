@@ -1,0 +1,162 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="es.incaser.apps.slotcollect.TotalesRecaudacion">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="#ddd">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TxtLayTotalesAll">
+
+                <TextView
+                    style="@style/EtiquetaTotalesAll"
+                    android:text="Máquinas Recaudadas" />
+
+                <TextView
+                    style="@style/TxtImportesBloqAll"
+                    android:id="@+id/tv_totalMaquinasRecaudadasAll"
+                    android:text="0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TxtLayTotalesAll">
+
+                <TextView
+                    style="@style/EtiquetaTotalesAll"
+                    android:text="Recaudado" />
+
+                <TextView
+                    style="@style/TxtImportesBloqAll"
+                    android:id="@+id/tv_totalRecaudadoAll"
+                    android:text="0.0" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TxtLayTotalesAll">
+
+                <TextView
+                    style="@style/EtiquetaTotalesAll"
+                    android:text="Retención" />
+
+                <TextView
+                    style="@style/TxtImportesBloqAll"
+                    android:id="@+id/tv_totalRetencionAll"
+                    android:text="0.0" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TxtLayTotalesAll">
+
+                <TextView
+                    style="@style/EtiquetaTotalesAll"
+                    android:text="Neto" />
+
+                <TextView
+                    style="@style/TxtImportesBloqAll"
+                    android:id="@+id/tv_totalNetoAll"
+                    android:text="0.0" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TxtLayTotalesAll">
+
+                <TextView
+                    style="@style/EtiquetaTotalesAll"
+                    android:text="Establecimiento" />
+
+                <TextView
+                    style="@style/TxtImportesBloqAll"
+                    android:id="@+id/tv_totalEstablecimientoAll"
+                    android:text="0.0" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TxtLayTotalesAll">
+
+                <TextView
+                    style="@style/EtiquetaTotalesAll"
+                    android:text="Neto + Retención" />
+
+                <TextView
+                    style="@style/TxtImportesBloqAll"
+                    android:id="@+id/tv_totalNetoMasRetencionAll"
+                    android:text="0.0" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TxtLayTotalesAll">
+
+                <TextView
+                    style="@style/EtiquetaTotalesAll"
+                    android:text="Recupera Carga" />
+
+                <TextView
+                    style="@style/TxtImportesBloqAll"
+                    android:id="@+id/tv_totalRecuperaCargaAll"
+                    android:text="0.0" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TxtLayTotalesAll">
+
+                <TextView
+                    style="@style/EtiquetaTotalesAll"
+                    android:text="Recupera Prestamo" />
+
+                <TextView
+                    style="@style/TxtImportesBloqAll"
+                    android:id="@+id/tv_totalRecuperaPrestamoAll"
+                    android:text="0.0" />
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/TxtLayTotalesAll">
+
+                <TextView
+                    style="@style/EtiquetaTotalesAll"
+                    android:text="Saldo" />
+
+                <TextView
+                    style="@style/TxtImportesBloqAll"
+                    android:id="@+id/tv_totalSaldoAll"
+                    android:text="0.0" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

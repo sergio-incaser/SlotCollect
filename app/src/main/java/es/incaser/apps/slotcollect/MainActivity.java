@@ -34,8 +34,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        lvEstablecimientos = (ListView) findViewById(R.id.lv_establecimientos);
 
+        lvEstablecimientos = (ListView) findViewById(R.id.lv_establecimientos);
         lvEstablecimientos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -46,7 +46,6 @@ public class MainActivity extends Activity {
             }
         });
     }
-
 
     @Override
     protected void onStart() {
@@ -132,6 +131,11 @@ public class MainActivity extends Activity {
 //        }
         if (id == R.id.action_sync_data) {
             sincronizarDatos();
+            return true;
+        }
+        if (id == R.id.action_totales_all) {
+            Intent intent = new Intent(this, TotalesRecaudacion.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
