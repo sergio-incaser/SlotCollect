@@ -65,11 +65,11 @@ public class FragmentArqueoMaquina extends Fragment {
         txtCargaRecEmpresa.setText(Recaudacion.getRecaudacionImporte("INC_CargaHopperEmpresa"));
         txtCargaRecEstablecimiento.setText(Recaudacion.getRecaudacionImporte("INC_CargaHopperEstablecimiento"));
         txtDiferenciaRecaudacion.setText(Recaudacion.getRecaudacionImporte("INC_DiferenciaRecaudacion"));
-        //txtPorcPremio.setText(getRecaudacionImporte("INC_ImporteRetencion"));
+        txtPorcPremio.setText(Recaudacion.getRecaudacionImporte("INC_PorcentajePremioR"));
         txtDiferenciaArqueo.setText(Recaudacion.getRecaudacionImporte("INC_DiferenciaArqueo"));
-        //txtPorcArqueo.setText(getRecaudacionImporte("INC_ImporteEstablecimiento"));
+        txtPorcArqueo.setText(Recaudacion.getRecaudacionImporte("INC_PorcentajePremioA"));
         txtDiferenciaInstalacion.setText(Recaudacion.getRecaudacionImporte("INC_DiferenciaInstalacion"));
-        //txtPorcInstalacion.setText(getRecaudacionImporte("INC_ImporteNeto"));
+        txtPorcInstalacion.setText(Recaudacion.getRecaudacionImporte("INC_PorcentajePremioI"));
 
         txtDiasEfectivosUR.setText(Recaudacion.getRecaudacionImporte("INC_DiasEfectivosUR"));
         txtDiasNaturalesUR.setText(Recaudacion.getRecaudacionImporte("INC_DiasNaturalesUR"));
@@ -88,6 +88,9 @@ public class FragmentArqueoMaquina extends Fragment {
         cv.put("INC_DiferenciaRecaudacion", getNumber(txtDiferenciaRecaudacion));
         cv.put("INC_DiferenciaArqueo", getNumber(txtDiferenciaArqueo));
         cv.put("INC_DiferenciaInstalacion", getNumber(txtDiferenciaInstalacion));
+        cv.put("INC_PorcentajePremioR", getNumber(txtPorcPremio));
+        cv.put("INC_PorcentajePremioA", getNumber(txtPorcArqueo));
+        cv.put("INC_PorcentajePremioI", getNumber(txtPorcInstalacion));
         cv.put("INC_DiasEfectivosUR", getNumber(txtDiasEfectivosUR));
         cv.put("INC_DiasNaturalesUR", getNumber(txtDiasNaturalesUR));
         cv.put("INC_MediaDiaria", getNumber(txtMediaDiaria));

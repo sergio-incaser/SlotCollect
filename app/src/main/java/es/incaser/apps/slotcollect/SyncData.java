@@ -48,7 +48,6 @@ public class SyncData {
 
         for (int i = DbAdapter.tablesToExport; i < DbAdapter.QUERY_LIST.length + 1; i++) {
             cursor = dbAdapter.getTable(DbAdapter.QUERY_LIST[i - 1][0], DbAdapter.QUERY_LIST[i - 1][2]);
-            //cursor = dbAdapter.getTableToExport(DbAdapter.QUERY_LIST[i-1][0]);
             resultSet = conSQL.getResultset("Select * FROM " + DbAdapter.QUERY_LIST[i - 1][0] + " WHERE 1=2", true);
             if (resultSet != null) {
                 int x;
@@ -65,35 +64,8 @@ public class SyncData {
         return numReg;
     }
 
-    public int copyRecordsxx(ResultSet source, String target) {
-        ResultSetMetaData RSmd;
-        ContentValues values = new ContentValues();
-        ArrayList<String> columnList = new ArrayList();
-        try {
-            RSmd = source.getMetaData();
-            String[] args = new String[]{target};
-            Cursor cursor = dbAdapter.getTable(target, 1);
-            String[] localColumns = cursor.getColumnNames();
-            for (int i = 1; i <= RSmd.getColumnCount(); i++) {
-                if (Arrays.asList(localColumns).contains(RSmd.getColumnName(i))) {
-                    columnList.add(RSmd.getColumnName(i));
-                }
-            }
-            while (source.next()) {
-                for (String col : columnList) {
-                    values.put(col, source.getString(col));
-                }
-                dbAdapter.insertRecord(target, values);
-            }
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     public int copyRecords(Cursor source, String tableSource, ResultSet target) {
         ResultSetMetaData RSmd;
-        ContentValues values = new ContentValues();
         List<String> columnList = new ArrayList();
         List<String> columnListBynary = new ArrayList();
         List<String> columnListDate = new ArrayList();
@@ -106,7 +78,6 @@ public class SyncData {
         Log.w(tableSource, "A exportar: " + numReg);
         try {
             RSmd = target.getMetaData();
-            //String[] args = {tableSource};
             String[] localColumns = source.getColumnNames();
             for (int i = 1; i <= RSmd.getColumnCount(); i++) {
                 if (Arrays.asList(localColumns).contains(RSmd.getColumnName(i))) {
@@ -149,11 +120,6 @@ public class SyncData {
 
                     if (source.getBlob(colInt) != null) {
                         target.updateString(col, source.getString(colInt));
-//                        if (source.getBlob(colInt).length != 37){
-//                            target.updateBinaryStream(col, new ByteArrayInputStream(source.getBlob(colInt)), 16);
-//                        }else{
-//                            target.updateString(col, source.getString(colInt));
-//                        }
                     }
                 }
                 for (String col : columnList) {
@@ -227,7 +193,6 @@ public class SyncData {
             db.setTransactionSuccessful();
             db.endTransaction();
 
-            //db.close();
             Log.w(target, "Reg Importados: " + numReg);
 
         } catch (java.sql.SQLException e) {
@@ -254,10 +219,4 @@ public class SyncData {
             Toast.makeText(myContext, result, Toast.LENGTH_SHORT).show();
         }
     }
-
-    public void test() {
-        new SynchronizeTest().execute(1);
-    }
-
-
 }
