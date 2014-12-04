@@ -146,7 +146,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     style="@style/EtiquetaContadores"
@@ -166,7 +167,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     style="@style/EtiquetaContadores"
@@ -229,7 +231,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     style="@style/EtiquetaContadores"
@@ -286,6 +289,24 @@
                     style="@style/TxtContadorAnterior"
                     android:text="4564897" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaComentarios"
+                    android:text="Comentario" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtComentarioRecaudacion"
+
+                    android:text="" />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

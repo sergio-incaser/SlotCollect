@@ -249,6 +249,8 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         cvRecaudacion.put("INC_CodigoRecaudacion", codigoRecaudacion);
         cvRecaudacion.put("INC_CodigoRecaudador", codigoRecaudador);
 
+        calcData(true);
+
         //Date now = Calendar.getInstance().getTime();
         Date now = str2date(getToday(), "yyyy-MM-dd");
         int semanas = Math.round((now.getTime() - str2date(getColMaquina("INC_FechaInstalacion")).getTime())
@@ -518,7 +520,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                 // User clicked OK button
                 dialogoContestado = true;
                 positiveButton = true;
-//                guardarRecaudacion(true);
+                guardarRecaudacion(positiveButton);
                 Recaudacion.this.onBackPressed();
             }
         });
@@ -529,6 +531,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                 positiveButton = false;
                 if (curRecaudacion.moveToFirst()) {
                     dbAdapter.deleteRecaudacion(getColCurRecaudacion("id"));
+                    curRecaudacion = dbAdapter.getRecaudacion(codigoEmpresa, codigoEstablecimiento, codigoMaquina);
                 }
                 if (curCabRecaudacion.moveToFirst()) {
                     ContentValues cv = computedValuesCabRecaudacion();
@@ -538,10 +541,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                                 new String[]{getCabeceraRecaudacion("id")});
                     } else {
                         dbAdapter.deleteCabRecaudacion(getCabeceraRecaudacion("id"));
-                    }
-                    ;
-                }
-                ;
+                    };
+                    curCabRecaudacion = dbAdapter.getCabeceraRecaudacion(codigoEmpresa, codigoEstablecimiento);
+                };
                 Recaudacion.this.onBackPressed();
             }
         });
@@ -714,6 +716,8 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     @Override
     protected void onPause() {
         super.onPause();
-        guardarRecaudacion(positiveButton);
+        if (!dialogoContestado){
+            guardarRecaudacion(positiveButton);
+        }
     }
 }

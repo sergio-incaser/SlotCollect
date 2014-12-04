@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +22,12 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 
 public class MainActivity extends Activity {
@@ -229,16 +236,20 @@ public class MainActivity extends Activity {
 
         @Override
         protected String doInBackground(Integer... params) {
-            SyncData syncData = new SyncData(MainActivity.this);
-            syncData.conSQL = new SQLConnection();
-            if (SQLConnection.connection == null) {
-                return "errorSQLconnection";
-            }
-            if (syncData.exportRecords() >= 0) {
-                syncData.importRecords();
-                return "Datos Sincronizados";
-            } else {
-                return "ERROR EN LA SINCRONIZACION";
+            try {
+                SyncData syncData = new SyncData(MainActivity.this);
+                syncData.conSQL = new SQLConnection();
+                if (SQLConnection.connection == null) {
+                    return "errorSQLconnection";
+                }
+                if (syncData.exportRecords() >= 0) {
+                    syncData.importRecords();
+                    return "Datos Sincronizados";
+                } else {
+                    return "ERROR EN LA SINCRONIZACION";
+                }
+            }catch(Exception ee){
+                return ee.toString();
             }
         }
 
@@ -247,10 +258,32 @@ public class MainActivity extends Activity {
             if (result == "errorSQLconnection") {
                 result = MainActivity.this.getString(R.string.errorSQLconnection);
             }
-            Toast.makeText(MainActivity.this, result, Toast.LENGTH_SHORT).show();
+            write_log(result);
+            Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
             progressDialog.dismiss();
             bindData();
         }
     }
 
+    void write_log(String logtext){
+        File sdCard, directory, file = null;
+        if (Environment.getExternalStorageState().equals("mounted")) {
+            sdCard = Environment.getExternalStorageDirectory();
+            FileOutputStream fout = null;
+            try {
+                directory = new File(sdCard.getAbsolutePath()
+                        + "/slot_collect");
+                directory.mkdirs();
+                file = new File(directory, "slot_collect.log");
+                fout = new FileOutputStream(file);
+                OutputStreamWriter ows = new OutputStreamWriter(fout);
+                ows.write(logtext); // Escribe en el buffer la cadena de texto
+                ows.flush(); // Volca lo que hay en el buffer al archivo
+                ows.close(); // Cierra el archivo de texto
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 }

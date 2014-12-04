@@ -44,6 +44,8 @@ public class FragmentContadoresMaquina extends Fragment {
     EditText txtPremioTeorico;
     EditText txtPartidas;
 
+    EditText txtComentario;
+
     private void bindAntData(View rootView) {
         txtSal010Ant = (EditText) rootView.findViewById(R.id.txtSal010Ant);
         txtEnt010Ant = (EditText) rootView.findViewById(R.id.txtEnt010Ant);
@@ -86,6 +88,8 @@ public class FragmentContadoresMaquina extends Fragment {
         txtPremioTeorico = (EditText) rootView.findViewById(R.id.txtPremioTeorico);
         txtPartidas = (EditText) rootView.findViewById(R.id.txtPartidas);
 
+        txtComentario= (EditText) rootView.findViewById(R.id.txtComentarioRecaudacion);
+
         txtEnt010.setOnFocusChangeListener(new CustomOnFocusChange());
         txtSal010.setOnFocusChangeListener(new CustomOnFocusChange());
         txtEnt020.setOnFocusChangeListener(new CustomOnFocusChange());
@@ -96,6 +100,7 @@ public class FragmentContadoresMaquina extends Fragment {
         txtEnt200.setOnFocusChangeListener(new CustomOnFocusChange());
         txtEnt500.setOnFocusChangeListener(new CustomOnFocusChange());
         txtEnt1000.setOnFocusChangeListener(new CustomOnFocusChange());
+        txtComentario.setOnFocusChangeListener(new CustomOnFocusChange());
     }
 
     private void setData() {
@@ -113,6 +118,8 @@ public class FragmentContadoresMaquina extends Fragment {
         txtJugadoTeorico.setText(getRecaudacion("INC_JugadoTeorico"));
         txtPremioTeorico.setText(getRecaudacion("INC_PremioTeorico"));
         txtPartidas.setText(getRecaudacion("INC_Partidas"));
+
+        txtComentario.setText(getRecaudacion("Comentario"));
     }
 
     ;
@@ -138,8 +145,13 @@ public class FragmentContadoresMaquina extends Fragment {
         setData();
     }
 
-    protected void save(ContentValues cv) {
+    @Override
+    public void onPause() {
+        super.onPause();
+        save(Recaudacion.cvRecaudacion);
+    }
 
+    protected void save(ContentValues cv) {
 
         cv.put("INC_Entrada010Ant", txtEnt010Ant.getText().toString());
         cv.put("INC_Entrada020Ant", txtEnt020Ant.getText().toString());
@@ -166,6 +178,8 @@ public class FragmentContadoresMaquina extends Fragment {
         cv.put("INC_JugadoTeorico", txtJugadoTeorico.getText().toString());
         cv.put("INC_PremioTeorico", txtPremioTeorico.getText().toString());
         cv.put("INC_Partidas", txtPartidas.getText().toString());
+
+        cv.put("Comentario", txtComentario.getText().toString());
     }
 
     private class CustomOnFocusChange implements View.OnFocusChangeListener {
