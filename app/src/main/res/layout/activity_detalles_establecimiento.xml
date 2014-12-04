@@ -74,6 +74,20 @@
                         android:id="@+id/tv_totalRetencion"
                         android:text="0.00" />
                 </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/EtiquetaContadores"
+                        android:text="Total saldo" />
+
+                    <TextView
+                        style="@style/TxtImportesBloq"
+                        android:id="@+id/tv_totalSaldo"
+                        android:text="0.00" />
+                </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>

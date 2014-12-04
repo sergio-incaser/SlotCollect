@@ -272,8 +272,9 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
                     + curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaCargaHopperEstablecimiento"))
                     - curSumasDesdeI.getFloat(curSumasDesdeI.getColumnIndex("SumaRecuperaCargaEstablecimiento")));
         } else {
-            importeRetencion = ((getFloatMaquina("INC_RetencionFija") * semanas)
-                    + getFloatMaquina("INC_RetencionPendiente"));
+//            importeRetencion = ((getFloatMaquina("INC_RetencionFija") * semanas)
+//                    + getFloatMaquina("INC_RetencionPendiente"));
+            importeRetencion = getFloatMaquina("INC_RetencionFija");
             recuperaEmpresa = (getFloatMaquina("INC_CargeHopperEmpresa"));
             recuperaEstablecimiento = (getFloatMaquina("INC_CargeHopperEstablecimiento"));
         }

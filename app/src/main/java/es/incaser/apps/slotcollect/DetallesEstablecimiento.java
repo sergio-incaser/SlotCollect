@@ -39,6 +39,8 @@ public class DetallesEstablecimiento extends Activity {
     TextView txtTotalRecaudacion;
     TextView txtTotalEstablecimiento;
     TextView txtTotalRetencion;
+    TextView txtTotalSaldo;
+
     //TextView txtTienePrestamos;
     LinearLayout lay_TienePrestamos;
 
@@ -51,6 +53,8 @@ public class DetallesEstablecimiento extends Activity {
         txtTotalRecaudacion = (TextView) findViewById(R.id.tv_totalRecaudacion);
         txtTotalEstablecimiento = (TextView) findViewById(R.id.tv_totalEstablecimiento);
         txtTotalRetencion = (TextView) findViewById(R.id.tv_totalRetencion);
+        txtTotalSaldo = (TextView) findViewById(R.id.tv_totalSaldo);
+
         //txtTienePrestamos = (TextView) findViewById(R.id.tv_tienePrestamos);
         lay_TienePrestamos = (LinearLayout) findViewById(R.id.ly_tienePrestamos);
 
@@ -254,11 +258,13 @@ public class DetallesEstablecimiento extends Activity {
         txtTotalRecaudacion.setText(importeStr(cabeceraRecaudacion("INC_TotalRecaudacion")));
         txtTotalEstablecimiento.setText(importeStr(cabeceraRecaudacion("INC_TotalEstablecimiento")));
         txtTotalRetencion.setText(importeStr(cabeceraRecaudacion("INC_TotalRetencion")));
+        txtTotalSaldo.setText(importeStr(cabeceraRecaudacion("INC_TotalSaldo")));
     }
 
     private void emptyTxtFields() {
         txtTotalRecaudacion.setText("0.00");
         txtTotalEstablecimiento.setText("0.00");
         txtTotalRetencion.setText("0.00");
+        txtTotalSaldo.setText("0.00");
     }
 }
