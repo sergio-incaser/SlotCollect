@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import static es.incaser.apps.slotcollect.tools.getNumber;
 import static es.incaser.apps.slotcollect.tools.importeStr;
@@ -26,6 +27,7 @@ public class FragmentImportesMaquina extends Fragment {
     private EditText txtPorcentajeDistribucion;
     private EditText txtImporteEstablecimiento;
     private EditText txtImporteNeto;
+    private TextView tvImporteRetencion;
 
     private void bindRecaudacionData(View rootView) {
         txtBruto = (EditText) rootView.findViewById(R.id.txtBruto);
@@ -38,6 +40,7 @@ public class FragmentImportesMaquina extends Fragment {
         txtPorcentajeDistribucion = (EditText) rootView.findViewById(R.id.txtPorcentajeDistribucion);
         txtImporteEstablecimiento = (EditText) rootView.findViewById(R.id.txtImporteEstablecimiento);
         txtImporteNeto = (EditText) rootView.findViewById(R.id.txtImporteNeto);
+        tvImporteRetencion = (TextView) rootView.findViewById(R.id.tv_importeRetencion);
 
         txtBruto.setOnFocusChangeListener(new CustomOnFocusChange());
         txtFallos.setOnFocusChangeListener(new CustomOnFocusChange());
@@ -60,6 +63,7 @@ public class FragmentImportesMaquina extends Fragment {
         txtPorcentajeDistribucion.setText(getRecaudacionImporte("INC_PorcentajeDistribucion"));
         txtImporteEstablecimiento.setText(getRecaudacionImporte("INC_ImporteEstablecimiento"));
         txtImporteNeto.setText(getRecaudacionImporte("INC_ImporteNeto"));
+        tvImporteRetencion.setText("Importe retención (" + Recaudacion.importeRetencionFija + "€)");
     }
 
     ;

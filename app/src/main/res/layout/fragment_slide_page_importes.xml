@@ -135,7 +135,8 @@
 
                 <TextView
                     style="@style/EtiquetaContadores"
-                    android:text="Importe retencion" />
+                    android:text="Importe retencion"
+                    android:id="@+id/tv_importeRetencion" />
 
                 <EditText
                     android:id="@+id/txtImporteRetencion"

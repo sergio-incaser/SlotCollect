@@ -56,6 +56,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
     public static String fechaUltimoArqueo;
     public static String codigoRecaudador;
     public static ContentValues cvRecaudacion;
+    public static String importeRetencionFija;
 
     public AlertDialog alertDialog;
     private boolean dialogoContestado = false;
@@ -281,6 +282,7 @@ public class Recaudacion extends FragmentActivity implements ActionBar.TabListen
         cvRecaudacion.put("INC_ImporteRetencion", importeRetencion);
         cvRecaudacion.put("INC_RecuperaCargaEmpresa", recuperaEmpresa);
         cvRecaudacion.put("INC_RecuperaCargaEstablecimiento", recuperaEstablecimiento);
+        importeRetencionFija = getColMaquina("INC_RetencionFija");
     }
 
     private String getColMaquina(String col) {
